@@ -39,6 +39,7 @@ public final class Coordinate {
      *
      * @return coordinate value
      */
+
     public double get() {
         return _coord;
     }

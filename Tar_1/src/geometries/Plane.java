@@ -19,6 +19,14 @@ public class Plane implements Geometry
     }
 
     public Vector getNormal() {
-        return new Vector (_normal);
+        return new   Vector (_normal);
+    }
+
+    @Override
+    public String toString() {
+        return "Plane{" +
+                "_p=" + _p +
+                ", _normal=" + _normal +
+                '}';
     }
 }

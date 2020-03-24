@@ -1,5 +1,4 @@
 package primitives;
-import primitives.Coordinate;
 
 /**
  * basic coordinate in 3 dimentinon
@@ -62,6 +61,15 @@ public class Point3D {
                 _z.equals(point3D._z);
     }
 
+    /**adds the vector to a point
+     *
+     * @param vec
+     * @return the new point
+     */
+    public Point3D add(Vector vec)
+    {
+       return new Point3D(_x.get()+vec._head.get_x().get(), _y.get()+vec._head.get_y().get() , _z.get()+vec._head.get_z().get() );
+    }
 
 
         public Vector substract(Point3D  p )
