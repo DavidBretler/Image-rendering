@@ -1,5 +1,8 @@
 package primitives;
 
+/**
+ * ray class
+ */
 public class Ray
 {
     Point3D _p0;
