@@ -14,13 +14,21 @@ public class Point3D {
     Coordinate _y;
     Coordinate _z;
 
-
+    /**
+     * a con
+     */
     public final static Point3D ZERO =new Point3D(0.0, 0.0, 0.0);
 
     public Point3D(Coordinate _x, Coordinate _y, Coordinate _z) {
         this._x = _x;
         this._y = _y;
         this._z = _z;
+    }
+    public Point3D(Point3D _p)
+    {
+        this._x = _p._x;
+        this._y = _p._y;
+        this._z = _p._z;
     }
     public Point3D(double _x, double _y, double _z) {
         this( new Coordinate(_x),new Coordinate(_y),new Coordinate(_z));
