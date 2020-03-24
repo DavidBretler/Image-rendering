@@ -1,7 +1,7 @@
 package primitives;
 
 /**
- * ray class fff
+ * ray class fff ahfffhhhhhhhhhhhhh
  */
 public class Ray
 {
