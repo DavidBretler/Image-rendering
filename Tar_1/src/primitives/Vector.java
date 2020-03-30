@@ -36,6 +36,13 @@ public class Vector {
         this._head = new Point3D(_x,_y,_z);
     }
 
+    public Vector(Point3D p1, Point3D p2) {
+       Point3D a = new Point3D(p2._x.get()-p1._x.get(),p2._y.get()-p1._y.get(),p2._z.get()-p1._z.get());
+        if (a.equals(Point3D.ZERO))
+            throw new IllegalArgumentException("ZERO vector is not valid");
+        this._head = a;
+    }
+
     /**
      * adss 2 vectors
      * @param vec

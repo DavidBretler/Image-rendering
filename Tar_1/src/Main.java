@@ -15,6 +15,7 @@ public final class Main {
      * @param args irrelevant here
      */
     public static void main(String[] args) {
+        
 
         try { // test zero vector
             new Vector(0, 0, 0);
@@ -63,5 +64,6 @@ public final class Main {
             out.println("ERROR: normalizated() function does not create a new vector");
 
         out.println("If there were no any other outputs - all tests succeeded!");
+
     }
 }

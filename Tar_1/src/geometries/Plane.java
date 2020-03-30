@@ -10,11 +10,14 @@ public class Plane implements Geometry
     Point3D _p;
     Vector _normal;
 
-    public Plane(Point3D vertex_x, Point3D vertex_y, Point3D vertex_z)
+    public Plane(Point3D p1, Point3D p2, Point3D p3)
     {
-        _p=new Point3D( vertex_x);
-        _normal=null;
-        // TODO: 24/03/2020 o	בנאי עם 3 נקודות אמור לחשב את הנורמל לפי מה שנלמד על נורמל למשולש – בשלב הזה יישמר ערך null משדה הנורמל (המימוש המלא יתבצע בשלב הבא), כמו כן הבנאי ישמור את אחת הנקודות כנקודת הייחוס של המישור
+       Vector U=new Vector(p1,p2);
+        Vector V=new Vector(p1,p3);
+        Vector N=V.crossProduct(U);
+        N.normalize();
+
+        _normal=N.Scale(-1);
     }
 
     public Plane(Point3D _p,Vector _normal)
@@ -25,11 +28,11 @@ public class Plane implements Geometry
 
     @Override
     public Vector getNormal(Point3D p) {
-        return null;
+        return _normal;
     }
 
     public Vector getNormal() {
-        return null;
+        return _normal;
     }
 
     @Override
