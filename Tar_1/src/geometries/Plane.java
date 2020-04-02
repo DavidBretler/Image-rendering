@@ -37,7 +37,7 @@ public class Plane implements Geometry
 
     @Override
     public String toString() {
-        return "Plane{" +
+        return
                 "_p=" + _p +
                 ", _normal=" + _normal +
                 '}';

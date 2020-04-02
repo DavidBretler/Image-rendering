@@ -14,12 +14,18 @@ class VectorTest {
         Vector v1 = new Vector(0.0,1.0,1.0);
         Vector v2 = new Vector(0.0,1.0,1.0);
         Vector v3 = new Vector(v1.add(v2));
-        assertEquals (new Vector(0.0,2.0,2.0),v3);
+        assertEquals (new Vector(0.0,2.0,2.0),v3,"ERORR:adding is wroung");
 
     }
 
     @org.junit.jupiter.api.Test
     void subtract() {
+        Vector v1 = new Vector(3.0,2.0,1.0);
+        Vector v2 = new Vector(3.0,1.0,1.0);
+        Vector v3 = new Vector(v1.subtract(v2) );
+        assertEquals (new Vector(0.0,1.0,0.0),v3,"ERORR:sebstracting is wroung");
+
+
     }
 
     @org.junit.jupiter.api.Test
@@ -40,7 +46,7 @@ class VectorTest {
     @Test
      void zeroVector()
         { // test zero vector
-        new Vector(0, 0, 0);
+        new Vector(1, 0, 0);
 
     }
     @Test
@@ -80,8 +86,8 @@ class VectorTest {
 
         assertEquals(0.0,alignZero(vr.length() -(v1.length() * v3.length())),"ERROR: crossProduct() wrong result length");
 
-        assertEquals(0.0 ,vr.dotProduct(v1) ,"ERROR: crossProduct() result is not orthogonal to its operands");
-        assertEquals(0.0,vr.dotProduct(v3),"ERROR: crossProduct() result is not orthogonal to its operands");
+       assertEquals(0.0 ,alignZero(vr.dotProduct(v1)  ) ,"ERROR: crossProduct() result is not orthogonal to its operands");
+       assertEquals(0.0,alignZero(vr.dotProduct(v3)  ),"ERROR: crossProduct() result is not orthogonal to its operands");
 
 
     }
@@ -98,13 +104,14 @@ class VectorTest {
         Vector v = new Vector(1, 2, 3);
         Vector vCopy = new Vector(v);
         Vector vCopyNormalize = vCopy.normalize();
-        if (vCopy != vCopyNormalize)
-            out.println("ERROR: normalize() function creates a new vector");
-        if (!isZero(vCopyNormalize.length() - 1))
-            out.println("ERROR: normalize() result is not a unit vector");
+
+        assertEquals(vCopy, vCopyNormalize,   "ERROR: normalize() function creates a new vector");
+
+
+         assertEquals(0.0,(vCopyNormalize.length() - 1)  ,"ERROR: normalize() result is not a unit vector");
+
         Vector u = v.normalized();
-        if (u == v)
-            out.println("ERROR: normalizated() function does not create a new vector");
+         assertNotEquals(u,v,"ERROR: normalizated() function does not create a new vector");
 
     }
 }

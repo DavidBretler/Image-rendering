@@ -25,7 +25,7 @@ public class Cylinder extends RadialGeometry {
 
     @Override
     public String toString() {
-        return "Cylinder{" +
+        return
                 "higet=" + higet +
                 ", _radius=" + _radius +
                 '}';

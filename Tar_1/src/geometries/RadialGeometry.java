@@ -18,7 +18,7 @@ double _radius;
     }
     @Override
     public String toString() {
-        return "RadialGeometry{" +
+        return
                 "_radius=" + _radius +
                 '}';
     }

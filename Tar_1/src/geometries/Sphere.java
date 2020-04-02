@@ -23,7 +23,7 @@ public class Sphere extends RadialGeometry {
 
     @Override
     public String toString() {
-        return "Sphere{" +
+        return
                 "P=" + P +
                 ", _radius=" + _radius +
                 '}';

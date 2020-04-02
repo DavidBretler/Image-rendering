@@ -22,7 +22,7 @@ public class Tube extends RadialGeometry
 
     @Override
     public String toString() {
-        return "Tube{" +
+        return
                 "ray=" + ray +
                 ", _radius=" + _radius +
                 '}';

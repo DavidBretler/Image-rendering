@@ -21,7 +21,7 @@ public class Ray
 
     @Override
     public String toString() {
-        return "Ray{" +
+        return
                 "_p0=" + _p0 +
                 ", _dir=" + _dir +
                 '}';

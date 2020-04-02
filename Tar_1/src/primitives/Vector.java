@@ -52,8 +52,8 @@ public class Vector {
     {
         return new Vector
                 (this._head._x.get()+vec._head._x.get(),
-                        this._head._x.get()+vec._head._x.get(),
-                        this._head._x.get()+vec._head._x.get());
+                        this._head._y.get()+vec._head._y.get(),
+                        this._head._z.get()+vec._head._z.get());
     }
 
     /**
@@ -65,8 +65,8 @@ public class Vector {
     {
         return new Vector
                 (this._head._x.get()-vec._head._x.get(),
-                        this._head._x.get()-vec._head._x.get(),
-                        this._head._x.get()-vec._head._x.get());
+                        this._head._y.get()-vec._head._y.get(),
+                        this._head._z.get()-vec._head._z.get());
     }
     /**
      *
