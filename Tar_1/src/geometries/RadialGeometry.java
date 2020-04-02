@@ -1,7 +1,6 @@
 package geometries;
 
-abstract public class RadialGeometry
-{
+abstract public class RadialGeometry implements Geometry {
 double _radius;
 
     public double get_radius() {

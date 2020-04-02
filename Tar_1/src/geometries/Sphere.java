@@ -1,13 +1,14 @@
 package geometries;
 
 import primitives.Point3D;
+import primitives.Vector;
 
 public class Sphere extends RadialGeometry {
     Point3D P;
 
-    public Sphere(double _radius, Point3D other) {
+    public Sphere(double _radius, Point3D _o) {
         super(_radius);
-        P = other;
+        P = _o;
     }
 
 
@@ -27,5 +28,11 @@ public class Sphere extends RadialGeometry {
                 "P=" + P +
                 ", _radius=" + _radius +
                 '}';
+    }
+
+    // TODO: 02/04/2020 finsh 
+    @Override
+    public Vector getNormal(Point3D p) {
+        return new Vector(new Point3D(_o.get));
     }
 }

@@ -1,6 +1,9 @@
 package geometries;
 
 
+import primitives.Point3D;
+import primitives.Vector;
+
 public class Cylinder extends RadialGeometry {
 
     double higet;
@@ -29,5 +32,10 @@ public class Cylinder extends RadialGeometry {
                 "higet=" + higet +
                 ", _radius=" + _radius +
                 '}';
+    }
+
+    @Override
+    public Vector getNormal(Point3D p) {
+        return null;
     }
 }

@@ -12,7 +12,7 @@ public class Plane implements Geometry
 
     public Plane(Point3D p1, Point3D p2, Point3D p3)
     {
-       Vector U=new Vector(p1,p2);
+        Vector U=new Vector(p1,p2);
         Vector V=new Vector(p1,p3);
         Vector N=V.crossProduct(U);
         N.normalize();
@@ -26,10 +26,12 @@ public class Plane implements Geometry
         this._p=new Point3D(_p);
     }
 
-    @Override
-    public Vector getNormal(Point3D p) {
-        return _normal;
-    }
+
+     @Override
+     public Vector getNormal(Point3D p) {
+     return _normal;
+     }
+
 
     public Vector getNormal() {
         return _normal;
