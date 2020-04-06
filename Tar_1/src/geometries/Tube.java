@@ -7,17 +7,26 @@ import static primitives.Util.isZero;
 
 public class Tube extends RadialGeometry
 {
-    public Tube(double _radius) {
+
+    Ray _ray;
+    /**
+     * constructor for a new Cylinder object
+     *
+     * @param _radius the radius of the cylinder
+     * @param _ray    the direction of the cylinder from a center point
+     * @throws Exception in case of a negative radius
+     */
+    public Tube(double _radius, Ray _ray) {
         super(_radius);
+        this._ray = new Ray(_ray);
     }
-    Ray ray;
+
     public Tube(RadialGeometry other) {
         super(other);
     }
 
-    public Ray getRay() {
-        return ray;
-    }
+    public Ray get_Ray() {
+        return _ray ;  }
 
     @Override
     public double get_radius() {
@@ -27,7 +36,7 @@ public class Tube extends RadialGeometry
     @Override
     public String toString() {
         return
-                "ray=" + ray +
+                "ray=" + _ray +
                 ", _radius=" + _radius +
                 '}';
     }
@@ -42,8 +51,8 @@ public class Tube extends RadialGeometry
 
 
             //The vector from the point of the cylinder to the given point
-            Point3D o =  ray.getPoint(); // at this point o = p0
-            Vector v =  ray.getDirection();
+            Point3D o = _ray.getPoint(); // at this point o = p0
+            Vector v =  _ray.getDirection();
 
             Vector vector1 = point.substract(o);
 

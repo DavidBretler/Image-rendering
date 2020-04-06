@@ -30,8 +30,13 @@ public class Sphere extends RadialGeometry {
                 '}';
     }
 
+    /**
+     * get the normal to this sphere in a given point
+     */
     @Override
-    public Vector getNormal(Point3D p) {
-        return  new Vector(new Point3D(o.get_x().get()+_radius, o.get_y().get(), o.get_z().get()).substract(o)).normalize();
+    public Vector getNormal(Point3D point) {
+        Vector normal = point.substract(o);
+        return normal.normalize();
     }
+
 }

@@ -19,6 +19,11 @@ public class Ray
         _direction = new Vector(vec).normalize();
     }
 
+    public Ray(Ray _ray) {
+        this._p0=new Point3D(_ray.getPoint());
+        this._direction=new Vector(_ray._direction);
+    }
+
     public Point3D getPoint() {
         return _p0;
     }
