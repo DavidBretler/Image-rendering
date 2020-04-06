@@ -4,11 +4,11 @@ import primitives.Point3D;
 import primitives.Vector;
 
 public class Sphere extends RadialGeometry {
-    Point3D P;
+    Point3D o;
 
     public Sphere(double _radius, Point3D _o) {
         super(_radius);
-        P = _o;
+        o = _o;
     }
 
 
@@ -19,20 +19,19 @@ public class Sphere extends RadialGeometry {
     }
 
     public Point3D getP() {
-        return P;
+        return o;
     }
 
     @Override
     public String toString() {
         return
-                "P=" + P +
+                "P=" + o +
                 ", _radius=" + _radius +
                 '}';
     }
 
-    // TODO: 02/04/2020 finsh 
     @Override
     public Vector getNormal(Point3D p) {
-        return new Vector(new Point3D(_o.get));
+        return  new Vector(new Point3D(o.get_x().get()+_radius, o.get_y().get(), o.get_z().get()).substract(o)).normalize();
     }
 }

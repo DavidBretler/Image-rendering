@@ -6,7 +6,7 @@ package primitives;
 public class Ray
 {
     Point3D _p0;
-    Vector _dir;
+    Vector _direction;
 
     /**
      *
@@ -16,14 +16,23 @@ public class Ray
     public Ray(Point3D _p, Vector vec)
     {
         _p0 = new Point3D(_p._x, _p._y, _p._z);
-        _dir = new Vector(vec).normalize();
+        _direction = new Vector(vec).normalize();
+    }
+
+    public Point3D getPoint() {
+        return _p0;
+    }
+
+    public Vector getDirection() {
+        return _direction;
     }
 
     @Override
     public String toString() {
         return
                 "_p0=" + _p0 +
-                ", _dir=" + _dir +
+                ", _dir=" + _direction
+                        +
                 '}';
     }
 }
