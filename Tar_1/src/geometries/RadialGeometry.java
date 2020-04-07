@@ -1,5 +1,9 @@
 package geometries;
 
+
+/**
+ * interface for all radial shapes
+ */
 abstract public class RadialGeometry implements Geometry {
 double _radius;
 

@@ -3,12 +3,16 @@ package geometries;
 import primitives.Point3D;
 import primitives.Vector;
 
+/**
+ * center is midell of the sphere
+ * radius is the radius of the sphere
+ */
 public class Sphere extends RadialGeometry {
-    Point3D o;
+    Point3D center;
 
     public Sphere(double _radius, Point3D _o) {
         super(_radius);
-        o = _o;
+        center = _o;
     }
 
 
@@ -19,13 +23,13 @@ public class Sphere extends RadialGeometry {
     }
 
     public Point3D getP() {
-        return o;
+        return center;
     }
 
     @Override
     public String toString() {
         return
-                "P=" + o +
+                "P=" + center +
                 ", _radius=" + _radius +
                 '}';
     }
@@ -35,7 +39,7 @@ public class Sphere extends RadialGeometry {
      */
     @Override
     public Vector getNormal(Point3D point) {
-        Vector normal = point.substract(o);
+        Vector normal = point.substract(center);
         return normal.normalize();
     }
 

@@ -10,11 +10,10 @@ public class Tube extends RadialGeometry
 
     Ray _ray;
     /**
-     * constructor for a new Cylinder object
+     * constructor for a new tube object
      *
-     * @param _radius the radius of the cylinder
-     * @param _ray    the direction of the cylinder from a center point
-     * @throws Exception in case of a negative radius
+     * @param _ray    the direction of the tube from a center point
+     * radios of the tube
      */
     public Tube(double _radius, Ray _ray) {
         super(_radius);
@@ -42,9 +41,9 @@ public class Tube extends RadialGeometry
     }
 
     /**
-     *
+
      * @param point point to calculate the normal
-     * @return returns normal vector
+     * @return returns normal vector to the tube using diffrent vector func
      */
     @Override
     public Vector getNormal(Point3D point) {
