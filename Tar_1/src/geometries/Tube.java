@@ -3,6 +3,8 @@ import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.List;
+
 import static primitives.Util.isZero;
 
 public class Tube extends RadialGeometry
@@ -53,7 +55,7 @@ public class Tube extends RadialGeometry
             Point3D o = _ray.getPoint(); // at this point o = p0
             Vector v =  _ray.getDirection();
 
-            Vector vector1 = point.substract(o);
+            Vector vector1 = point.subtract(o);
 
             //We need the projection to multiply the _direction unit vector
             double projection = vector1.dotProduct(v);
@@ -64,9 +66,14 @@ public class Tube extends RadialGeometry
             }
 
             //This vector is orthogonal to the _direction vector.
-            Vector check = point.substract(o);
+            Vector check = point.subtract(o);
             return check.normalize();
         }
 
+    @Override
+    public List<Point3D> findIntersections(Ray ray) {
+        return null;
+        // TODO: 16/04/2020  
     }
+}
 

@@ -1,8 +1,9 @@
 package geometries;
 
 import primitives.*;
-import primitives.*;
 import primitives.Vector;
+
+import java.util.List;
 
 /**
  *_height the hight of the Cylinder
@@ -29,7 +30,7 @@ public class Cylinder extends Tube  {
         // projection  on the center ray:
         double temp;
         try {
-            temp = Util.alignZero(point.substract(o).dotProduct(v));
+            temp = Util.alignZero(point.subtract(o).dotProduct(v));
         } catch (IllegalArgumentException e) { // P = O
             return v;
         }
@@ -39,7 +40,7 @@ public class Cylinder extends Tube  {
             return v;
 
         o = o.add(v.Scale(temp));
-        return point.substract(o).normalize();//calculate normall like in tube
+        return point.subtract(o).normalize();//calculate normall like in tube
     }
     public double get_height() {
         return _height;
@@ -52,5 +53,8 @@ public class Cylinder extends Tube  {
                 "centerRay=" + super.get_Ray() +
                 "_radius="+super.get_radius()+ '}';
     }
+    public List<Point3D> findIntersections(Ray ray) {
+        return super.findIntersections(ray);
 
+    }
 }

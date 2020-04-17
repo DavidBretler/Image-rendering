@@ -55,8 +55,8 @@ public class Polygon implements Geometry {
 
         // substracting any subsequent points will throw an IllegalArgumentException
         // because of Zero Vector if they are in the same point
-        Vector edge1 = vertices[vertices.length - 1].substract(vertices[vertices.length - 2]);
-        Vector edge2 = vertices[0].substract(vertices[vertices.length - 1]);
+        Vector edge1 = vertices[vertices.length - 1].subtract(vertices[vertices.length - 2]);
+        Vector edge2 = vertices[0].subtract(vertices[vertices.length - 1]);
 
         // Cross Product of any subsequent edges will throw an IllegalArgumentException
         // because of Zero Vector if they connect three vertices that lay in the same
@@ -70,11 +70,11 @@ public class Polygon implements Geometry {
         boolean positive = edge1.crossProduct(edge2).dotProduct(n) > 0;
         for (int i = 1; i < vertices.length; ++i) {
             // Test that the point is in the same plane as calculated originally
-            if (!isZero(vertices[i].substract(vertices[0]).dotProduct(n)))
+            if (!isZero(vertices[i].subtract(vertices[0]).dotProduct(n)))
                 throw new IllegalArgumentException("All vertices of a polygon must lay in the same plane");
             // Test the consequent edges have
             edge1 = edge2;
-            edge2 = vertices[i].substract(vertices[i - 1]);
+            edge2 = vertices[i].subtract(vertices[i - 1]);
             if (positive != (edge1.crossProduct(edge2).dotProduct(n) > 0))
                 throw new IllegalArgumentException("All vertices must be ordered and the polygon must be convex");
         }
@@ -83,5 +83,41 @@ public class Polygon implements Geometry {
     @Override
     public Vector getNormal(Point3D point) {
         return _plane.getNormal();
+    }
+
+
+    /**
+     * finds the intersections of ray with thw polyogon
+     *
+     * @param ray
+     * @return list of intersection points
+     */
+    @Override
+    public List<Point3D> findIntersections(Ray ray) {
+        List<Point3D> intersections = _plane.findIntersections(ray);//list of the intersections
+        if (intersections == null) //no intersection in the plane so there is no intersection in the polygon
+            return null;
+
+        Point3D p0 = ray.getPoint();
+        Vector v = ray.getDirection();
+
+        Vector v1  = _vertices.get(1).subtract(p0);
+        Vector v2 = _vertices.get(0).subtract(p0);
+        double sign = v.dotProduct(v1.crossProduct(v2));
+        if (isZero(sign))//the ray is tangent to the polygon so its not count as intersection
+            return null;
+
+        boolean positive = sign > 0;
+             // check from all the points in the polygon to the ray
+        for (int i = _vertices.size() - 1; i > 0; --i) {
+            v1 = v2;
+            v2 = _vertices.get(i).subtract(p0);
+            sign = alignZero(v.dotProduct(v1.crossProduct(v2)));
+            if (isZero(sign)) return null;
+            if (positive != (sign >0)) //if all are positive or all are negative, we have a intersection
+                return null;
+        }
+
+        return intersections;
     }
 }

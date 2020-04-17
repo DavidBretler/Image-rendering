@@ -1,5 +1,7 @@
 package primitives;
 
+import static primitives.Util.isZero;
+
 /**
  * ray class
  */
@@ -22,6 +24,16 @@ public class Ray
     public Ray(Ray _ray) {
         this._p0=new Point3D(_ray.getPoint());
         this._direction=new Vector(_ray._direction);
+    }
+
+    /**
+     * Refactoring return new point t dot v from original point
+     * @param _t
+     * @return
+     */
+    public Point3D getTargetPoint(double _t)
+    {
+        return isZero(_t)  ? _p0 : _p0.add(_direction.Scale(_t));
     }
 
     public Point3D getPoint() {

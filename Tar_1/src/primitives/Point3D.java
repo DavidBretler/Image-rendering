@@ -80,7 +80,7 @@ public class Point3D {
     }
 
 
-        public Vector substract(Point3D  p )
+        public Vector subtract(Point3D  p )
         {
             return new Vector( new Point3D(
                   this.get_x().get() -  p.get_x().get(),

@@ -2,6 +2,7 @@ package geometries;
 
 import org.junit.jupiter.api.Test;
 import primitives.Point3D;
+import primitives.Ray;
 import primitives.Vector;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,4 +51,25 @@ class TriangleTest {
 
         assertNotEquals(v1,v3);
     }
+/**
+    EP: Three cases:
+            • Inside polygon/triangle
+• Outside against edge
+• Outside against vertex
+ */
+Triangle Tl1 =new Triangle(
+        new Point3D(-2.0,-2.0,0),
+        new Point3D(0.0,1.0,0.0),
+        new Point3D(1.0,0.0,0.0));
+@Test
+public void intersectionTest()
+    // ============ Equivalence Partitions Tests ==============
+    //            • Inside triangle
+        {
+    assertEquals(1,
+            ( Tl1.findIntersections(new Ray(new Point3D(0,0,4) ,new Vector(0,0,-6)))).size(),
+            "wrong number of intersections");
+
+        }
+
 }
