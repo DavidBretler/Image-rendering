@@ -1,60 +1,53 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by Fernflower decompiler)
+//
+
 package geometries;
 
-import primitives.*;
+import java.util.List;
+import primitives.Point3D;
+import primitives.Ray;
+import primitives.Util;
 import primitives.Vector;
 
-import java.util.List;
+public class Cylinder extends Tube {
+    private double _height;
 
-/**
- *_height the hight of the Cylinder
- * _radius  of the Cylinder
- * Ray ,the ray in the center of the Cylinder
- */
-public class Cylinder extends Tube  {
-    private  double _height;
-    public Cylinder(double _height,Ray centerRay,double _radius){
-        super(_radius,centerRay);
-        this._height=_height;
+    public Cylinder(double _height, Ray centerRay, double _radius) {
+        super(_radius, centerRay);
+        this._height = _height;
     }
 
-    /**
-     *
-     * @param point point to calculate the normal
-     * @return returns normal vector
-     */
-    @Override
     public Vector getNormal(Point3D point) {
         Point3D o = super.get_Ray().getPoint();
         Vector v = super.get_Ray().getDirection();
 
-        // projection  on the center ray:
         double temp;
         try {
             temp = Util.alignZero(point.subtract(o).dotProduct(v));
-        } catch (IllegalArgumentException e) { // P = O
+        } catch (IllegalArgumentException var7) {
             return v;
         }
 
-        // if the point is at a base
-        if (temp == 0 ||Util.isZero(_height - temp)) // if it's close to 0 a ZERO vector exception will come
+        if (temp != 0.0D && !Util.isZero(this._height - temp)) {
+            o = o.add(v.Scale(temp));
+            return point.subtract(o).normalize();
+        } else {
             return v;
-
-        o = o.add(v.Scale(temp));
-        return point.subtract(o).normalize();//calculate normall like in tube
+        }
     }
+
     public double get_height() {
-        return _height;
+        return this._height;
     }
 
-    @Override
     public String toString() {
-        return "Cylinder{" +
-                "_height="+_height+
-                "centerRay=" + super.get_Ray() +
-                "_radius="+super.get_radius()+ '}';
+        double var10000 = this._height;
+        return "Cylinder{_height=" + var10000 + "centerRay=" + super.get_Ray() + "_radius=" + super.get_radius() + "}";
     }
+
     public List<Point3D> findIntersections(Ray ray) {
         return super.findIntersections(ray);
-
     }
 }
