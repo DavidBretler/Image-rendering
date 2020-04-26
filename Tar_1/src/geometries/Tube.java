@@ -41,7 +41,7 @@ public class Tube extends RadialGeometry {
         Vector vector1 = point.subtract(o);
         double projection = vector1.dotProduct(v);
         if (!Util.isZero(projection)) {
-            o = o.add(v.Scale(projection));
+            o = o.add(v.scale(projection));
         }
 
         Vector check = point.subtract(o);

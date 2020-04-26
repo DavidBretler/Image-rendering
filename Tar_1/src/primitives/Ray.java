@@ -33,7 +33,7 @@ public class Ray
      */
     public Point3D getTargetPoint(double _t)
     {
-        return isZero(_t)  ? _p0 : _p0.add(_direction.Scale(_t));
+        return isZero(_t)  ? _p0 : _p0.add(_direction.scale(_t));
     }
 
     public Point3D getPoint() {

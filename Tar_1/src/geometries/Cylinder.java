@@ -31,7 +31,7 @@ public class Cylinder extends Tube {
         }
 
         if (temp != 0.0D && !Util.isZero(this._height - temp)) {
-            o = o.add(v.Scale(temp));
+            o = o.add(v.scale(temp));
             return point.subtract(o).normalize();
         } else {
             return v;

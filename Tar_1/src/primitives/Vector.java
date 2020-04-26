@@ -76,7 +76,7 @@ public class Vector {
      * @param num to multiply in the vector
      * @return new vector
      */
-    public Vector Scale (double num)
+    public Vector scale(double num)
     {
         return new Vector(_head.get_x().get()*num, _head.get_y().get()*num,_head.get_z().get()*num);
     }

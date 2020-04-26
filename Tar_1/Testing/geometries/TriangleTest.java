@@ -11,10 +11,15 @@ import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class TriangleTest {
     Triangle Tl1 = new Triangle(new Point3D(-2.0D, -2.0D, 0.0D), new Point3D(0.0D, 2.0D, 0.0D), new Point3D(2.0D, 0.0D, 0.0D));
 
+
+
     TriangleTest() {
+
         Assertions.assertNull(this.Tl1.findIntersections(new Ray(new Point3D(3.0D, 3.0D, 4.0D), new Vector(0.0D, 0.0D, -6.0D))), "wrong number of intersections");
         Assertions.assertNull(this.Tl1.findIntersections(new Ray(new Point3D(0.0D, 3.0D, 4.0D), new Vector(0.0D, 0.0D, -6.0D))), "wrong number of intersections");
         Assertions.assertNull(this.Tl1.findIntersections(new Ray(new Point3D(1.0D, 1.0D, 4.0D), new Vector(0.0D, 0.0D, -6.0D))), "wrong number of intersections");

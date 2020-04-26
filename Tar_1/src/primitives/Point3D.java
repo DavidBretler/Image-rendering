@@ -5,9 +5,7 @@ package primitives;
  */
 
 /**
- * @ _x x accses coordinate
- * @ _y y accses coordinate
- * @ _z z accses coordinate
+ *
  */
 public class Point3D {
     Coordinate _x;

@@ -3,6 +3,8 @@ import static java.lang.System.out;
 import static primitives.Util.*;
 
 /**
+ * 203301072 dov baker dovbaker@gmail.com
+ * 206301384 david bretler ddkill8@gmail.com
  * Test program for the 1st stage
  *
  * @author Dan Zilberstein

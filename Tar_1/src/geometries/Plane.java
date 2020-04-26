@@ -32,7 +32,7 @@ public class Plane implements Geometry
         Vector N=V.crossProduct(U);
         N.normalize();
 
-        _normal=N.Scale(-1);
+        _normal=N.scale(-1);
     }
 
     public Plane(Point3D _p,Vector _normal)

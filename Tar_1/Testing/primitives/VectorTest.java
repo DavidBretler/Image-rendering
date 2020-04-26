@@ -31,13 +31,13 @@ class VectorTest {
     @org.junit.jupiter.api.Test
     void scale() {
         Vector v1=new Vector(1.0,1.0,1.0);
-        Vector vec=v1.Scale(1);
+        Vector vec=v1.scale(1);
         assertEquals(vec,v1);
 
-        vec=v1.Scale(2);
+        vec=v1.scale(2);
         assertEquals(vec,new Vector (2.0,2.0,2.0) );
 
-        vec=vec.Scale(-2);
+        vec=vec.scale(-2);
         assertEquals(vec,new Vector (-4.0,-4.0,-4.0) );
 
     }
