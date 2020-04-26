@@ -21,11 +21,11 @@ class CameraTest {
         //החישובים נכונים אבל הבדיקות יוצאות שגויות
         // ============ Equivalence Partitions Tests ==============
         // TC01: 3X3 Corner (0,0)
-        System.out.println(new Ray(Point3D.ZERO, new Vector(-2, -2, 10)) );
+        System.out.println(new Ray(Point3D.ZERO, new Vector(-2, -2, 10)));
         System.out.println(camera.constructRayThroughPixel(3, 3, 0, 0,
                 10, 6, 6));
 
-        assertTrue(new Ray(Point3D.ZERO, new Vector(-2, -2, 10)).equals(camera.constructRayThroughPixel(3, 3, 0, 0,10, 6, 6)),"Bad ray");
+        assertTrue(new Ray(Point3D.ZERO, new Vector(-2, -2, 10)).equals(camera.constructRayThroughPixel(3, 3, 0, 0, 10, 6, 6)), "Bad ray");
 
         // TC02: 4X4 Corner (0,0)
         System.out.println(new Ray(Point3D.ZERO, new Vector(-3, -3, 10)));

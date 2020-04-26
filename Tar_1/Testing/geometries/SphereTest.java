@@ -105,4 +105,15 @@ class SphereTest {
         result1 = this.sphere.findIntersections(_r);
         Assertions.assertEquals((Object)null, result1, "Wrong number of points");
     }
+
+    @Test
+    public void testing() {
+        Ray _r1 = new Ray(new Point3D(0.0, 0.0, -0.5), new Vector(-0.6666666666666666, -0.6666666666666666, 0.3333333333333333));
+        Sphere sph1= new Sphere(2.5,new Point3D(0d,0d,2.5));
+
+        List<Point3D> result1 = sph1.findIntersections(_r1);
+
+        Assertions.assertEquals(2, result1.size(), "Wrong number of points");
+    }
+
 }
