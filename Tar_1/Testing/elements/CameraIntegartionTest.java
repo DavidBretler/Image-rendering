@@ -25,70 +25,49 @@ import primitives.Vector;
 
 class CameraIntegartionTest
 {
+    Camera cam1 = new Camera(Point3D.ZERO, new Vector(0, 0, 1), new Vector(0, -1, 0));
+    Camera cam2 = new Camera(new Point3D(0, 0, -0.5), new Vector(0, 0, 1), new Vector(0, -1, 0));
 
-
+    /**
+     * 3X3 center(1,1) ,find the number of  interSection point of a ray from camera and a sphere
+     * excepted result : 2 because of the size of the sphere
+     */
     @Test
-    public void interSectionSphere1()
-    {
-        Camera camera = new Camera(Point3D.ZERO, new Vector(0, 0, 1), new Vector(0, -1, 0));
-        Sphere sph= new Sphere(1,new Point3D(0,0,3));
-        Ray _pix00=new Ray (camera.constructRayThroughPixel(3,3,0,0,1,6,6));
-        Ray _pix01=new Ray (camera.constructRayThroughPixel(3,3,0,1,1,6,6));
-        Ray _pix02=new Ray (camera.constructRayThroughPixel(3,3,0,2,1,6,6));
-        Ray _pix10=new Ray (camera.constructRayThroughPixel(3,3,1,0,1,6,6));
-        Ray _pix11=new Ray (camera.constructRayThroughPixel(3,3,1,1,1,6,6));
-        Ray _pix12=new Ray (camera.constructRayThroughPixel(3,3,1,2,1,6,6));
-        Ray _pix20=new Ray (camera.constructRayThroughPixel(3,3,2,0,1,6,6));
-        Ray _pix21=new Ray (camera.constructRayThroughPixel(3,3,2,1,1,6,6));
-        Ray _pix22=new Ray (camera.constructRayThroughPixel(3,3,2,2,1,6,6));
+    public void interSectionSphere1() {
+        Sphere sph = new Sphere(1, new Point3D(0, 0, 3));
+//        Ray ray = cam1.constructRayThroughPixel(3,3,0,0,1,3,3);
+//        List<Point3D> results =  sph.findIntersections(ray);
+        List<Point3D> results;
+        int count = 0;
+        int Nx = 3; //number of pixel in x line
+        int Ny = 3;// number of pixel in y line
+        for (int i = 0; i < 3; ++i) {  // go over all the pixels like a 2 Dimension array
+            for (int j = 0; j < 3; ++j) {
+                results = sph.findIntersections(cam1.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
+                if (results != null)
+                    count += results.size();
+            }
+        }
 
-        int _count=0;
-        if(!(sph.findIntersections(_pix00)==null))
-         _count=sph.findIntersections(_pix00).size();
-
-            if(!(sph.findIntersections(_pix01)==null))
-        _count+=sph.findIntersections(_pix01).size();
-        if(!(sph.findIntersections(_pix02)==null))
-
-            _count+=sph.findIntersections(_pix02).size();
-        if(!(sph.findIntersections(_pix10)==null))
-
-            _count+=sph.findIntersections(_pix10).size();
-        if(!(sph.findIntersections(_pix11)==null))
-
-            _count+=sph.findIntersections(_pix11).size();
-        if(!(sph.findIntersections(_pix12)==null))
-
-            _count+=sph.findIntersections(_pix12).size();
-        if(!(sph.findIntersections(_pix20)==null))
-
-            _count+=sph.findIntersections(_pix20).size();
-        if(!(sph.findIntersections(_pix21)==null))
-
-            _count+=sph.findIntersections(_pix21).size();
-        if(!(sph.findIntersections(_pix22)==null))
-
-            _count+=sph.findIntersections(_pix22).size();
-
-        Assertions.assertEquals(2,_count,"bad");
+        assertEquals(2, count, "too bad");
+        System.out.println("count: " + count);
     }
-
-
+    /**
+     * 3X3 all view plane  ,find the number of  interSection point of a ray from camera and a sphere
+     * excepted result : 18 because of the size of the sphere
+     */
     @Test
     public void interSectionSphere2()
     {
         Sphere sph =  new Sphere(2.5, new Point3D(0, 0, 2.5));
-        Camera cam1 = new Camera(Point3D.ZERO, new Vector(0, 0, 1), new Vector(0, -1, 0));
-        Camera cam2 = new Camera(new Point3D(0, 0, -0.5), new Vector(0, 0, 1), new Vector(0, -1, 0));
         List<Point3D> results;
-
         int count = 0;
         // TODO explanations
-        int Nx =3;
-        int Ny =3;
+        int Nx =3;//number of pixel in x line
+        int Ny =3;// number of pixel in y line
 
         // TODO explanations
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {// go over all the pixels like a 2 Dimension array
             for (int j = 0; j < 3; ++j) {
                 results = sph.findIntersections(cam2.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
                 if (results != null)
@@ -99,22 +78,23 @@ class CameraIntegartionTest
         assertEquals(18,count,"too bad");
         System.out.println("count: "+count);
     }
-
+    /**
+     * 3X3 center row and column ,find the number of  interSection point of a ray from camera and a sphere
+     * excepted result : 10 because of the size of the sphere
+     */
     @Test
     public void interSectionSphere3()
     {
         Sphere sph =  new Sphere(2d, new Point3D(0, 0, 2d));
-        Camera cam1 = new Camera(Point3D.ZERO, new Vector(0, 0, 1), new Vector(0, -1, 0));
-        Camera cam2 = new Camera(new Point3D(0, 0, -0.5), new Vector(0, 0, 1), new Vector(0, -1, 0));
         List<Point3D> results;
 
         int count = 0;
         // TODO explanations
-        int Nx =3;
-        int Ny =3;
+        int Nx =3;//number of pixel in x line
+        int Ny =3;// number of pixel in y line
 
         // TODO explanations
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {// go over all the pixels like a 2 Dimension array
             for (int j = 0; j < 3; ++j) {
                 results = sph.findIntersections(cam2.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
                 if (results != null)
@@ -125,22 +105,23 @@ class CameraIntegartionTest
         assertEquals(10,count,"too bad");
         System.out.println("count: "+count);
     }
-
+    /**
+     * 3X3  ,find the number of  interSection point of a ray from camera and a sphere
+     * excepted result : 10 because of the size of the sphere ,camera in inside the sphere
+     */
     @Test
     public void interSectionSphere4()
     {
         Sphere sph =  new Sphere(4d, new Point3D(0, 0, 2d));
-        Camera cam1 = new Camera(Point3D.ZERO, new Vector(0, 0, 1), new Vector(0, -1, 0));
-        Camera cam2 = new Camera(new Point3D(0, 0, -0.5), new Vector(0, 0, 1), new Vector(0, -1, 0));
         List<Point3D> results;
 
         int count = 0;
         // TODO explanations
-        int Nx =3;
-        int Ny =3;
+        int Nx =3;//number of pixel in x line
+        int Ny =3;// number of pixel in y line
 
         // TODO explanations
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {// go over all the pixels like a 2 Dimension array
             for (int j = 0; j < 3; ++j) {
                 results = sph.findIntersections(cam2.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
                 if (results != null)
@@ -151,22 +132,23 @@ class CameraIntegartionTest
         assertEquals(9,count,"too bad");
         System.out.println("count: "+count);
     }
-
+    /**
+     *3X3  , find the number of  interSection point of a ray from camera and a sphere
+     * excepted result : 0 because of the location of the sphere behind the camera
+     */
     @Test
     public void interSectionSphere5()
     {
         Sphere sph =  new Sphere(2d, new Point3D(0, 0, -5));
-        Camera cam1 = new Camera(Point3D.ZERO, new Vector(0, 0, 1), new Vector(0, -1, 0));
-        Camera cam2 = new Camera(new Point3D(0, 0, -0.5), new Vector(0, 0, 1), new Vector(0, -1, 0));
         List<Point3D> results;
 
         int count = 0;
         // TODO explanations
-        int Nx =3;
-        int Ny =3;
+        int Nx =3;//number of pixel in x line
+        int Ny =3;// number of pixel in y line
 
         // TODO explanations
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {// go over all the pixels like a 2 Dimension array
             for (int j = 0; j < 3; ++j) {
                 results = sph.findIntersections(cam2.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
                 if (results != null)
@@ -177,23 +159,25 @@ class CameraIntegartionTest
         assertEquals(0,count,"too bad");
         System.out.println("count: "+count);
     }
-
+    /**
+     * 3X3  all view plane ,find the number of  interSection point of a ray from camera and a plane
+     * excepted result : 9 because of the location of the plane
+     */
     @Test
     public void interSectionPlane1()
     {
         Plane pl=new Plane(new Point3D(0, 0, 6),new Point3D(1, 1, 6),new Point3D(-5, -765, 6));
-        Camera cam = new Camera(new Point3D(0, 0, -0.5), new Vector(0, 0, 1), new Vector(0, -1, 0));
         List<Point3D> results;
 
         int count = 0;
         // TODO explanations
-        int Nx =3;
-        int Ny =3;
+        int Nx =3;//number of pixel in x line
+        int Ny =3;// number of pixel in y line
 
         // TODO explanations
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {// go over all the pixels like a 2 Dimension array
             for (int j = 0; j < 3; ++j) {
-                results = pl.findIntersections(cam.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
+                results = pl.findIntersections(cam2.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
                 if (results != null)
                     count += results.size();
             }
@@ -202,22 +186,25 @@ class CameraIntegartionTest
         assertEquals(9,count,"too bad");
         System.out.println("count: "+count);
     }
+    /**
+     * 3X3 all view plane  ,find the number of  interSection point of a ray from camera and a plane
+     * excepted result : 9 because of the location of the plane ,lining but not enough to change number of interSection point
+     */
     @Test
     public void interSectionPlane2()
     {
         Plane pl=new Plane(new Point3D(0, 0, 5),new Point3D(10, 10, 4),new Point3D(4, 10, 4));
-        Camera cam = new Camera(new Point3D(0, 0, -0.5), new Vector(0, 0, 1), new Vector(0, -1, 0));
         List<Point3D> results;
 
         int count = 0;
         // TODO explanations
-        int Nx =3;
-        int Ny =3;
+        int Nx =3;//number of pixel in x line
+        int Ny =3;// number of pixel in y line
 
         // TODO explanations
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {// go over all the pixels like a 2 Dimension array
             for (int j = 0; j < 3; ++j) {
-                results = pl.findIntersections(cam.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
+                results = pl.findIntersections(cam2.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
                 if (results != null)
                     count += results.size();
             }
@@ -226,23 +213,25 @@ class CameraIntegartionTest
         assertEquals(9,count,"too bad");
         System.out.println("count: "+count);
     }
-
+    /**
+     * 3X3 top and middle row  ,find the number of  interSection point of a ray from camera and a plane
+     * excepted result : 6 because of the location of the plane ,lining  enough to change number of interSection point
+     */
     @Test
     public void interSectionPlane3()
     {
         Plane pl=new Plane(new Point3D(0, 0, 5),new Point3D(1, 1, 4),new Point3D(4, 10, 3));
-        Camera cam = new Camera(new Point3D(0, 0, -0.5), new Vector(0, 0, 1), new Vector(0, -1, 0));
         List<Point3D> results;
 
         int count = 0;
         // TODO explanations
-        int Nx =3;
-        int Ny =3;
+        int Nx =3;//number of pixel in x line
+        int Ny =3;// number of pixel in y line
 
         // TODO explanations
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {// go over all the pixels like a 2 Dimension array
             for (int j = 0; j < 3; ++j) {
-                results = pl.findIntersections(cam.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
+                results = pl.findIntersections(cam2.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
                 if (results != null)
                     count += results.size();
             }
@@ -251,23 +240,25 @@ class CameraIntegartionTest
         assertEquals(6,count,"too bad");
         System.out.println("count: "+count);
     }
-
+    /**
+     * 3X3 center(1,1) ,find the number of  interSection point of a ray from camera and a triangle
+     * excepted result : 2 because of the location and size of the triangle
+     */
     @Test
     public void interSectionTrinale1()
     {
-     Triangle tri=new Triangle (new Point3D(0, -1, 2),new Point3D(1, 1, 2),new Point3D(-1, 1, 2));
-        Camera cam = new Camera(new Point3D(0, 0, -0.5), new Vector(0, 0, 1), new Vector(0, -1, 0));
+        Triangle tri=new Triangle (new Point3D(0, -1, 2),new Point3D(1, 1, 2),new Point3D(-1, 1, 2));
         List<Point3D> results;
 
         int count = 0;
         // TODO explanations
-        int Nx =3;
-        int Ny =3;
+        int Nx =3;//number of pixel in x line
+        int Ny =3;// number of pixel in y line
 
         // TODO explanations
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {// go over all the pixels like a 2 Dimension array
             for (int j = 0; j < 3; ++j) {
-                results = tri.findIntersections(cam.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
+                results = tri.findIntersections(cam2.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
                 if (results != null)
                     count += results.size();
             }
@@ -276,22 +267,24 @@ class CameraIntegartionTest
         assertEquals(1,count,"too bad");
         System.out.println("count: "+count);
     }
+    /**
+     * 3X3 center(1,1) and (0,1) ,find the number of  interSection point of a ray from camera and a triangle
+     * excepted result : 3 because of the location and size of the triangle , the triangle is higher
+     */
     @Test
     public void interSectionTrinale2()
     {
-        Triangle tri=new Triangle (new Point3D(0, -20, 2),new Point3D(1, 1, 2),new Point3D(-1, 1, 2));
-        Camera cam = new Camera(new Point3D(0, 0, -0.5), new Vector(0, 0, 1), new Vector(0, -1, 0));
         List<Point3D> results;
-
+        Triangle tri=new Triangle (new Point3D(1, 1, 2),new Point3D(-1, 1, 2),new Point3D(0, -20, 2));
         int count = 0;
         // TODO explanations
-        int Nx =3;
-        int Ny =3;
+        int Nx =3;//number of pixel in x line
+        int Ny =3;// number of pixel in y line
 
         // TODO explanations
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {// go over all the pixels like a 2 Dimension array
             for (int j = 0; j < 3; ++j) {
-                results = tri.findIntersections(cam.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
+                results = tri.findIntersections(cam2.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
                 if (results != null)
                     count += results.size();
             }
@@ -300,22 +293,25 @@ class CameraIntegartionTest
         assertEquals(2,count,"too bad");
         System.out.println("count: "+count);
     }
+    /**
+     * 3X3 all view plane ,find the number of  interSection point of a ray from camera and a triangle
+     * excepted result : 9 because of the location and size of the triangle , the triangle is very big
+     */
     @Test
     public void interSectionTrinale3()
     {
         Triangle tri=new Triangle (new Point3D(0, -10, 2),new Point3D(10, 10, 2),new Point3D(-10, 10, 2));
-        Camera cam = new Camera(new Point3D(0, 0, -0.5), new Vector(0, 0, 1), new Vector(0, -1, 0));
         List<Point3D> results;
 
         int count = 0;
         // TODO explanations
-        int Nx =3;
-        int Ny =3;
+        int Nx =3;//number of pixel in x line
+        int Ny =3;// number of pixel in y line
 
         // TODO explanations
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {// go over all the pixels like a 2 Dimension array
             for (int j = 0; j < 3; ++j) {
-                results = tri.findIntersections(cam.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
+                results = tri.findIntersections(cam2.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
                 if (results != null)
                     count += results.size();
             }

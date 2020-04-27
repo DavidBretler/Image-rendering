@@ -45,6 +45,16 @@ public class Ray
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof Ray))
+            return false;
+        if (this == obj)
+            return true;
+        Ray other = (Ray)obj;
+        return (_p0.equals(other._p0) &&
+                _direction.equals(other._direction));
+    }
+    @Override
     public String toString() {
         return
                 "_p0=" + _p0 +

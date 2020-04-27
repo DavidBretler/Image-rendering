@@ -18,6 +18,7 @@ public class Camera
         return _position;
     }
 
+
     public Vector get_vTo() {
         return _vTo;
     }
@@ -56,38 +57,16 @@ if(!isZero(get_vTo().dotProduct(_vUp)))
      * @param screenDistance the distance from the camera to the view plan
      * @param screenWidth the width of the view plane
      * @param screenHeight the Height of the view plane
-      _Rx width of the pixel
-      -ry Height of the pixel
+     * _Rx width of the pixel
+     *-ry Height of the pixel
      * @return ray that intercept the view plane in the correct point
      */
-  /**
-    public Ray constructRayThroughPixel (int nX, int nY,
-                                         int j, int i, double screenDistance,
-                                         double screenWidth, double screenHeight)
-    {
-        if (isZero(screenDistance))
-            throw new IllegalArgumentException("distance cannot be 0");
-
-            Vector pIJ = new Vector(_position.add(_vTo.scale(screenDistance))) ;
-       double _Rx=screenWidth/nX;
-        double _Ry=screenHeight/nY;
-
-        double _yI=((i-nY/2d)*_Ry)+(_Ry/2d);
-        double _xJ=((j-nX/2d)*_Rx)+(_Rx/2d);
-
-        if (_xJ != 0) pIJ = pIJ.add(_vRight.scale(_xJ));
-        if (_yI != 0) pIJ = pIJ.add(_vUp.scale(-_yI));
-        return new Ray( _position,pIJ.normalize());
-
-    }
-*/
     public Ray constructRayThroughPixel (int nX, int nY, int j, int i, double screenDistance, double screenWidth, double screenHeight)
 
     {
         if (isZero(screenDistance))
-        {
-            throw new IllegalArgumentException("distance cannot be 0");
-        }
+            throw new IllegalArgumentException("distance from camera cannot be 0");
+
 
         Point3D Pc = _position.add(_vTo.scale(screenDistance));
 
@@ -100,13 +79,10 @@ if(!isZero(get_vTo().dotProduct(_vUp)))
         Point3D Pij = Pc;
 
         if (! isZero(xj))
-        {
             Pij = Pij.add(_vRight.scale(xj));
-        }
+
         if (! isZero(yi))
-        {
             Pij = Pij.add((_vUp.scale(-yi)));
-        }
 
         Vector Vij = Pij.subtract(_position);
 

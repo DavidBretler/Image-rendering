@@ -18,7 +18,6 @@ class CameraTest {
     @Test
     public void testConstructRayThroughPixel() {
         Camera camera = new Camera(Point3D.ZERO, new Vector(0, 0, 1), new Vector(0, -1, 0));
-        //החישובים נכונים אבל הבדיקות יוצאות שגויות
         // ============ Equivalence Partitions Tests ==============
         // TC01: 3X3 Corner (0,0)
         System.out.println(new Ray(Point3D.ZERO, new Vector(-2, -2, 10)));
