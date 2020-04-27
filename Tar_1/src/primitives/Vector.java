@@ -118,14 +118,17 @@ public class Vector {
     public double	lengthSquared ()
     {
         return
-                 this._head.get_x().get()* this._head.get_x().get()+
+                        this._head.get_x().get()* this._head.get_x().get()+
                          this._head.get_y().get()* this._head.get_y().get( )+
                          this._head.get_z().get()* this._head.get_z().get();
     }
+
+    /////////////////////////////////////////////////////////////////
     public double	length ()
     {
        return Math.sqrt(this.lengthSquared());
     }
+
 
     /**
      * changes the vector itself

@@ -5,12 +5,13 @@
 
 package geometries;
 
-import java.io.PrintStream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
+
+import java.io.PrintStream;
 
 class GeometriesTest {
     Sphere _sphere = new Sphere(2.0D, new Point3D(1.0D, 0.0D, 0.0D));

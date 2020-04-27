@@ -1,6 +1,10 @@
 import primitives.*;
 import static java.lang.System.out;
 import static primitives.Util.*;
+/**
+ * Dov baker 203301072 dovbaker@gmail.com
+ * david Bretler 206301384 ddkill8@gmail.com
+ */
 
 /**
  * 203301072 dov baker dovbaker@gmail.com
