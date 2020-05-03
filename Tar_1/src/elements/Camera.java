@@ -8,14 +8,14 @@ import static primitives.Util.isZero;
 
 public class Camera
 {
-    Point3D _position ;
+    Point3D _p0;
     Vector _vTo;
     Vector _vUp;
     Vector _vRight;
 
 
-    public Point3D get_position() {
-        return _position;
+    public Point3D get_p0() {
+        return _p0;
     }
 
 
@@ -33,13 +33,13 @@ public class Camera
 
     /**
      * constructor normalises the vectors and calc the v_right Vector
-     * @param _position Position of the camera
+     * @param _p0 Position of the camera
      * @param _vTo vector towards the view plane
      * @param _vUp vector  going up from camera
      */
-    public Camera(Point3D _position, Vector _vTo, Vector _vUp) {
+    public Camera(Point3D _p0, Vector _vTo, Vector _vUp) {
 
-        this._position = _position;
+        this._p0 = _p0;
         this._vTo = _vTo.normalize();
         this._vUp = _vUp.normalize();
 if(!isZero(get_vTo().dotProduct(_vUp)))
@@ -68,7 +68,7 @@ if(!isZero(get_vTo().dotProduct(_vUp)))
             throw new IllegalArgumentException("distance from camera cannot be 0");
 
 
-        Point3D Pc = _position.add(_vTo.scale(screenDistance));
+        Point3D Pc = _p0.add(_vTo.scale(screenDistance));
 
         double Ry = screenHeight/nY;
         double Rx = screenWidth/nX;
@@ -84,9 +84,9 @@ if(!isZero(get_vTo().dotProduct(_vUp)))
         if (! isZero(yi))
             Pij = Pij.add((_vUp.scale(-yi)));
 
-        Vector Vij = Pij.subtract(_position);
+        Vector Vij = Pij.subtract(_p0);
 
-        return new Ray(_position,Vij);
+        return new Ray(_p0,Vij);
 
     }
 

@@ -27,12 +27,12 @@ class CameraIntegartionTest
 {
     Camera cam1 = new Camera(Point3D.ZERO, new Vector(0, 0, 1), new Vector(0, -1, 0));
     Camera cam2 = new Camera(new Point3D(0, 0, -0.5), new Vector(0, 0, 1), new Vector(0, -1, 0));
-
+    @Test
     /**
      * 3X3 center(1,1) ,find the number of  interSection point of a ray from camera and a sphere
      * excepted result : 2 because of the size of the sphere
      */
-    @Test
+
     public void interSectionSphere1() {
         Sphere sph = new Sphere(1, new Point3D(0, 0, 3));
 //        Ray ray = cam1.constructRayThroughPixel(3,3,0,0,1,3,3);

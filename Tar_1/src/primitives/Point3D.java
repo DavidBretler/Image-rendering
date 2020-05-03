@@ -96,5 +96,9 @@ public class Point3D {
                 ", " + _z +
                 ')';
     }
+
+    public double distance(Point3D pt) {
+        return (new Vector(this.subtract(pt)).length());
+    }
 }
 
