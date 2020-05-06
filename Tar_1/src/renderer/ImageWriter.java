@@ -74,7 +74,7 @@ public class ImageWriter {
      * the image according to pixel color matrix in the directory
      * of the project
      */
-    public void writeToImage(){
+    public  void writeToImage(){
         File ouFile = new File(PROJECT_PATH + "/" + _imageName + ".jpg");
         try {
             javax.imageio.ImageWriter jpgWriter = ImageIO.getImageWritersByFormatName("jpg").next();
