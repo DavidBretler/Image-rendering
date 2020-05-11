@@ -2,6 +2,10 @@ package scene;
 import elements.*;
 import geometries.*;
 import primitives.Color;
+
+/**
+ * class scene stores the info of the scene
+ */
 public class Scene
 {
     String _name;
@@ -11,17 +15,23 @@ public class Scene
     Camera _camera;
     double _distance;
 
+
+    /**
+     * constructor
+     * @param _name gets the scene name
+     *   creates a empty geometries list
+     */
+    public Scene(String _name) {
+        this._name = _name;
+        _geometries = new Geometries();
+    }
+
     public void setName(String _name) {
         this._name = _name;
     }
 
     public void setGeometries(Geometries _geometries) {
         this._geometries = _geometries;
-    }
-
-    public Scene(String _name) {
-        this._name = _name;
-        _geometries = new Geometries();
     }
 
     public void setBackground(Color _background) {
@@ -63,6 +73,11 @@ public class Scene
     public double getDistance() {
         return _distance;
     }
+
+    /**
+     * add a new shape to geometries list
+     * @param geometries
+     */
     public void addGeometries(Intersectable... geometries)
     {
         for (Intersectable i  :geometries)

@@ -9,6 +9,9 @@ import scene.Scene;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * renders a image form the scene and saves as jpeg file
+ */
 public class Render
 {
 
@@ -31,12 +34,16 @@ public class Render
         Intersectable geometries = _scene.getGeometries();
         double  distance = _scene.getDistance();
 
-        //width and height are the number of pixels in the rows
+        /**
+        width and height are the number of pixels in the rows
         //and columns of the view plane
+        */
         double width = (double) _imageWriter.getWidth();
         double height = (double) _imageWriter.getHeight();
 
-        //Nx and Ny are the width and height of the image.
+        /**
+         * Nx and Ny are the width and height of the image.
+         */
         int Nx = _imageWriter.getNx();
         int Ny = _imageWriter.getNy();
         Ray ray;
@@ -45,7 +52,6 @@ public class Render
                 ray = camera.constructRayThroughPixel(Nx, Ny, row, column, distance, width, height);
 
                  List<Point3D> intersectionPoints = _scene.getGeometries().findIntersections(ray);
-                // TODO: 03/05/2020
                 if (intersectionPoints == null)
                       {
                     _imageWriter.writePixel(column, row, background);
@@ -87,7 +93,11 @@ public class Render
      return closestPoint;
     }
 
-
+    /**
+     * prints the grid on the image
+     * @param interval the space between the lines
+     * @param _lineColor lines color
+     */
     public void printGrid(int interval, java.awt.Color _lineColor)
     {
         int Ny=_imageWriter.getNy();

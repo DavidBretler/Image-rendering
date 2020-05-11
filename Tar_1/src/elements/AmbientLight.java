@@ -7,12 +7,17 @@ import primitives.Color;
  */
 public class AmbientLight {
 
+
+
+    Color _intensity;
+    double kA;
+
     /**
      * AmbientLight constructor
      * @param _intensity
      */
     public AmbientLight(Color _intensity, double kA) {
-        this.kA = kA;
+       // this.kA = kA;
         this._intensity = _intensity.scale(kA);
 
     }
@@ -27,14 +32,22 @@ public class AmbientLight {
         this.kA = 1.0;
     }
 
-    public void setIntensity(Color _intensity) {
+    /**
+     * sets the  Intensity of color
+     * @param _intensity
+     */
+    public void setIntensity(Color _intensity)
+    {
         this._intensity = _intensity;
     }
 
-    public java.awt.Color getIntensity() {
+    /**
+     * returns the intensity of the ambient light
+     * @return
+     */
+    public java.awt.Color getIntensity()
+    {
         return _intensity.getColor();
     }
 
-    Color _intensity;
-    double kA;
 }
