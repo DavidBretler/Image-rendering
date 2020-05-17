@@ -47,7 +47,7 @@ public class Cylinder extends Tube {
         return "Cylinder{_height=" + var10000 + "centerRay=" + super.get_Ray() + "_radius=" + super.get_radius() + "}";
     }
 
-    public List<Point3D> findIntersections(Ray ray) {
+    public List<GeoPoint> findIntersections(Ray ray) {
         return super.findIntersections(ray);
     }
 }

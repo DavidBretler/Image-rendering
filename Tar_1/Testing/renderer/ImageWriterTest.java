@@ -13,6 +13,9 @@ import java.awt.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * test
+ */
 class ImageWriterTest {
 
 

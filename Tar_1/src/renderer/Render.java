@@ -2,11 +2,12 @@ package renderer;
 
 import elements.Camera;
 import geometries.Intersectable;
+import primitives.Color;
 import primitives.Point3D;
 import primitives.Ray;
 import scene.Scene;
 
-import java.awt.*;
+//import java.awt.*;
 import java.util.List;
 
 /**
@@ -51,25 +52,31 @@ public class Render
             for (int column = 0; column < Nx; column++) {
                 ray = camera.constructRayThroughPixel(Nx, Ny, row, column, distance, width, height);
 
-                 List<Point3D> intersectionPoints = _scene.getGeometries().findIntersections(ray);
+                 List<Intersectable.GeoPoint> intersectionPoints = _scene.getGeometries().findIntersections(ray);
                 if (intersectionPoints == null)
                       {
                     _imageWriter.writePixel(column, row, background);
                      }
                 else
                     {
-                  Point3D closestPoint = getClosestPoint(intersectionPoints);
-                  java.awt.Color pixelColor=calcColor(closestPoint);
-                    _imageWriter.writePixel(column-1, row-1, pixelColor);
+                  Intersectable.GeoPoint closestPoint = getClosestPoint(intersectionPoints);
+                    _imageWriter.writePixel(column-1, row-1, calcColor(closestPoint).getColor());
                 }
             }
         }
     }
 
 
+    /**
+     * claculates the color of each pixel
+     * @param geo the shape and intersection
+     * @return
+     */
+    private Color calcColor(Intersectable.GeoPoint geo) {
 
-    private Color calcColor(Point3D point) {
-        return _scene.getAmbientLight().getIntensity();
+        Color color = _scene.getAmbientLight().get_intensity();
+        color = color.add(geo.geometry.get_emission());
+        return color;
     }
 
     /**
@@ -77,20 +84,23 @@ public class Render
      * @param intersectionPoints
      * @return
      */
-    private Point3D  getClosestPoint(List<Point3D> intersectionPoints)
+    private Intersectable.GeoPoint getClosestPoint(List<Intersectable.GeoPoint> intersectionPoints)
     {
-     Point3D beginningPoint= _scene.getCamera().get_p0();
-     Point3D closestPoint=null;
+     Intersectable.GeoPoint result=null;
      Double minDis=Double.MAX_VALUE;
-     Double distance=0d;
-     for (Point3D point: intersectionPoints)
+
+        Point3D beginningPoint= _scene.getCamera().get_p0();
+
+
+     for (Intersectable.GeoPoint geo: intersectionPoints)
      {
-         distance=beginningPoint.distance(point);
+         Point3D point = geo.point;
+         Double distance= beginningPoint.distance(point);
          if(distance<minDis)
              minDis=distance;
-            closestPoint=point;
+            result=geo;
      }
-     return closestPoint;
+     return result;
     }
 
     /**
@@ -98,7 +108,7 @@ public class Render
      * @param interval the space between the lines
      * @param _lineColor lines color
      */
-    public void printGrid(int interval, java.awt.Color _lineColor)
+    public void printGrid(int interval, Color _lineColor)
     {
         int Ny=_imageWriter.getNy();
         int Nx=_imageWriter.getNx();
@@ -106,7 +116,7 @@ public class Render
         for (int row = 0; row < Ny; row++) {
             for (int column = 0; column < Nx; column++)
             if (row % interval ==0||column % interval ==0)
-                _imageWriter.writePixel(column,row,_lineColor);
+                _imageWriter.writePixel(column,row,_lineColor.getColor());
         }
     }
 

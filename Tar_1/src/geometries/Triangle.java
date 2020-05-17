@@ -7,14 +7,30 @@ package geometries;
 
 import java.util.Arrays;
 import java.util.List;
+
+import elements.Material;
+import primitives.Color;
 import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
 
 public class Triangle extends Polygon {
-    public Triangle(Point3D x, Point3D y, Point3D z) {
-        super(new Point3D[]{x, y, z});
+
+    public Triangle(Color _emission,Point3D _p1 ,Point3D _p2 ,Point3D _p3 ) {
+        super(_emission,_p1,_p2,_p3);
+        set_emission(_emission);
     }
+
+    public Triangle(Point3D x, Point3D y, Point3D z) {
+     super(new Point3D[]{x, y, z});
+    }
+
+    public Triangle(Color color, Material material, Point3D p1, Point3D p2, Point3D p3) {
+        super(color,p1,p2,p3);
+        set_emission(_emission);
+
+    }
+
 
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -37,7 +53,7 @@ public class Triangle extends Polygon {
         return "Triangle{_vertices=" + this._vertices + "}";
     }
 
-    public List<Point3D> findIntersections(Ray ray) {
+    public List<GeoPoint> findIntersections(Ray ray) {
         return super.findIntersections(ray);
     }
 }

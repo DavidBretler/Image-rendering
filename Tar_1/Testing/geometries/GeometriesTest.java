@@ -27,7 +27,7 @@ class GeometriesTest {
         geo.add(new Intersectable[0]);
         geo.add(new Intersectable[]{this._sphere});
         geo.add(new Intersectable[]{this._tri});
-        Assertions.assertEquals(2, geo.size(), "did not add the shapes");
+        Assertions.assertEquals(2, geo.getSize(), "did not add the shapes");
     }
 
     @Test

@@ -10,7 +10,7 @@ import static primitives.Util.*;
  *
  * @author Dan
  */
-public class Polygon implements Geometry {
+public class Polygon extends Geometry {
     /**
      * List of polygon's vertices
      */
@@ -27,6 +27,14 @@ public class Polygon implements Geometry {
      * @param vertices list of vertices according to their order by edge path
      * @throws IllegalArgumentException in any case of illegal combination of
      */
+    public Polygon(Color emission, Point3D... vertices) {
+   this(vertices);
+        set_emission(emission);
+
+
+    }
+
+
     public Polygon(Point3D... vertices) {
         if (vertices.length < 3)
             throw new IllegalArgumentException("A polygon can't have less than 3 vertices");
@@ -79,8 +87,8 @@ public class Polygon implements Geometry {
      * @return list of intersection points
      */
     @Override
-    public List<Point3D> findIntersections(Ray ray) {
-        List<Point3D> intersections = _plane.findIntersections(ray);//list of the intersections
+    public List<GeoPoint> findIntersections(Ray ray) {
+        List<GeoPoint> intersections = _plane.findIntersections(ray);//list of the intersections
         if (intersections == null) //no intersection in the plane so there is no intersection in the polygon
             return null;
 

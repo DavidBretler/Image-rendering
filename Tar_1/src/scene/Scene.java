@@ -3,6 +3,9 @@ import elements.*;
 import geometries.*;
 import primitives.Color;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * class scene stores the info of the scene
  */
@@ -14,7 +17,7 @@ public class Scene
     Geometries _geometries;
     Camera _camera;
     double _distance;
-
+    List<Light> _lights=null;
 
     /**
      * constructor
@@ -87,4 +90,11 @@ public class Scene
     }
 
 
+    public void addLights(Light light) {
+        if(_lights==null)
+        {
+            _lights=new ArrayList<>();
+        }
+        _lights.add(light);
+    }
 }

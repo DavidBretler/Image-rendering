@@ -1,9 +1,7 @@
 package elements;
 
-import geometries.Plane;
-import geometries.Sphere;
+import geometries.*;
 
-import geometries.Triangle;
 import org.junit.jupiter.api.Assertions;
 import primitives.Point3D;
 import primitives.Ray;
@@ -37,7 +35,7 @@ class CameraIntegartionTest
         Sphere sph = new Sphere(1, new Point3D(0, 0, 3));
 //        Ray ray = cam1.constructRayThroughPixel(3,3,0,0,1,3,3);
 //        List<Point3D> results =  sph.findIntersections(ray);
-        List<Point3D> results;
+        List<Intersectable.GeoPoint> results;
         int count = 0;
         int Nx = 3; //number of pixel in x line
         int Ny = 3;// number of pixel in y line
@@ -60,7 +58,7 @@ class CameraIntegartionTest
     public void interSectionSphere2()
     {
         Sphere sph =  new Sphere(2.5, new Point3D(0, 0, 2.5));
-        List<Point3D> results;
+        List<Intersectable.GeoPoint> results;
         int count = 0;
         // TODO explanations
         int Nx =3;//number of pixel in x line
@@ -86,7 +84,7 @@ class CameraIntegartionTest
     public void interSectionSphere3()
     {
         Sphere sph =  new Sphere(2d, new Point3D(0, 0, 2d));
-        List<Point3D> results;
+        List<Intersectable.GeoPoint> results;
 
         int count = 0;
         // TODO explanations
@@ -113,7 +111,7 @@ class CameraIntegartionTest
     public void interSectionSphere4()
     {
         Sphere sph =  new Sphere(4d, new Point3D(0, 0, 2d));
-        List<Point3D> results;
+        List<Intersectable.GeoPoint> results;
 
         int count = 0;
         // TODO explanations
@@ -140,7 +138,7 @@ class CameraIntegartionTest
     public void interSectionSphere5()
     {
         Sphere sph =  new Sphere(2d, new Point3D(0, 0, -5));
-        List<Point3D> results;
+        List<Intersectable.GeoPoint> results;
 
         int count = 0;
         // TODO explanations
@@ -167,7 +165,7 @@ class CameraIntegartionTest
     public void interSectionPlane1()
     {
         Plane pl=new Plane(new Point3D(0, 0, 6),new Point3D(1, 1, 6),new Point3D(-5, -765, 6));
-        List<Point3D> results;
+        List<Intersectable.GeoPoint> results;
 
         int count = 0;
         // TODO explanations
@@ -194,7 +192,7 @@ class CameraIntegartionTest
     public void interSectionPlane2()
     {
         Plane pl=new Plane(new Point3D(0, 0, 5),new Point3D(10, 10, 4),new Point3D(4, 10, 4));
-        List<Point3D> results;
+        List<Intersectable.GeoPoint> results;
 
         int count = 0;
         // TODO explanations
@@ -221,7 +219,7 @@ class CameraIntegartionTest
     public void interSectionPlane3()
     {
         Plane pl=new Plane(new Point3D(0, 0, 5),new Point3D(1, 1, 4),new Point3D(4, 10, 3));
-        List<Point3D> results;
+        List<Intersectable.GeoPoint> results;
 
         int count = 0;
         // TODO explanations
@@ -248,7 +246,7 @@ class CameraIntegartionTest
     public void interSectionTrinale1()
     {
         Triangle tri=new Triangle (new Point3D(0, -1, 2),new Point3D(1, 1, 2),new Point3D(-1, 1, 2));
-        List<Point3D> results;
+        List<Intersectable.GeoPoint> results;
 
         int count = 0;
         // TODO explanations
@@ -274,7 +272,7 @@ class CameraIntegartionTest
     @Test
     public void interSectionTrinale2()
     {
-        List<Point3D> results;
+        List<Intersectable.GeoPoint> results;
         Triangle tri=new Triangle (new Point3D(1, 1, 2),new Point3D(-1, 1, 2),new Point3D(0, -20, 2));
         int count = 0;
         // TODO explanations
@@ -301,7 +299,7 @@ class CameraIntegartionTest
     public void interSectionTrinale3()
     {
         Triangle tri=new Triangle (new Point3D(0, -10, 2),new Point3D(10, 10, 2),new Point3D(-10, 10, 2));
-        List<Point3D> results;
+        List<Intersectable.GeoPoint> results;
 
         int count = 0;
         // TODO explanations

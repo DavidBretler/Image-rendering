@@ -6,10 +6,9 @@
 package geometries;
 
 import java.util.List;
-import primitives.Point3D;
-import primitives.Ray;
-import primitives.Util;
-import primitives.Vector;
+
+import elements.Material;
+import primitives.*;
 
 import static primitives.Util.alignZero;
 
@@ -19,6 +18,12 @@ public class Sphere extends RadialGeometry {
     public Sphere(double _radius, Point3D _o) {
         super(_radius);
         this._center = _o;
+    }
+
+    public Sphere(Color emissionLight, Material material, double radius, Point3D _center) {
+        this(radius,_center);
+        set_emission(emissionLight);
+        this._material=material;
     }
 
     public double get_radius() {
@@ -39,14 +44,16 @@ public class Sphere extends RadialGeometry {
     }
 
     @Override
-    public List<Point3D> findIntersections(Ray ray) {
+    public List<GeoPoint> findIntersections(Ray ray) {
         Point3D p0 = ray.getPoint();
         Vector v = ray.getDirection();
         Vector u;
         try {
             u = _center.subtract(p0);
         } catch (IllegalArgumentException e) {
-            return List.of(ray.getTargetPoint(_radius));
+            GeoPoint geo=new GeoPoint(this,ray.getTargetPoint(_radius));
+
+            return List.of(geo);
         }
         double tm = alignZero(v.dotProduct(u));
         double dSquared = tm == 0 ? u.lengthSquared() : u.lengthSquared() - tm * tm;
@@ -57,11 +64,15 @@ public class Sphere extends RadialGeometry {
         double t1 = alignZero(tm - th);
         double t2 = alignZero(tm + th);
         if (t1 <= 0 && t2 <= 0) return null;
-        if (t1 > 0 && t2 > 0) return List.of(ray.getTargetPoint(t1), ray.getTargetPoint(t2));
+        if (t1 > 0 && t2 > 0)
+        {GeoPoint geo1=new GeoPoint(this,ray.getTargetPoint(t1));
+            GeoPoint geo2=new GeoPoint(this,ray.getTargetPoint(t2));
+            return List.of(geo1,geo2);
+        }
         if (t1 > 0)
-            return List.of(ray.getTargetPoint(t1));
+            return List.of(new GeoPoint(this,ray.getTargetPoint(t1)));
         else
-            return List.of(ray.getTargetPoint(t2));
+            return List.of(new GeoPoint(this,ray.getTargetPoint(t2)));
     }
 /**
     public List<Point3D> findIntersections(Ray ray) {

@@ -18,7 +18,7 @@ class SphereTest {
 
     SphereTest() {
         Ray _r = new Ray(new Point3D(-1.0D, 0.0D, 0.0D), new Vector(0.0D, 0.0D, 1.0D));
-        List<Point3D> result1 = this.sphere.findIntersections(_r);
+        List<Intersectable.GeoPoint> result1 = this.sphere.findIntersections(_r);
         Assertions.assertEquals((Object)null, result1, "Wrong number of points");
     }
 
@@ -46,15 +46,17 @@ class SphereTest {
         Assertions.assertEquals((Object)null, (Supplier)this.sphere.findIntersections(new Ray(new Point3D(-1.0D, 0.0D, 0.0D), new Vector(1.0D, 1.0D, 0.0D))), "Ray's line out of sphere");
         Point3D p1 = new Point3D(0.0651530771650466D, 0.355051025721682D, 0.0D);
         Point3D p2 = new Point3D(1.53484692283495D, 0.844948974278318D, 0.0D);
-        List<Point3D> result = this.sphere.findIntersections(new Ray(new Point3D(-1.0D, 0.0D, 0.0D), new Vector(3.0D, 1.0D, 0.0D)));
+        List<Point3D> result1=null;
+
+        List<Intersectable.GeoPoint> result = this.sphere.findIntersections(new Ray(new Point3D(-1.0D, 0.0D, 0.0D), new Vector(3.0D, 1.0D, 0.0D)));
         Assertions.assertEquals(2, result.size(), "Wrong number of points");
-        if (((Point3D)result.get(0)).get_x().get() > ((Point3D)result.get(1)).get_x().get()) {
-            result = List.of((Point3D)result.get(1), (Point3D)result.get(0));
+        if (((Point3D)result.get(0).point).get_x().get() > ((Point3D)result.get(1).point).get_x().get()) {
+             result1 = List.of((Point3D)result.get(1).point, (Point3D)result.get(0).point);
         }
 
-        Assertions.assertEquals(List.of(p1, p2), result, "Ray crosses sphere");
+        Assertions.assertEquals(List.of(p1, p2), result1, "Ray crosses sphere");
         Ray _r = new Ray(new Point3D(1.5D, 0.0D, 0.0D), new Vector(3.0D, 1.0D, 0.0D));
-        List<Point3D> result2 = this.sphere.findIntersections(_r);
+        List<Intersectable.GeoPoint> result2 = this.sphere.findIntersections(_r);
         Assertions.assertEquals(1, result2.size(), "Wrong number of points");
         _r = new Ray(new Point3D(3.0D, 0.0D, 0.0D), new Vector(3.0D, 0.0D, 0.0D));
         result2 = this.sphere.findIntersections(_r);
@@ -64,7 +66,7 @@ class SphereTest {
     @Test
     public void testFindIntersections2() {
         Ray _r = new Ray(new Point3D(2.0D, 0.0D, 0.0D), new Vector(-3.0D, 0.1D, 0.0D));
-        List<Point3D> result2 = this.sphere.findIntersections(_r);
+        List<Intersectable.GeoPoint> result2 = this.sphere.findIntersections(_r);
         Assertions.assertEquals(1, result2.size(), "Wrong number of points");
         _r = new Ray(new Point3D(2.0D, 0.0D, 0.0D), new Vector(3.0D, 0.0D, 0.0D));
         result2 = this.sphere.findIntersections(_r);
@@ -74,7 +76,7 @@ class SphereTest {
     @Test
     public void testFindIntersections3() {
         Ray _r = new Ray(new Point3D(3.0D, 0.0D, 0.0D), new Vector(-3.0D, 0.0D, 0.0D));
-        List<Point3D> result6 = this.sphere.findIntersections(_r);
+        List<Intersectable.GeoPoint> result6 = this.sphere.findIntersections(_r);
         Assertions.assertEquals(2, result6.size(), "Wrong number of points");
         _r = new Ray(new Point3D(2.0D, 0.0D, 0.0D), new Vector(-3.0D, 0.0D, 0.0D));
         result6 = this.sphere.findIntersections(_r);
@@ -96,7 +98,7 @@ class SphereTest {
     @Test
     public void testFindIntersections4() {
         Ray _r = new Ray(new Point3D(-1.0D, 0.0D, 1.0D), new Vector(1.0D, 0.0D, 0.0D));
-        List<Point3D> result1 = this.sphere.findIntersections(_r);
+        List<Intersectable.GeoPoint> result1 = this.sphere.findIntersections(_r);
         Assertions.assertEquals((Object)null, result1, "Wrong number of points");
         _r = new Ray(new Point3D(1.0D, 0.0D, 1.0D), new Vector(1.0D, 0.0D, 0.0D));
         result1 = this.sphere.findIntersections(_r);
@@ -111,7 +113,7 @@ class SphereTest {
         Ray _r1 = new Ray(new Point3D(0.0, 0.0, 0), new Vector(-0.6666666666666666, -0.6666666666666666, 0.3333333333333333));
         Sphere sph1= new Sphere(3,new Point3D(0d,0d,2.5));
 
-        List<Point3D> result1 = sph1.findIntersections(_r1);
+        List<Intersectable.GeoPoint> result1 = sph1.findIntersections(_r1);
 
         Assertions.assertEquals(2, result1.size(), "Wrong number of points");
     }
