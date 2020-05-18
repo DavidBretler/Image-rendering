@@ -92,6 +92,7 @@ import scene.Scene;
                     new Triangle(new Color(java.awt.Color.GREEN),
                             new Point3D(-100, 0, 100), new Point3D(0, -100, 100), new Point3D(-100, -100, 100))); // upper left
 
+
             ImageWriter imageWriter = new ImageWriter("color render test", 500, 500, 500, 500);
             Render render = new Render(imageWriter, scene);
 

@@ -17,7 +17,15 @@ public class Scene
     Geometries _geometries;
     Camera _camera;
     double _distance;
-    List<Light> _lights=null;
+    List<LightSource> _lights=null;
+
+    /**
+     *
+     * @return the light source of the sceane
+     */
+    public List<LightSource> get_lights() {
+        return _lights;
+    }
 
     /**
      * constructor
@@ -89,8 +97,11 @@ public class Scene
         }
     }
 
-
-    public void addLights(Light light) {
+    /**
+     * add new lihgt source to the sceane
+     * @param light
+     */
+    public void addLights(LightSource light) {
         if(_lights==null)
         {
             _lights=new ArrayList<>();

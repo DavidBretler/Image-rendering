@@ -5,73 +5,71 @@ import primitives.Point3D;
 import primitives.Vector;
 
 /**
- * The PointLight object specifies an attenuated light source at a fixed point in space that radiates light equally
- * in all directions away from the light source. PointLight has the same attributes as a Light node,
- * with the addition of location and attenuation parameters.
- * <p>
- * A point light contributes to diffuse and specular reflections,
- * which in turn depend on the orientation and position of a surface.
- * A point light does not contribute to ambient reflections.
- * <p>
- * A PointLight is attenuated by multiplying the contribution of the light by an attenuation factor.
- * The attenuation factor causes the the PointLight's brightness to decrease
- * as distance from the light source increases.
- * A PointLight's attenuation factor contains three values:
- * <p>
- * Constant attenuation
- * Linear attenuation
- * Quadratic attenuation
- * <p>
- * A PointLight is attenuated by the reciprocal of the sum of:
- * <p>
- * The constant attenuation factor
- * The Linear attenuation factor times the distance between the light and the vertex being illuminated
- * The quadratic attenuation factor times the square of the distance between the light and the vertex
- * <p>
- * By default, the constant attenuation value is 1 and the other two values are 0,
- * resulting in no attenuation.
+ * light source from a specific point
+ * kC-Constant attenuation
+ * kL- Linear attenuation
+ * kQ-Quadratic attenuation
  */
 public class PointLight extends Light implements LightSource {
-    Point3D _position;
-    double _kC; // Constant attenuation
-    double _kL; // Linear attenuation
-    double _kQ; // Quadratic attenuation
+  protected   Point3D _positionOfLight;
+    protected  double _kC;
+    protected double _kL;
+    protected double _kQ;
 
+    /**
+     * constructor
+     * @param colorIntensity
+     * @param position of the light
+     * @param kC-Constant attenuation
+     * @param kL- Linear attenuation
+     * @param kQ-Quadratic attenuation
+     */
     public PointLight(Color colorIntensity, Point3D position, double kC, double kL, double kQ) {
         this._intensity = colorIntensity;
-        this._position = new Point3D(position);
+        this._positionOfLight = new Point3D(position);
         this._kC = kC;
         this._kL = kL;
         this._kQ = kQ;
     }
 
-    // by default, the constant attenuation value is 1 and the other two values are 0
+    /**
+     *     by default, the constant attenuation
+     *     value is 1 and the other two values are 0
+      */
     public PointLight(Color colorIntensity, Point3D position) {
         this(colorIntensity, position, 1d, 0d, 0d);
     }
 
-    //dummy overriding Light getIntensity()
+    /**
+     *     overriding Light getIntensity()
+     */
     @Override
     public Color get_intensity() {
         return super.get_intensity();
     }
 
-    //overriding LightSource getIntensity(Point3D)
+    /**
+     *     overriding LightSource getIntensity(Point3D)
+     */
     @Override
     public Color getIntensity(Point3D p) {
-        double dsquared = new Vector(p,_position).lengthSquared();
+        double dsquared = new Vector(p, _positionOfLight).lengthSquared();
         ;
-        double d = p.distance(_position);
+        double d = p.distance(_positionOfLight);
 
         return (_intensity.reduce(_kC + _kL * d + _kQ * dsquared));
     }
 
-    // Light vector
+    /**
+     *
+      * @param point
+     * @return the vector from the light source to the point given
+     */
     @Override
-    public Vector getL(Point3D p) {
-        if (p.equals(_position)) {
+    public Vector getL(Point3D point) {
+        if (point.equals(_positionOfLight)) {
             return null;
         }
-        return p.subtract(_position).normalize();
+        return point.subtract(_positionOfLight).normalize();
     }
 }

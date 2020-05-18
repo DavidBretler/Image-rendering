@@ -12,13 +12,13 @@ public class  AmbientLight extends Light
 
     /**
      * AmbientLight constructor
-     * @param _intensity
+     * calculates the :intensity =Ia*Ka
+     * @param  iA
      */
-    public AmbientLight(Color _intensity, double kA)
+    public AmbientLight(Color iA, double kA)
     {
-        super (_intensity.scale(kA));
-        this.kA = kA;
-        this._intensity = _intensity.scale(kA);
+        this._intensity = iA.scale(kA);
+
 
     }
 

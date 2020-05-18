@@ -81,7 +81,7 @@ public class Polygon extends Geometry {
 
 
     /**
-     * finds the intersections of ray with thw polyogon
+     * finds the intersections of ray with the polyogon
      *
      * @param ray
      * @return list of intersection points

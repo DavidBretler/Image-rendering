@@ -7,7 +7,7 @@ package geometries;
 
 import java.util.List;
 
-import elements.Material;
+import primitives.Material;
 import primitives.*;
 
 import static primitives.Util.alignZero;
@@ -20,6 +20,13 @@ public class Sphere extends RadialGeometry {
         this._center = _o;
     }
 
+    /**
+     * constructor with color and material
+     * @param emissionLight color
+     * @param material the material pf the geometry
+     * @param radius
+     * @param _center
+     */
     public Sphere(Color emissionLight, Material material, double radius, Point3D _center) {
         this(radius,_center);
         set_emission(emissionLight);
