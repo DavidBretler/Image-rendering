@@ -39,13 +39,15 @@ public class Camera
      */
     public Camera(Point3D _p0, Vector _vTo, Vector _vUp) {
 
-        this._p0 = _p0;
-        this._vTo = _vTo.normalize();
-        this._vUp = _vUp.normalize();
-if(!isZero(get_vTo().dotProduct(_vUp)))
+
+        this._p0 = new Point3D(_p0);;
+        this._vTo = _vTo.normalized();
+        this._vRight = _vUp.normalized().scale(-1);
+if(!isZero(get_vTo().dotProduct(_vRight)))
      throw new IllegalArgumentException("The V_to and V_up vectors are not orthogonal.");
         else
-            _vRight = _vTo.crossProduct(_vUp).normalized();
+    this._vUp = this._vRight.crossProduct(this._vTo).normalize().scale(-1);
+
     }
 
     /**
