@@ -27,21 +27,21 @@ public class Material {
      * @return attenuation factors
      */
         public double getKd() {
-            return _kD;
+            return this._kD;
         }
     /**
      *
      * @return attenuation factors
      */
         public double getKs() {
-            return _kS;
+            return this._kS;
         }
     /**
      *
      * @return shininess factor
      */
         public int getnShininess() {
-            return _nShininess;
+            return this._nShininess;
         }
     }
 

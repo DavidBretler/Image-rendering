@@ -61,7 +61,9 @@ public class Render
                 else
                     {
                   Intersectable.GeoPoint closestPoint = getClosestPoint(intersectionPoints);
+                        // TODO: 18/05/2020 fix bag ! //
                     _imageWriter.writePixel(column-1, row-1, calcColor(closestPoint).getColor());
+
                 }
             }
         }
@@ -74,6 +76,7 @@ public class Render
      * @return
      */
     private Color calcColor(Intersectable.GeoPoint gp) {
+        int nShininess=0;double kd=0,ks=0;
         Color result = _scene.getAmbientLight().get_intensity();
         result = result.add(gp.getGeometry().get_emission());
         List<LightSource> lights = _scene.get_lights();
@@ -82,9 +85,10 @@ public class Render
         Vector n = gp.getGeometry().getNormal(gp.getPoint());
 
         Material material = gp.getGeometry().get_material();
-        int nShininess = material.getnShininess();
-        double kd = material.getKd();
-        double ks = material.getKs();
+         if (material!=null)
+         { nShininess = material.getnShininess();
+          kd = material.getKd();
+          ks = material.getKs();}
         if (_scene.get_lights() != null) {
             for (LightSource lightSource : lights) {
 
@@ -169,21 +173,22 @@ public class Render
     private Intersectable.GeoPoint getClosestPoint(List<Intersectable.GeoPoint> intersectionPoints)
     {
      Intersectable.GeoPoint result=null;
-     Double minDis=Double.MAX_VALUE;
-
-        Point3D beginningPoint= _scene.getCamera().get_p0();
+     double minDis=Double.MAX_VALUE;
+     double Distance = 0;
+     Point3D beginningPoint= _scene.getCamera().get_p0();
 
 
      for (Intersectable.GeoPoint geo: intersectionPoints)
      {
          Point3D point = geo.getPoint();
-         Double distance= beginningPoint.distance(point);
-         if(distance<minDis)
-             minDis=distance;
+         Distance= beginningPoint.distance(geo.getPoint());
+         if(Distance<minDis)
+             minDis=Distance;
             result=geo;
      }
      return result;
     }
+
 
     /**
      * prints the grid on the image

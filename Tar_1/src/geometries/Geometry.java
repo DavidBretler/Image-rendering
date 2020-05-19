@@ -19,8 +19,9 @@ public abstract class Geometry implements Intersectable
      * @return the _material of the geometry
      */
     public Material get_material() {
-        return _material;
+        return this._material;
     }
+
 
     /**
      * constructor

@@ -31,9 +31,20 @@ public class Polygon extends Geometry {
    this(vertices);
         set_emission(emission);
 
-
     }
 
+    /**
+     * Polygon constructor with color and material
+     * @param emission
+     * @param _material
+     * @param vertices
+     */
+    public Polygon(Color emission,Material _material ,Point3D... vertices) {
+        this(vertices);
+        set_emission(emission);
+        this._material=_material;
+
+    }
 
     public Polygon(Point3D... vertices) {
         if (vertices.length < 3)
@@ -88,29 +99,31 @@ public class Polygon extends Geometry {
      */
     @Override
     public List<GeoPoint> findIntersections(Ray ray) {
-        List<GeoPoint> intersections = _plane.findIntersections(ray);//list of the intersections
-        if (intersections == null) //no intersection in the plane so there is no intersection in the polygon
-            return null;
+
+        List<GeoPoint> intersections = _plane.findIntersections(ray);
+
+        if (intersections == null) return null;
 
         Point3D p0 = ray.getPoint();
         Vector v = ray.getDirection();
 
-        Vector v1  = _vertices.get(1).subtract(p0);
+        Vector v1 = _vertices.get(1).subtract(p0);
         Vector v2 = _vertices.get(0).subtract(p0);
         double sign = v.dotProduct(v1.crossProduct(v2));
-        if (isZero(sign))//the ray is tangent to the polygon so its not count as intersection
+        if (isZero(sign))
             return null;
 
         boolean positive = sign > 0;
-             // check from all the points in the polygon to the ray
+
         for (int i = _vertices.size() - 1; i > 0; --i) {
             v1 = v2;
             v2 = _vertices.get(i).subtract(p0);
             sign = alignZero(v.dotProduct(v1.crossProduct(v2)));
             if (isZero(sign)) return null;
-            if (positive != (sign >0)) //if all are positive or all are negative, we have a intersection
-                return null;
+            if (positive != (sign > 0)) return null;
         }
+       // if (intersections.size()>0)
+           intersections.get(0).geometry = this;
 
         return intersections;
     }

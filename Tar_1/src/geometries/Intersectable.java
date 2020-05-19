@@ -51,7 +51,7 @@ public interface Intersectable
             }
 
         public Geometry getGeometry() {
-            return geometry;
+            return this.geometry;
         }
 
         public Point3D getPoint() {

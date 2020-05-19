@@ -4,6 +4,7 @@ import geometries.*;
 import primitives.Color;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -11,13 +12,13 @@ import java.util.List;
  */
 public class Scene
 {
-    String _name;
-    Color _background;
-    AmbientLight _ambientLight;
-    Geometries _geometries;
-    Camera _camera;
-    double _distance;
-    List<LightSource> _lights=null;
+    private  String _name;
+    private  Color _background;
+    private AmbientLight _ambientLight;
+    private Geometries _geometries=null;
+    private  Camera _camera;
+    private  double _distance;
+    private List<LightSource> _lights;
 
     /**
      *
@@ -28,13 +29,21 @@ public class Scene
     }
 
     /**
+     * remove all the geometries from the list
+     * @param geometries
+     */
+    public void removeGeometries(Intersectable... geometries) {
+        _geometries.removeAll(geometries);
+    }
+    /**
      * constructor
      * @param _name gets the scene name
      *   creates a empty geometries list
      */
     public Scene(String _name) {
         this._name = _name;
-        _geometries = new Geometries();
+        _geometries = new Geometries(); // need to check .......
+        _lights = new LinkedList<>();
     }
 
     public void setName(String _name) {

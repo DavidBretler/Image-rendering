@@ -123,8 +123,9 @@ public class Color {
      * @return java.awt.Color object based on this Color RGB components
      */
     public java.awt.Color getColor() {
-        int r = (int)_r, g = (int)_g, b = (int)_b;
-        return new java.awt.Color(r > 255 ? 255 : r, g > 255 ? 255 : g, b > 255 ? 255 : b);
+
+        int r = (int) _r, g = (int) _g, b = (int) _b;
+        return new java.awt.Color(Math.min(r, 255), Math.min(g, 255), Math.min(b, 255));
     }
 
     /**

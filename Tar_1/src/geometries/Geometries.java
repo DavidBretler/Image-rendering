@@ -47,7 +47,11 @@ public class Geometries implements Intersectable {
         return intersections;
 
     }
-
+    public void removeAll(Intersectable... geometries)
+    {
+        for (Intersectable intersectable:geometries)
+            _geometries.remove(intersectable);
+    }
     public void remove(Intersectable... intersectables) {
         for (Intersectable geo : _geometries) {
             _geometries.remove(geo);

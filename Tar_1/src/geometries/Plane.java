@@ -79,12 +79,7 @@ public class Plane extends Geometry {
             return null;
 
         double t = alignZero(_normal.dotProduct(p0Q) / nv);
-        if (t > 0) {
-            GeoPoint geo = new GeoPoint(this,ray.getTargetPoint(t));
 
-            return List.of(geo);
-        } else {
-            return null;
-        }
+        return t <= 0 ? null : List.of( new GeoPoint(this, ray.getTargetPoint(t)));
     }
 }

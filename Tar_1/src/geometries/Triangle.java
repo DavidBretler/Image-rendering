@@ -26,10 +26,12 @@ public class Triangle extends Polygon {
      */
     public Triangle(Color _emission, Point3D _p1, Point3D _p2, Point3D _p3) {
         super(_emission, _p1, _p2, _p3);
+        this._material=new Material(0,0,0);
     }
 
     public Triangle(Point3D x, Point3D y, Point3D z) {
         super(new Point3D[]{x, y, z});
+        this._material=new Material(0,0,0);
     }
 
     /**
@@ -37,8 +39,9 @@ public class Triangle extends Polygon {
      *
      */
     public Triangle(Color color, Material _material, Point3D p1, Point3D p2, Point3D p3) {
-        super(color, p1, p2, p3);
-        this._material = _material;
+        super(color,_material, p1, p2, p3);
+       // this._material = _material;
+
     }
 
 
@@ -64,6 +67,7 @@ public class Triangle extends Polygon {
     }
 
     public List<GeoPoint> findIntersections(Ray ray) {
+
         return super.findIntersections(ray);
     }
 }
