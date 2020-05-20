@@ -8,8 +8,6 @@ import primitives.Color;
 public class  AmbientLight extends Light
 {
 
-    double kA;
-
     /**
      * AmbientLight constructor
      * calculates the :intensity =Ia*Ka

@@ -51,7 +51,7 @@ public class Render
         Ray ray;
         for (int row = 0; row < Ny; row++) {
             for (int column = 0; column < Nx; column++) {
-                ray = camera.constructRayThroughPixel(Nx, Ny, row, column, distance, width, height);
+                ray = camera.constructRayThroughPixel(Nx, Ny,column,row, distance, width, height);
 
                  List<Intersectable.GeoPoint> intersectionPoints = _scene.getGeometries().findIntersections(ray);
                 if (intersectionPoints == null)
@@ -61,8 +61,8 @@ public class Render
                 else
                     {
                   Intersectable.GeoPoint closestPoint = getClosestPoint(intersectionPoints);
-                        // TODO: 18/05/2020 fix bag ! //
-                    _imageWriter.writePixel(column-1, row-1, calcColor(closestPoint).getColor());
+
+                    _imageWriter.writePixel(column, row, calcColor(closestPoint).getColor());
 
                 }
             }
