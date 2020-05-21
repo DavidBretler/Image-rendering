@@ -17,7 +17,6 @@ public class Camera {
         return _p0;
     }
 
-
     public Vector get_vTo() {
         return _vTo;
     }
