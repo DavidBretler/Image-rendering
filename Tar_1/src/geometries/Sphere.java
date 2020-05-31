@@ -22,15 +22,16 @@ public class Sphere extends RadialGeometry {
 
     /**
      * constructor with color and material
+     *
      * @param emissionLight color
-     * @param material the material pf the geometry
+     * @param material      the material pf the geometry
      * @param radius
      * @param _center
      */
     public Sphere(Color emissionLight, Material material, double radius, Point3D _center) {
-        this(radius,_center);
+        this(radius, _center);
         set_emission(emissionLight);
-        this._material=material;
+        this._material = material;
     }
 
     public double get_radius() {
@@ -51,14 +52,14 @@ public class Sphere extends RadialGeometry {
     }
 
     @Override
-    public List<GeoPoint> findIntersections(Ray ray) {
+    public List<GeoPoint> findIntersections(Ray ray, double maxDistance) {
         Point3D p0 = ray.getPoint();
         Vector v = ray.getDirection();
         Vector u;
         try {
             u = _center.subtract(p0);
         } catch (IllegalArgumentException e) {
-            GeoPoint geo=new GeoPoint(this,ray.getTargetPoint(_radius));
+            GeoPoint geo = new GeoPoint(this, ray.getTargetPoint(_radius));
 
             return List.of(geo);
         }
@@ -70,49 +71,24 @@ public class Sphere extends RadialGeometry {
         if (th == 0) return null;
         double t1 = alignZero(tm - th);
         double t2 = alignZero(tm + th);
+
+        double t1dist = alignZero(maxDistance - t1); //for the shade if the distance is to big ignore
+        double t2dist = alignZero(maxDistance - t2);
+
+        if (t1 <= 0 && t2 <= 0) {
+            return null;
+        }
+
         if (t1 <= 0 && t2 <= 0) return null;
-        if (t1 > 0 && t2 > 0)
-        {GeoPoint geo1=new GeoPoint(this,ray.getTargetPoint(t1));
-            GeoPoint geo2=new GeoPoint(this,ray.getTargetPoint(t2));
-            return List.of(geo1,geo2);
+        if (t1 > 0 && t2 > 0) {
+            GeoPoint geo1 = new GeoPoint(this, ray.getTargetPoint(t1));
+            GeoPoint geo2 = new GeoPoint(this, ray.getTargetPoint(t2));
+            return List.of(geo1, geo2);
         }
         if (t1 > 0)
-            return List.of(new GeoPoint(this,ray.getTargetPoint(t1)));
+            return List.of(new GeoPoint(this, ray.getTargetPoint(t1)));
         else
-            return List.of(new GeoPoint(this,ray.getTargetPoint(t2)));
+            return List.of(new GeoPoint(this, ray.getTargetPoint(t2)));
     }
-/**
-    public List<Point3D> findIntersections(Ray ray) {
-        Point3D p0 = ray.getPoint();
-        Vector v = ray.getDirection();
 
-        Vector u;
-        try {
-            u = this._center.subtract(p0);
-        } catch (IllegalArgumentException var17) {
-            return List.of(ray.getTargetPoint(this._radius));
-        }
-
-        double tm = Util.alignZero(v.dotProduct(u));
-        double dSquared = tm == 0.0D ? u.lengthSquared() : u.lengthSquared() - tm * tm;
-        double thSquared = Util.alignZero(this._radius * this._radius - dSquared);
-        if (thSquared <= 0.0D) {
-            return null;
-        } else {
-            double th = Util.alignZero(Math.sqrt(thSquared));
-            if (th == 0.0D) {
-                return null;
-            } else {
-                double t1 = Util.alignZero(tm - th);
-                double t2 = Util.alignZero(tm + th);
-                if (t1 <= 0.0D && t2 <= 0.0D) {
-                    return null;
-                } else if (t1 > 0.0D && t2 > 0.0D) {
-                    return List.of(ray.getTargetPoint(t1), ray.getTargetPoint(t2));
-                } else {
-                    return t1 > 0.0D ? List.of(ray.getTargetPoint(t1)) : List.of(ray.getTargetPoint(t2));
-                }
-            }
-        }
-    }*/
 }

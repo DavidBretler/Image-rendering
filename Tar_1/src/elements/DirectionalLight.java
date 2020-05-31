@@ -38,5 +38,10 @@ public class DirectionalLight extends Light implements LightSource {
 
     }
 
+    @Override
+    public double getDistance(Point3D pointGeo) {
+        return Double.MAX_VALUE;
+    }
+
 
 }

@@ -60,11 +60,15 @@ public interface Intersectable
     }
 
     /**
-     * fineds all the intersection points between the ray and the Geometry
-     * @param ray
-     * @return
+     * @param ray ray pointing toward a Gepmtry
+     * @return List<GeoPoint> return values
      */
-    List<GeoPoint> findIntersections(Ray ray);
-
+    default List<GeoPoint> findIntersections(Ray ray) {
+        return findIntersections(ray, Double.POSITIVE_INFINITY);
     }
+
+    List<GeoPoint> findIntersections(Ray ray, double maxDistance);
+
+
+}
 

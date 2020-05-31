@@ -62,4 +62,6 @@ public abstract class Geometry implements Intersectable
     public Color get_emission() {
         return _emission;
     }
+
+
 }

@@ -60,6 +60,12 @@ public class PointLight extends Light implements LightSource {
         return (_intensity.reduce(_kC + _kL * d + _kQ * dsquared));
     }
 
+
+    @Override
+    public double getDistance(Point3D pointGeo) {
+        return _positionOfLight.distance(pointGeo);
+    }
+
     /**
      *
       * @param point

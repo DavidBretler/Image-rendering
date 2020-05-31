@@ -17,6 +17,7 @@ import static primitives.Util.alignZero;
 public class Render
 {
 
+    private static final  double DELTA=0.1;
     ImageWriter _imageWriter;
     Scene _scene;
 
@@ -81,8 +82,8 @@ public class Render
         result = result.add(gp.getGeometry().get_emission());
         List<LightSource> lights = _scene.get_lights();
 
-        Vector v = gp.getPoint().subtract(_scene.getCamera().get_p0()).normalize();
-        Vector n = gp.getGeometry().getNormal(gp.getPoint());
+        Vector vecFromCameraToPointNormlized = gp.getPoint().subtract(_scene.getCamera().get_p0()).normalize();
+        Vector normal = gp.getGeometry().getNormal(gp.getPoint());
 
         Material material = gp.getGeometry().get_material();
          if (material!=null)
@@ -92,21 +93,72 @@ public class Render
         if (_scene.get_lights() != null) {
             for (LightSource lightSource : lights) {
 
-                Vector l = lightSource.getL(gp.getPoint());
-                double nl = alignZero(n.dotProduct(l));
-                double nv = alignZero(n.dotProduct(v));
+                Vector VecFromLightToPoint = lightSource.getL(gp.getPoint());
+                double nl = alignZero(normal.dotProduct(VecFromLightToPoint));
+                double nv = alignZero(normal.dotProduct(vecFromCameraToPointNormlized));
 
-                if (sign(nl) == sign(nv)) {
+              //  if (nl *nv>0)
+                {
+                  //if (unshaded(lightSource,VecFromLightToPoint,normal,gp))
+                    {
                     Color ip = lightSource.getIntensity(gp.getPoint());
                     result = result.add(
                             calcDiffusive(kd, nl, ip),
-                            calcSpecular(ks, l, n, nl, v, nShininess, ip)
+                            calcSpecular(ks, VecFromLightToPoint, normal, nl, vecFromCameraToPointNormlized, nShininess, ip)
                     );
+                }
                 }
             }
         }
 
         return result;
+    }
+
+    /**
+     *
+     * @param light the light source emting
+     * @param VecFromLight the vector from the light to specific point
+     * @param normal normal of the shape
+     * @param geoPoint the intersection point
+     * @return true if there is no shapes blocking the light source
+     */
+  /*  private boolean unshaded(LightSource light, Vector VecFromLight, Vector normal, Intersectable.GeoPoint geoPoint) {
+        Vector lightDirection = VecFromLight.scale(-1); // from point to light source
+       Vector delta=normal.scale(normal.dotProduct(lightDirection)>0? DELTA:-DELTA);// fix the position of the intersection point
+
+        Point3D pointGeo = geoPoint.getPoint().add(delta);//the new point on the shape
+        Ray lightRay = new Ray(pointGeo, lightDirection);
+
+        List<Intersectable.GeoPoint> intersections = _scene.getGeometries().findIntersections(lightRay);
+        if (intersections == null) {
+            return true;//there is no shade
+        }
+        double lightDistance = light.getDistance(pointGeo);
+        for (Intersectable.GeoPoint gp : intersections) {
+            if (alignZero(gp.getPoint().distance(pointGeo) - lightDistance) <= 0) //if the shape is in between the light source or after the light source
+            {
+                return false;
+            }
+        }
+        return true;
+    }*/
+
+    private boolean unshaded(LightSource light, Vector l, Vector n, Intersectable.GeoPoint geopoint) {
+        Vector lightDirection = l.scale(-1); // from point to light source
+        Ray lightRay = new Ray(geopoint.getPoint(), lightDirection);
+        Point3D pointGeo = geopoint.getPoint();
+
+        List<Intersectable.GeoPoint> intersections = _scene.getGeometries().findIntersections(lightRay);
+        if (intersections == null) {
+            return true;
+        }
+        double lightDistance = light.getDistance(pointGeo);
+        for (Intersectable.GeoPoint gp : intersections) {
+            double temp = gp.getPoint().distance(pointGeo) - lightDistance;
+            if (alignZero(temp) <= 0)
+                return false;
+        }
+        return true;
     }
 
 

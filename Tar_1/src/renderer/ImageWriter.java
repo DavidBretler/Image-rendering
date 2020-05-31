@@ -75,7 +75,7 @@ public class ImageWriter {
      * of the project
      */
     public  void writeToImage(){
-        File ouFile = new File(PROJECT_PATH + "/" + _imageName + ".jpg");
+        File ouFile = new File(PROJECT_PATH + "/IMAGES" + _imageName + ".jpg");
         try {
             javax.imageio.ImageWriter jpgWriter = ImageIO.getImageWritersByFormatName("jpg").next();
             ImageWriteParam jpgWriteParam = jpgWriter.getDefaultWriteParam();

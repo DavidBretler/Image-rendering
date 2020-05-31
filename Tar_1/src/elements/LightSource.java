@@ -22,4 +22,5 @@ public interface LightSource {
      */
     Color getIntensity(Point3D p);
 
+    double getDistance(Point3D pointGeo);
 }
