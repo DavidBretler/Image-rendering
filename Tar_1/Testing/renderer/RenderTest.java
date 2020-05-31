@@ -43,7 +43,7 @@ import scene.Scene;
         Render render = new Render(imageWriter, scene);
 
         render.renderImage();
-        render.printGrid(50, new Color(java.awt.Color.YELLOW));
+        render.printGrid(50, java.awt.Color.YELLOW);//todo
         render.writeToImage();
     }
 
@@ -68,7 +68,7 @@ import scene.Scene;
             Render render = new Render(imageWriter, scene);
 
             render.renderImage();
-            render.printGrid(50, new Color(java.awt.Color.YELLOW));
+            render.printGrid(50, java.awt.Color.YELLOW);
             render.writeToImage();
         }
 
@@ -97,7 +97,7 @@ import scene.Scene;
             Render render = new Render(imageWriter, scene);
 
             render.renderImage();
-            render.printGrid(50, new Color(java.awt.Color.WHITE));
+            render.printGrid(50, java.awt.Color.WHITE);
             render.writeToImage();
         }
 

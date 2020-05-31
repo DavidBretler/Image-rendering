@@ -75,7 +75,7 @@ public class ImageWriter {
      * of the project
      */
     public  void writeToImage(){
-        File ouFile = new File(PROJECT_PATH + "/IMAGES" + _imageName + ".jpg");
+        File ouFile = new File(PROJECT_PATH + "/IMAGES/" + _imageName + ".jpg");
         try {
             javax.imageio.ImageWriter jpgWriter = ImageIO.getImageWritersByFormatName("jpg").next();
             ImageWriteParam jpgWriteParam = jpgWriter.getDefaultWriteParam();
@@ -99,7 +99,7 @@ public class ImageWriter {
     public void writePixel(int xIndex, int yIndex, Color color)
     {
 
-//        if(yIndex <_nY && xIndex <_nX&& yIndex > 0 && xIndex > 0)//to ensure the shapes dos not go out of bounds
+
         _image.setRGB(xIndex, yIndex, color.getRGB());
     }
 

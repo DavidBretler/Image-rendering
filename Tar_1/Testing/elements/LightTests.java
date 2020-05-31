@@ -67,13 +67,14 @@ class LightsTests {
         render.writeToImage();
     }
 
+
     /**
      * Produce a picture of a sphere lighted by a spot light
      */
     @Test
     public void sphereSpot() {
         Scene scene = new Scene("Test scene");
-        scene.setCamera(new Camera(new Point3D(0, 0, -1000), new Vector(0, 0, 1), new Vector(0, 1, 0)));
+        scene.setCamera(new Camera(new Point3D(0, 0, -1000), new Vector(0, 0, 1), new Vector(0, -1, 0)));
         scene.setDistance(1000);
         scene.setBackground(Color.BLACK);
         scene.setAmbientLight(new AmbientLight(Color.BLACK, 0));
@@ -84,13 +85,38 @@ class LightsTests {
         scene.addLights(new SpotLight(new Color(500, 300, 0), new Point3D(-50, 50, -50),
                 new Vector(1, -1, 2), 1, 0.00001, 0.00000001));
 
-        ImageWriter imageWriter = new ImageWriter("sphereSpot", 150, 150, 500, 500);
+        ImageWriter imageWriter = new ImageWriter("111sphereSpot", 150, 150, 500, 500);
         Render render = new Render(imageWriter, scene);
 
         render.renderImage();
         render.writeToImage();
     }
 
+    /**
+     * Produce a picture of a sphere lighted by a spot light
+     */
+    @Test
+    public void triSpotTemp() {
+        Scene scene = new Scene("Test scene");
+        scene.setCamera(new Camera(new Point3D(0, 0, -1000), new Vector(0, 0, 1), new Vector(0, -1, 0)));
+        scene.setDistance(1000);
+        scene.setBackground(Color.BLACK);
+        scene.setAmbientLight(new AmbientLight(Color.BLACK, 0));
+
+        scene.addGeometries(
+
+        new Triangle(Color.BLACK, new Material(0.8, 0.2, 300),
+                new Point3D(0, 0, 50), new Point3D(60, 0, 50), new Point3D(0, -60, 50)));
+
+        scene.addLights(new SpotLight(new Color(350, 150, 0), new Point3D(-50, 50, -50),
+                new Vector(1, -1, 2), 1, 0.00001, 0.00000001));
+
+        ImageWriter imageWriter = new ImageWriter("111trinal", 150, 150, 500, 500);
+        Render render = new Render(imageWriter, scene);
+
+        render.renderImage();
+        render.writeToImage();
+    }
     /**
      * Produce a picture of a two triangles lighted by a directional light
      */

@@ -47,8 +47,7 @@ public class Camera {
         this._vRight =   this._vUp.crossProduct(this._vTo).scale(-1);
 
 
-//        this._vRight = _vUp.normalized().scale(-1);
-//        this._vUp = this._vRight.crossProduct(this._vTo).normalize().scale(-1);
+
 
     }
 

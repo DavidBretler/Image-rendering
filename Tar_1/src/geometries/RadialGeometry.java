@@ -5,8 +5,14 @@
 
 package geometries;
 
+import primitives.Color;
+import primitives.Material;
+
 public abstract class RadialGeometry extends Geometry {
     double _radius;
+
+    public RadialGeometry(Color emissionLight, double radius, Material material) {
+    }
 
     public double get_radius() {
         return this._radius;

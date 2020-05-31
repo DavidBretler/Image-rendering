@@ -28,6 +28,8 @@ public class Sphere extends RadialGeometry {
      * @param radius
      * @param _center
      */
+
+
     public Sphere(Color emissionLight, Material material, double radius, Point3D _center) {
         this(radius, _center);
         set_emission(emissionLight);
@@ -45,6 +47,8 @@ public class Sphere extends RadialGeometry {
     public String toString() {
         return "P=" + this._center + ", _radius=" + this._radius + "}";
     }
+
+
 
     public Vector getNormal(Point3D point) {
         Vector normal = point.subtract(this._center);
@@ -92,3 +96,6 @@ public class Sphere extends RadialGeometry {
     }
 
 }
+
+
+

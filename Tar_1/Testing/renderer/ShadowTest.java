@@ -53,14 +53,16 @@ class ShadowTests {
         scene.setAmbientLight(new AmbientLight(Color.BLACK, 0));
 
         scene.addGeometries(new Sphere(new Color(java.awt.Color.BLUE), new Material(0.5, 0.5, 30), //
-                        55, new Point3D(0, 0, 200)),
-                new Sphere(new Color(java.awt.Color.BLUE), new Material(0.5, 0.5, 30), //
-                        50, new Point3D(-100, 100, 200)));//
-            //    new Triangle(new Color(java.awt.Color.BLUE), new Material(0.5, 0.5, 30), //
-             //           new Point3D(-70, 40, 0), new Point3D(-40, 70, 0), new Point3D(-68, 68, 4)));
+                        60, new Point3D(0, 0, 200)), //
+                new Triangle(
+                        new Color(java.awt.Color.BLUE),
+                        new Material(0.5, 0.5, 30), //
+                        new Point3D(-60, 30, 0),
+                        new Point3D(-30, 60, 0),
+                        new Point3D(-58, 58, 4)));
 
-        scene.addLights(new SpotLight(new Color(500, 340, 0), //
-                new Point3D(100, -100, 150), new Vector(1, -1, 3), 1, 1E-5, 1.5E-7));
+        scene.addLights(new SpotLight(new Color(400, 240, 0), //
+                new Point3D(-100, 100, -200), new Vector(1, -1, 3), 1, 1E-5, 1.5E-7));
 
         ImageWriter imageWriter = new ImageWriter("sphereTriangleMove1", 200, 200, 400, 400);
         Render render = new Render(imageWriter, scene);
@@ -82,8 +84,12 @@ class ShadowTests {
 
         scene.addGeometries(new Sphere(new Color(java.awt.Color.BLUE), new Material(0.5, 0.5, 30), //
                         60, new Point3D(0, 0, 200)), //
-                new Triangle(new Color(java.awt.Color.BLUE), new Material(0.5, 0.5, 30), //
-                        new Point3D(-70, 40, 0), new Point3D(-40, 70, 0), new Point3D(-68, 68, 4)));
+                new Triangle(
+                        new Color(java.awt.Color.BLUE),
+                        new Material(0.5, 0.5, 30), //
+                        new Point3D(-48, 18, 0),
+                        new Point3D(-18, 48, 0),
+                        new Point3D(-48, 48, 4)));
 
         scene.addLights(new SpotLight(new Color(400, 240, 0), //
                 new Point3D(-100, 100, -200), new Vector(1, -1, 3), 1, 1E-5, 1.5E-7));
@@ -112,7 +118,7 @@ class ShadowTests {
                         new Point3D(-70, 40, 0), new Point3D(-40, 70, 0), new Point3D(-68, 68, 4)));
 
         scene.addLights(new SpotLight(new Color(400, 240, 0), //
-                new Point3D(-100, 100, -200), new Vector(1, -1, 3), 1, 1E-5, 1.5E-7));
+                new Point3D(-90, 90, -165), new Vector(1, -1, 3), 1, 1E-5, 1.5E-7));
 
         ImageWriter imageWriter = new ImageWriter("sphereTriangleSpot1", 200, 200, 400, 400);
         Render render = new Render(imageWriter, scene);
@@ -138,7 +144,7 @@ class ShadowTests {
                         new Point3D(-70, 40, 0), new Point3D(-40, 70, 0), new Point3D(-68, 68, 4)));
 
         scene.addLights(new SpotLight(new Color(400, 240, 0), //
-                new Point3D(-100, 100, -200), new Vector(1, -1, 3), 1, 1E-5, 1.5E-7));
+                new Point3D(-70, 70, -50), new Vector(1, -1, 3), 1, 1E-5, 1.5E-7));
 
         ImageWriter imageWriter = new ImageWriter("sphereTriangleSpot2", 200, 200, 400, 400);
         Render render = new Render(imageWriter, scene);

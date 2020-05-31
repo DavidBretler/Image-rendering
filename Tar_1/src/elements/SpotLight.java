@@ -19,7 +19,7 @@ public class SpotLight extends PointLight {
      * @param _kC-Constant attenuation
      * @param _kC- Linear attenuation
      * @param _kC-Quadratic attenuation
-     * @_concentration
+     * @param _concentration
      */
 
     public SpotLight(Color _intensity, Point3D _position, Vector _direction, double _kC, double _kL, double _kQ, double _concentration) {
@@ -49,14 +49,19 @@ public class SpotLight extends PointLight {
     public Color getIntensity(Point3D p) {
         double projection = _direction.dotProduct(getL(p));
 
-        if (Util.isZero(projection)) {
+        if (Util.isZero(projection))
+        {
             return Color.BLACK;
         }
-        double factor = Math.max(0, projection);
-        Color pointlightIntensity = super.getIntensity(p);
+        double factor;
+        factor= Math.max(0, projection);
 
-        if (_concentration != 1) {
-            factor = Math.pow(factor, _concentration);
+        Color pointlightIntensity;
+        pointlightIntensity= super.getIntensity(p);
+
+        if (_concentration != 1)
+        {
+            factor = Math.pow(factor, _concentration);//narow the light engale
         }
 
         return (pointlightIntensity.scale(factor));
