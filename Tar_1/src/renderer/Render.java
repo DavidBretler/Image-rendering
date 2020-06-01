@@ -11,9 +11,15 @@ import java.util.List;
 import static primitives.Util.alignZero;
 
 public class Render {
+
+    private static final  double DELTA=0.1;
+    private static final int MAX_CALC_COLOR_LEVEL = 10; //the max recrusiv calc
+    private static final double MIN_CALC_COLOR_K = 0.001;
+
+
     private Scene _scene;
     private ImageWriter _imageWriter;
-    private static final  double DELTA=0.1;
+
     public Render(Scene _scene) {
         this._scene = _scene;
     }
@@ -54,7 +60,7 @@ public class Render {
                     _imageWriter.writePixel(column, row, background);
                 } else {
                     GeoPoint closestPoint = getClosestPoint(intersectionPoints);
-                    java.awt.Color pixelColor = calcColor(closestPoint).getColor();
+                    java.awt.Color pixelColor = calcColor(closestPoint,ray ).getColor();
                     _imageWriter.writePixel(column, row, pixelColor);
                 }
             }
@@ -107,6 +113,14 @@ public class Render {
     public void writeToImage() {
         _imageWriter.writeToImage();
     }
+
+    // TODO: 01/06/2020  
+    private Color calcColor(GeoPoint geoPoint, Ray inRay) {
+        Color color = calcColor(geoPoint, inRay, MAX_CALC_COLOR_LEVEL, 1.0);
+        color = color.add(_scene.getAmbientLight().getIntensity());
+        return color;
+    }
+
 
     private Color calcColor(Intersectable.GeoPoint gp) {
         int nShininess=0;double kd=0,ks=0;
@@ -225,6 +239,30 @@ public class Render {
         return ip.scale(nl * kd);
     }
 
+    /**
+     * clac the reflection direction
+     * @param normal
+     * @param point
+     * @param inRay
+     * @return
+     */
+
+
+    private Ray constructReflectedRay (Vector normal,Point3D point,Ray inRay) {//r=v-2*v*n*n
+        Vector v = inRay.getDirection();
+        double vn = v.dotProduct(normal);
+        if (vn == 0) {// TODO: 01/06/2020 no light
+             return null;  }
+            Vector r = v.add(normal.scale(-2 * vn));
+
+            return new Ray(point, r);
+
+
+        }
+        private Ray constructRefractedRay (Point3D point,Ray inRay)
+        {
+            return new Ray(point ,inRay.getDirection());
+    }
 }
 /*
 package renderer;

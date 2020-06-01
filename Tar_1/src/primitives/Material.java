@@ -1,7 +1,33 @@
 package primitives;
 
 public class Material {
+    double _kt;//transparency
 
+    public Material( double _kD, double _kS, int _nShininess,double _kt, double _kr) {
+        this._kt = _kt;
+        this._kr = _kr;
+        this._kD = _kD;
+        this._kS = _kS;
+        this._nShininess = _nShininess;
+    }
+
+    public double get_kD() {
+        return _kD;
+    }
+
+    public double get_kS() {
+        return _kS;
+    }
+
+    public double get_kt() {
+        return _kt;
+    }
+
+    public double get_kr() {
+        return _kr;
+    }
+
+    double _kr;//reflection
     double _kD;
     double _kS;
     int _nShininess;
@@ -12,9 +38,8 @@ public class Material {
      * @param _nShininess shininess factor
      */
     public Material(double _kD, double _kS, int _nShininess) {
-        this._kD = _kD;
-        this._kS = _kS;
-        this._nShininess = _nShininess;
+        this  (_kD,_kS,_nShininess,1,1);
+
     }
 
     public Material(Material material) {
