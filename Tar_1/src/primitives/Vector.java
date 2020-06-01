@@ -2,6 +2,8 @@ package primitives;
 
 import java.util.Objects;
 
+import static primitives.Util.isZero;
+
 public class Vector {
     Point3D _head;
 
@@ -31,6 +33,8 @@ public class Vector {
         this._head = new Point3D(_x,_y,_z);
     }
     public Vector(double _x,double _y,double _z) {
+     //   if (isZero(_x)&&isZero(_y)&&isZero(_z))
+   //         _x=_x+0.1;
         if ( new Point3D(_x,_y,_z).equals(Point3D.ZERO))
             throw new IllegalArgumentException("ZERO vector is not valid");
         this._head = new Point3D(_x,_y,_z);
@@ -78,6 +82,8 @@ public class Vector {
      */
     public Vector scale(double num)
     {
+        //if(((_head.get_x().get())==0 ) && ( (_head.get_y().get())==0)  &&  ((_head.get_z().get())==0))
+           // num=0.6;
         return new Vector(_head.get_x().get()*num, _head.get_y().get()*num,_head.get_z().get()*num);
     }
     public Point3D get_head() {

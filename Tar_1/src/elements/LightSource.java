@@ -13,7 +13,7 @@ public interface LightSource {
      * @param p
      * @return the direction of the light
      */
-    Vector getL(Point3D p);
+    Vector getLightDirection(Point3D p);
 
     /**
      * getter

@@ -47,7 +47,7 @@ public class SpotLight extends PointLight {
      */
     @Override
     public Color getIntensity(Point3D p) {
-        double projection = _direction.dotProduct(getL(p));
+        double projection = _direction.dotProduct(getLightDirection(p));
 
         if (Util.isZero(projection))
         {
@@ -68,7 +68,7 @@ public class SpotLight extends PointLight {
     }
 
     @Override
-    public Vector getL(Point3D point) {
-        return super.getL(point);
+    public Vector getLightDirection(Point3D point) {
+        return super.getLightDirection(point);
     }
 }

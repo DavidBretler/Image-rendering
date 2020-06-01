@@ -10,8 +10,25 @@ public class Ray
     Point3D _p0;
     Vector _direction;
 
+    private static final double DELTA = 0.1;
+
     /**
-     *
+     * constrructor with ajustmenmt eton the start of the ray
+     * @param point
+     * @param direction
+     * @param normal
+     */
+    public Ray(Point3D point, Vector direction, Vector normal) {
+        //point + normal.scale(±DELTA)
+        _direction = new Vector(direction).normalized();
+
+        double nv = normal.dotProduct(direction);
+
+        Vector normalDelta = normal.scale((nv > 0 ? DELTA : -DELTA));
+        _p0 = point.add(normalDelta);
+    }
+    /**
+     * constructot
      * @param _p
      * @param vec make sure that the vector is normlized
      */
@@ -33,6 +50,7 @@ public class Ray
      */
     public Point3D getTargetPoint(double _t)
     {
+
         return isZero(_t)  ? _p0 : _p0.add(_direction.scale(_t));
     }
 

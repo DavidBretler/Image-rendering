@@ -72,7 +72,7 @@ public class PointLight extends Light implements LightSource {
      * @return the vector from the light source to the point given
      */
     @Override
-    public Vector getL(Point3D point) {
+    public Vector getLightDirection(Point3D point) {
         if (point.equals(_positionOfLight)) {
             return null;
         }
