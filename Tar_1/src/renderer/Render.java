@@ -13,8 +13,8 @@ import static primitives.Util.alignZero;
 public class Render {
 
     private static final  double DELTA=0.1;
-    private static final int MAX_CALC_COLOR_LEVEL = 50; //the max recrusiv calc
-    private static final double MIN_CALC_COLOR_K = 0.000000000000001;
+    private static final int MAX_CALC_COLOR_LEVEL = 40; //the max recrusiv calc
+    private static final double MIN_CALC_COLOR_K = 0.000000001;
 
 
     private Scene _scene;
