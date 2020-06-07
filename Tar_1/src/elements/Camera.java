@@ -3,15 +3,18 @@ package elements;
 import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
-
+import scene.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 import static primitives.Util.isZero;
-
+import  java.lang.Math;
 public class Camera {
     Point3D _p0;
     Vector _vTo;
     Vector _vUp;
     Vector _vRight;
-
+    private static final Random rnd = new Random();
 
     public Point3D get_p0() {
         return _p0;
@@ -90,4 +93,95 @@ public class Camera {
 
     }
 
+    /**
+     *
+     * @param nX number of pixel in x axis
+     * @param nY number of pixel in y axis
+     * @param j index in x axis
+     * @param i index in x axis
+     * @param screenDistance distance form camera to view plane
+     * @param screenWidth screen width
+     * @param screenHeight screen height
+     * @param density the density factor  of the ray's in the beam
+     * @param amount number of ray's in beam
+     * @return list of ray's in the pixel
+     */
+    public List<Ray> constructRayBeamThroughPixel(int nX, int nY, int j, int i,
+                                                  double screenDistance, double screenWidth, double screenHeight,
+                                                  double density, int amount) {
+        if (isZero(screenDistance)) {
+            throw new IllegalArgumentException("distance cannot be 0"); //view plane is on the camera
+        }
+
+        List<Ray> rays = new LinkedList<>();
+
+        Point3D pixCenter = _p0.add(_vTo.scale(screenDistance)); //
+
+        double ratioY = screenHeight / nY;
+        double ratioX = screenWidth / nX;
+
+        double yi = ((i - nY / 2d) * ratioY + ratioY / 2d);//calc the move of the pixel to our pixel
+        double xj = ((j - nX / 2d) * ratioX + ratioX / 2d);
+
+        Point3D Pij = pixCenter;
+
+        //move the pixel to pixel
+        if (!isZero(xj)) {
+            Pij = Pij.add(_vRight.scale(xj));
+        }
+        if (!isZero(yi)) {
+            Pij = Pij.subtract(_vUp.scale(yi).get_head()).get_head();
+        }
+
+        //antialiasing density >= 1
+  //      double radius = (ratioX + ratioY) / 2d * density; //calc  the size of the beam
+     //   if(radius > ratioX||radius > ratioY)
+       //     radius=ratioX;
+
+        double index=Math.sqrt(amount);
+     //   double density2=Math.sqrt(index);
+        for (int row = 0; row < index; row++) //create ray's
+        {
+            for (int column = 0; column < index; column++)
+            {  Point3D point = new Point3D(Pij);
+
+
+            if (!isZero(row)) {
+                point = point.add(_vRight.scale((0.1+rnd.nextDouble())*density*(row*ratioX)/index));
+            }
+            if (!isZero(column)) {
+                point = point.add(_vUp.scale(density*((0.1+rnd.nextDouble())*column*ratioY)/index));
+            }
+            rays.add(new Ray(_p0, point.subtract(_p0)));//add new ray to list of ray's from point
+        }
+        }
+        return rays;
+    }
+
+
+    public  List<Ray> beemFromPoint(int nX, int nY, Point3D _p,
+                                    double screenDistance, double screenWidth, double screenHeight,
+                                    double density, int amount)
+        {
+            List<Ray> rays = new LinkedList<>();
+
+            double ratioY = screenHeight / nY;
+            double ratioX = screenWidth / nX;
+            double index=Math.sqrt(amount);
+        //    double density2=Math.sqrt(index);
+        for (int row = 0; row < index; row++) //create ray's
+        {
+            for (int column = 0; column < index; column++)
+            {  Point3D point = new Point3D(_p);
+
+                if (!isZero(row)) {
+                    point = point.add(_vRight.scale(density*(row*ratioX)/index));
+                }
+                if (!isZero(column)) {
+                    point = point.add(_vUp.scale(density*(column*ratioY)/index));
+                }
+                rays.add(new Ray(_p0, point.subtract(_p0)));//add new ray to list of ray's from point
+            }}
+        return rays;
+    }
 }

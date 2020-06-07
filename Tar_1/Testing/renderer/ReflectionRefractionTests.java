@@ -163,46 +163,105 @@ public class ReflectionRefractionTests {
         render.writeToImage();
     }
     @Test
-
+/**
+ *Produce a picture of tree spheres with partly tranpresty reflecting on triangle
+ * tree spheres shading a "house"
+ * triangle reflecting the "sun"
+ */
     public void allefectTest10sheapBounos() {
         Scene scene = new Scene("Test scene");
         scene.setCamera(new Camera(new Point3D(0, 0, -1000), new Vector(0, 0, 1), new Vector(0, -1, 0)));
         scene.setDistance(1000);
-        scene.setBackground(new Color(20,20,200));
+        scene.setBackground(new Color(25,120,230));
         scene.setAmbientLight(new AmbientLight(new Color(java.awt.Color.WHITE), 0.15));
 
         scene.addGeometries( //
-               new Triangle(Color.BLACK, new Material(0.5, 0.5, 60), //
-                        new Point3D(-55, 10, 130),  new Point3D(-30, 49, 115),new Point3D(-80, 49, 115)), //
-                 new Sphere(new Color(java.awt.Color.yellow), new Material(0.2, 0.2, 30, 0, 0), // sun
+                 new Sphere(new Color(java.awt.Color.yellow), new Material(0.2, 1, 100, 0, 0), // sun
                         50, new Point3D(70, -70, 0)),
-                new Sphere(new Color(java.awt.Color.orange), new Material(0.2, 0.2, 70, 0.5, 0.8), // inside sun1
-                        30, new Point3D(70, -70, -10)),
-                new Sphere(new Color(java.awt.Color.RED), new Material(0.2, 0.2, 50, 0.9, 0), // inside sun2
-                        20, new Point3D(70, -70, -30)),
+                new Sphere(new Color(java.awt.Color.RED), new Material(0.2, 1, 50, 0.55, 0), // inside sun1
+                        30, new Point3D(60, -70, -100)),
+                new Sphere(new Color(java.awt.Color.RED), new Material(0.2, 1, 100, 1, 0), // inside sun2
+                       20, new Point3D(25, -70, -200)),
 
-                new Sphere(new Color(java.awt.Color.white), new Material(0.2, 0.2, 50, 0.9, 0), //cloude
-                        20, new Point3D(-70, -60, -30)),
-                new Sphere(new Color(java.awt.Color.white), new Material(0.2, 0.2, 50, 0.9, 0), //cloude
-                        20, new Point3D(-60 ,-50, -30)),
-                new Sphere(new Color(java.awt.Color.white), new Material(0.2, 0.2, 50, 0.9, 0), //cloude
-                        20, new Point3D(-40 ,-65, -30)),
+                new Sphere(new Color(java.awt.Color.white), new Material(0.2, 0.2, 0, 0.8, 0), //cloude
+                       15, new Point3D(-47, -50, -250)),
+                new Sphere(new Color(java.awt.Color.white), new Material(0.2, 0.2, 0, 1, 0), //cloude
+                        15, new Point3D(-25 ,-35, -270)),
+                new Sphere(new Color(java.awt.Color.white), new Material(0.2, 0.2, 0, 0, 0), //cloude
+                        20, new Point3D(-17 ,-55, -250)),
 
-                new Polygon(new Color(java.awt.Color.BLACK), new Material(1, 0.25, 5,0.3, 0) ,
-                        new Point3D(20, 110, 115), new Point3D(40, 110, 115), new Point3D(40, 50, 115),new Point3D(20, 50, 115)),
+                new Polygon(new Color(java.awt.Color.BLACK), new Material(1, 0.25, 5,0, 0.5) ,//tree
+                        new Point3D(20, 120, 200), new Point3D(40, 120, 200), new Point3D(40, 50, 200),new Point3D(20, 50, 200)),
+                new Triangle(new Color(java.awt.Color.green), new Material(0.5, 0.5, 300,0, 0.6), //
+                        new Point3D(30, -25, 130),  new Point3D(0, 50, 115),new Point3D(60, 50, 115)), //
 
-                new Triangle(new Color(java.awt.Color.green), new Material(0.5, 0.5, 60), //
-                        new Point3D(30, -20, 130),  new Point3D(15, 50, 115),new Point3D(45, 50, 115)), //
-                new Polygon(new Color(java.awt.Color.red), new Material(1, 0.25, 5,0.3, 0) ,
-                        new Point3D(-80, 110, 115), new Point3D(-30, 110, 115), new Point3D(-30, 50, 115),new Point3D(-80, 50, 115)));
+                new Polygon(new Color(java.awt.Color.red), new Material(1, 0.25, 5,0.3, 0) ,//house
+                        new Point3D(-80, 115, 115), new Point3D(-30, 115, 115), new Point3D(-30, 50, 115),new Point3D(-80, 50, 115)),
+                new Triangle(Color.BLACK, new Material(0.5, 1, 200), //
+                        new Point3D(-55, 10, 130),  new Point3D(-30, 50, 115),new Point3D(-80, 50, 115)));
 
 
+        scene.addLights(new SpotLight(new Color(600, 400, 400), //shade
+                new Point3D(-15, -80, -300), new Vector(0, 10, 3), 1, 4E-5, 2E-7));
 
-
-        scene.addLights(new SpotLight(new Color(600, 400, 400), //
-                new Point3D(50, -50, 0), new Vector(0, 0, 1), 1, 4E-5, 2E-7));
+        scene.addLights(new SpotLight(new Color(400, 200, 200), //sun light
+                         new Point3D(10, -70, -300)  , new Vector(1, 0, 1), 1, 4E-5, 2E-7));
 
         ImageWriter imageWriter = new ImageWriter("bonusTest", 200, 200, 600, 600);
+        Render render = new Render(imageWriter, scene);
+
+        render.renderImage();
+        render.writeToImage();
+    }
+    /**
+     *Produce a picture of tree spheres with partly tranpresty reflecting on triangle
+     * tree spheres shading a "house"
+     * triangle reflecting the "sun"
+     * we moved the camera to 45 degrees left and 200 back
+     */
+    @Test
+    public void allefectTest10sheapBounosMove() {
+        Scene scene = new Scene("Test scene");
+        scene.setCamera(new Camera(new Point3D(-1200, 0, -1200), new Vector(1, 0, 1), new Vector(0, -1, 0)));
+
+        scene.setDistance(900);
+        scene.setBackground(new Color(25,120,230));
+        scene.setAmbientLight(new AmbientLight(new Color(java.awt.Color.WHITE), 0.15));
+
+        scene.addGeometries( //
+                new Sphere(new Color(java.awt.Color.yellow), new Material(0.2, 1, 100, 0, 0), // sun
+                        50, new Point3D(70, -70, 0)),
+                new Sphere(new Color(java.awt.Color.RED), new Material(0.2, 1, 50, 0.55, 0), // inside sun1
+                        30, new Point3D(60, -70, -100)),
+                new Sphere(new Color(java.awt.Color.RED), new Material(0.2, 1, 100, 1, 0), // inside sun2
+                        20, new Point3D(25, -70, -200)),
+
+                new Sphere(new Color(java.awt.Color.white), new Material(0.2, 0.2, 0, 0, 0), //cloude
+                        15, new Point3D(-47, -50, -250)),
+                new Sphere(new Color(java.awt.Color.white), new Material(0.2, 0.2, 0, 0, 0), //cloude
+                        15, new Point3D(-25 ,-35, -270)),
+                new Sphere(new Color(java.awt.Color.white), new Material(0.2, 0.2, 0, 0, 0), //cloude
+                        20, new Point3D(-17 ,-55, -250)),
+
+                new Polygon(new Color(java.awt.Color.BLACK), new Material(1, 0.25, 5,0, 0.5) ,//tree
+                        new Point3D(20, 115, 200), new Point3D(40, 115, 200), new Point3D(40, 50, 200),new Point3D(20, 50, 200)),
+                new Triangle(new Color(java.awt.Color.green), new Material(0.5, 0.5, 300,0, 0.6), //
+                        new Point3D(30, -25, 130),  new Point3D(0, 50, 115),new Point3D(60, 50, 115)), //
+
+                new Polygon(new Color(java.awt.Color.red), new Material(1, 0.25, 5,0.3, 0) ,//house
+                        new Point3D(-80, 115, 115), new Point3D(-30, 115, 115), new Point3D(-30, 50, 115),new Point3D(-80, 50, 115)),
+                new Triangle(Color.BLACK, new Material(0.5, 1, 200), //
+                        new Point3D(-55, 10, 130),  new Point3D(-30, 50, 115),new Point3D(-80, 50, 115)));
+
+
+
+        scene.addLights(new SpotLight(new Color(600, 400, 400), //shade
+                new Point3D(-15, -80, -300), new Vector(0, 10, 3), 1, 4E-5, 2E-7));
+
+        scene.addLights(new SpotLight(new Color(400, 200, 200), //sun light
+                new Point3D(10, -70, -300)  , new Vector(1, 0, 1), 1, 4E-5, 2E-7));
+
+        ImageWriter imageWriter = new ImageWriter("bonusTestMove", 200, 200, 600, 600);
         Render render = new Render(imageWriter, scene);
 
         render.renderImage();

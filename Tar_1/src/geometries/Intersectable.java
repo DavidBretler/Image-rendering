@@ -61,7 +61,7 @@ public interface Intersectable
 
     /**
      * @param ray ray pointing toward a Gepmtry
-     * @return List<GeoPoint> return values
+     * return List GeoPoint  return values
      */
     default List<GeoPoint> findIntersections(Ray ray) {
         return findIntersections(ray, Double.POSITIVE_INFINITY);
