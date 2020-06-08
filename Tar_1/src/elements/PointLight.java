@@ -104,4 +104,8 @@ public double radius;
         }
         return point.subtract(_positionOfLight).normalize();
     }
+
+    public Point3D get_positionOfLight() {
+        return _positionOfLight;
+    }
 }

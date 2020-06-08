@@ -314,7 +314,7 @@ public class Render {
          * @param geopoint  the inter point
          * @return transparency and shade effect on the intersection point
          */
-/*
+
     private double transparency(LightSource light, Vector l, Vector n, GeoPoint geopoint) {
         Vector lightDirection = l.scale(-1); // from point to light source
         double ktr = 0d;
@@ -336,9 +336,11 @@ public class Render {
             //Nx and Ny are the width and height of the image.
             int Nx = _imageWriter.getNx(); //columns
             int Ny = _imageWriter.getNy(); //rows
-            List<Ray> rays = camera.beemFromPoint(Nx, Ny, geopoint.getPoint(), distance, width, height, densitiy, Amount);
-            double shadeFactor = 1 / rays.size();
-            for (Ray ray : rays) {
+            List<Ray> rays = camera.beemFromPoint(Nx, Ny, geopoint.getPoint(), distance, width, height, densitiy, Amount,temp);
+            double shadeFactor = (1d / (double)rays.size());
+            for (Ray ray : rays)
+            {
+
                 Ray lightRay = new Ray(geopoint.getPoint(), lightDirection, n);//ray with adjusment
                 Point3D pointGeo = geopoint.getPoint();
 
@@ -380,17 +382,22 @@ public class Render {
             }
 
         }
-
+        if (ktr>1)
+            ktr=1;
+       if(ktr<0)
+          ktr=0;
+       if(ktr<1)
+           ktr=ktr;
         return ktr;
     }
-*/
-    /**
+/*
+    *//**
      * @param light
      * @param l
      * @param n
      * @param geopoint
      * @return
-     */
+     *//*
     private double transparency(LightSource light, Vector l, Vector n, GeoPoint geopoint) {
         Vector lightDirection = l.scale(-1); // from point to light source
         Ray lightRay = new Ray(geopoint.getPoint(), lightDirection, n);//ray with adjusment
@@ -412,7 +419,8 @@ public class Render {
             }
         }
         return ktr;
-    }
+    }*/
+
     /**
      * calc the reflection direction
      * @param normal
@@ -490,6 +498,8 @@ public class Render {
     }
 
     //this function improves ray tracing by making multiple rays through different parts of the pixel
+
+
     private List<Ray> getRaysThroughPixel(double x, double y){
 
         //the ratio of the screen dimensions to the number of pixels

@@ -116,6 +116,11 @@ public class Vector {
 
                 ));
     }
+    public Vector createorthogonalVec ()
+    {
+        return new Vector(-(this.get_head()._y.get()+(this.get_head()._z.get())/this.get_head()._x.get()),1,1).normalized();
+
+    }
 
     /**
      * calculat squared length

@@ -159,29 +159,36 @@ public class Camera {
     }
 
 
-    public  List<Ray> beemFromPoint(int nX, int nY, Point3D _p,
+    public  List<Ray> beemFromPoint(int nX, int nY, Point3D StartOfRay,
                                     double screenDistance, double screenWidth, double screenHeight,
-                                    double density, int amount)
+                                    double density, int amount,PointLight light)
         {
             List<Ray> rays = new LinkedList<>();
 
             double ratioY = screenHeight / nY;
             double ratioX = screenWidth / nX;
             double index=Math.sqrt(amount);
-        //    double density2=Math.sqrt(index);
+            double radius=light.getRadius();
+            Point3D DirectionOfRay= light.get_positionOfLight();
+            Vector VecTolight=DirectionOfRay.subtract(StartOfRay);
+            Vector ortganl1=VecTolight.createorthogonalVec();
+            Vector ortognal2=VecTolight.crossProduct(ortganl1);
+
+            //    double density2=Math.sqrt(index);
         for (int row = 0; row < index; row++) //create ray's
         {
             for (int column = 0; column < index; column++)
-            {  Point3D point = new Point3D(_p);
+            {
 
                 if (!isZero(row)) {
-                    point = point.add(_vRight.scale(density*(row*ratioX)/index));
+                    DirectionOfRay = DirectionOfRay.add(ortganl1.scale((row*radius)/index));
                 }
                 if (!isZero(column)) {
-                    point = point.add(_vUp.scale(density*(column*ratioY)/index));
+                    DirectionOfRay = DirectionOfRay.add(ortognal2.scale((column*radius)/index));
                 }
-                rays.add(new Ray(_p0, point.subtract(_p0)));//add new ray to list of ray's from point
-            }}
+                rays.add(new Ray(StartOfRay,VecTolight));//add new ray to list of ray's from point
+            }
+        }
         return rays;
     }
 }
