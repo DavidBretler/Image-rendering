@@ -321,7 +321,7 @@ public class Render {
 
         PointLight temp = new PointLight();
         if ((!(light instanceof DirectionalLight)))//Might be bugs!
-            temp = (PointLight) light;
+            temp = (PointLight) light;//to check if it have radios
         if (!isZero(temp.radius)) {
             java.awt.Color background = _scene.getBackground().getColor();
             Camera camera = _scene.getCamera();
@@ -336,7 +336,9 @@ public class Render {
             //Nx and Ny are the width and height of the image.
             int Nx = _imageWriter.getNx(); //columns
             int Ny = _imageWriter.getNy(); //rows
-            List<Ray> rays = camera.beemFromPoint(Nx, Ny, geopoint.getPoint(), distance, width, height, densitiy, Amount,temp);
+            List<Ray> rays = camera.beemFromPoint(Nx, Ny, geopoint.getPoint()
+             ,distance, width, height, densitiy, Amount,temp); //get list of rays from pixel to light sphere
+
             double shadeFactor = (1d / (double)rays.size());
             for (Ray ray : rays)
             {
@@ -345,7 +347,7 @@ public class Render {
                 Point3D pointGeo = geopoint.getPoint();
 
                 List<GeoPoint> intersections = _scene.getGeometries().findIntersections(lightRay);
-                if (intersections == null)
+                if (intersections == null)//in nothig blockes add all whait of ray ktr
                     ktr += shadeFactor;
                 else {
                     double lightDistance = light.getDistance(pointGeo);
@@ -361,7 +363,8 @@ public class Render {
                 }
             }
 
-        } else
+        }
+        else
             {
             Ray lightRay = new Ray(geopoint.getPoint(), lightDirection, n);//ray with adjusment
             Point3D pointGeo = geopoint.getPoint();
