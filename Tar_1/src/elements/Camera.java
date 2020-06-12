@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Random;
 import static primitives.Util.isZero;
 import  java.lang.Math;
+import java.util.stream.Collectors;
+
 public class Camera {
     Point3D _p0;
     Vector _vTo;
@@ -21,15 +23,15 @@ public class Camera {
     }
 
     public Vector get_vTo() {
-        return _vTo;
+        return _vTo.normalize();
     }
 
     public Vector get_vUp() {
-        return _vUp;
+        return _vUp.normalize();
     }
 
     public Vector get_vRight() {
-        return _vRight;
+        return _vRight.normalize();
     }
 
     /**
@@ -47,9 +49,7 @@ public class Camera {
         this._vTo = _vTo.normalized();
 
         this._vUp = _vUp.normalized();
-        this._vRight =   this._vUp.crossProduct(this._vTo).scale(-1);
-
-
+        this._vRight = this._vUp.crossProduct(this._vTo).scale(-1);
 
 
     }
@@ -87,23 +87,22 @@ public class Camera {
         if (!isZero(yi))
             Pij = Pij.add((_vUp.scale(-yi)));
 
-        Vector Vij = Pij.subtract(_p0);
+        Vector Vij = Pij.subtract(_p0).normalize();
 
         return new Ray(_p0, Vij);
 
     }
 
     /**
-     *
-     * @param nX number of pixel in x axis
-     * @param nY number of pixel in y axis
-     * @param j index in x axis
-     * @param i index in x axis
+     * @param nX             number of pixel in x axis
+     * @param nY             number of pixel in y axis
+     * @param j              index in x axis
+     * @param i              index in x axis
      * @param screenDistance distance form camera to view plane
-     * @param screenWidth screen width
-     * @param screenHeight screen height
-     * @param density the density factor  of the ray's in the beam
-     * @param amount number of ray's in beam
+     * @param screenWidth    screen width
+     * @param screenHeight   screen height
+     * @param density        the density factor  of the ray's in the beam
+     * @param amount         number of ray's in beam
      * @return list of ray's in the pixel
      */
     public List<Ray> constructRayBeamThroughPixel(int nX, int nY, int j, int i,
@@ -133,62 +132,26 @@ public class Camera {
             Pij = Pij.subtract(_vUp.scale(yi).get_head()).get_head();
         }
 
-        //antialiasing density >= 1
-  //      double radius = (ratioX + ratioY) / 2d * density; //calc  the size of the beam
-     //   if(radius > ratioX||radius > ratioY)
-       //     radius=ratioX;
 
-        double index=Math.sqrt(amount);
-     //   double density2=Math.sqrt(index);
+        double index = Math.sqrt(amount);
+        //   double density2=Math.sqrt(index);
         for (int row = 0; row < index; row++) //create ray's
         {
-            for (int column = 0; column < index; column++)
-            {  Point3D point = new Point3D(Pij);
+            for (int column = 0; column < index; column++) {
+                Point3D point = new Point3D(Pij);
 
-
-            if (!isZero(row)) {
-                point = point.add(_vRight.scale((0.1+rnd.nextDouble())*density*(row*ratioX)/index));
-            }
-            if (!isZero(column)) {
-                point = point.add(_vUp.scale(density*((0.1+rnd.nextDouble())*column*ratioY)/index));
-            }
-            rays.add(new Ray(_p0, point.subtract(_p0)));//add new ray to list of ray's from point
-        }
-        }
-        return rays;
-    }
-
-
-    public  List<Ray> beemFromPoint(int nX, int nY, Point3D StartOfRay,
-                                    double screenDistance, double screenWidth, double screenHeight,
-                                    double density, int amount,PointLight light)
-        {
-            List<Ray> rays = new LinkedList<>();
-
-            double ratioY = screenHeight / nY;
-            double ratioX = screenWidth / nX;
-            double index=Math.sqrt(amount);
-            double radius=light.getRadius();
-            Point3D DirectionOfRay= light.get_positionOfLight();
-            Vector VecTolight=DirectionOfRay.subtract(StartOfRay);
-            Vector ortganl1=VecTolight.createorthogonalVec();
-            Vector ortognal2=VecTolight.crossProduct(ortganl1);
-
-            //    double density2=Math.sqrt(index);
-        for (int row = 0; row < index; row++) //create ray's
-        {
-            for (int column = 0; column < index; column++)
-            {
 
                 if (!isZero(row)) {
-                    DirectionOfRay = DirectionOfRay.add(ortganl1.scale((row*radius)/index));
+                    point = point.add(_vRight.scale((0.1 + rnd.nextDouble()) * density * (row * ratioX) / index));
                 }
                 if (!isZero(column)) {
-                    DirectionOfRay = DirectionOfRay.add(ortognal2.scale((column*radius)/index));
+                    point = point.add(_vUp.scale(density * ((0.1 + rnd.nextDouble()) * column * ratioY) / index));
                 }
-                rays.add(new Ray(StartOfRay,VecTolight));//add new ray to list of ray's from point
+                rays.add(new Ray(_p0, point.subtract(_p0)));//add new ray to list of ray's from point
             }
         }
         return rays;
     }
 }
+
+

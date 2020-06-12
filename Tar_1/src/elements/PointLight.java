@@ -2,7 +2,12 @@ package elements;
 
 import primitives.Color;
 import primitives.Point3D;
+import primitives.Ray;
 import primitives.Vector;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * light source from a specific point
@@ -66,6 +71,27 @@ public double radius;
         this(colorIntensity, position, 1d, 0d, 0d);
     }
 
+    public List<Vector> getListRaysToLight(Point3D p) {
+        // double size = _radius * _radius * Math.PI;
+        List<Point3D> pointLights = new LinkedList<Point3D>();
+        for (int x = 0; x < radius; x++)
+            for (int y = 0; y < radius; y++)
+                for (int z = 0; z < radius; z++) {
+                    pointLights.add(new Point3D(_positionOfLight.get_x().get() + x, _positionOfLight.get_y().get() + y, _positionOfLight.get_z().get() + z));
+                    pointLights.add(new Point3D(-_positionOfLight.get_x().get() + x, -_positionOfLight.get_y().get() + y, -_positionOfLight.get_z().get() + z));
+
+                }
+        pointLights=pointLights.stream().distinct().collect(Collectors.toList());
+        if (p.equals(_positionOfLight)) {
+            return null;
+        }
+        List<Vector> allSubstract = new LinkedList<Vector>();
+        for (Point3D po : pointLights)
+            allSubstract.add(p.subtract(po).normalize());
+        return allSubstract;
+
+    }
+
     /**
      *     overriding Light getIntensity()
      */
@@ -107,5 +133,40 @@ public double radius;
 
     public Point3D get_positionOfLight() {
         return _positionOfLight;
+    }
+
+    public  List<Ray> beemFromPoint(Point3D StartOfRay, PointLight light)
+    //(int nX, int nY, Point3D StartOfRay,
+    //  double screenDistance, double screenWidth, double screenHeight,
+    //   double density, int amount,PointLight light)
+    {
+        List<Ray> rays = new LinkedList<>();
+
+        //   double ratioY = screenHeight / nY;
+        //   double ratioX = screenWidth / nX;
+        //  double index=Math.sqrt(amount);
+        //   double radius=light.getRadius();
+        Point3D DirectionOfRay= light.get_positionOfLight();
+        /*    Vector VecTolight=DirectionOfRay.subtract(StartOfRay);
+            Vector ortganl1=VecTolight.createorthogonalVec();
+            Vector ortognal2=VecTolight.crossProduct(ortganl1);*/
+
+        //    double density2=Math.sqrt(index);
+        for (int x = 0; x <= light.radius; x++) //create ray's
+        {
+            for (int y = 0; y <= light.radius; y++)
+            {
+                for (int z = 0; z <= light.radius; z++)
+                {
+
+                    rays.add(new Ray(StartOfRay, (new Vector(DirectionOfRay.get_x().get() + x, DirectionOfRay.get_y().get() + y, DirectionOfRay.get_z().get() + z))));
+
+                    rays.add(new Ray(StartOfRay, (new Vector(-DirectionOfRay.get_x().get() + x, -DirectionOfRay.get_y().get() + y, -DirectionOfRay.get_z().get() + z))));
+
+                }
+            }
+        }
+
+        return rays;
     }
 }

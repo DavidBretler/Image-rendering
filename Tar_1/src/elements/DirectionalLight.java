@@ -7,11 +7,12 @@ import primitives.Vector;
 /**
  *Light source  that is far away  has  only a direction
  */
-public class DirectionalLight extends Light implements LightSource {
+public class
+DirectionalLight extends Light implements LightSource {
     private  Vector _direction;
 
     public void set_direction(Vector _direction) {
-        this._direction = _direction;
+        this._direction = _direction.normalize();
     }
 
     /**
@@ -29,7 +30,7 @@ public class DirectionalLight extends Light implements LightSource {
 
     @Override
     public Vector getLightDirection(Point3D p) {
-        return _direction;
+        return _direction.normalize();
     }
 
     @Override
