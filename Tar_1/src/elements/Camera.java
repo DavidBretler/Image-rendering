@@ -105,14 +105,14 @@ public class Camera {
      * @param amount         number of ray's in beam
      * @return list of ray's in the pixel
      */
-    public List<Ray> constructRayBeamThroughPixel(int nX, int nY, int j, int i,
+    public LinkedList<Ray> constructRayBeamThroughPixel(int nX, int nY, int j, int i,
                                                   double screenDistance, double screenWidth, double screenHeight,
                                                   double density, int amount) {
         if (isZero(screenDistance)) {
             throw new IllegalArgumentException("distance cannot be 0"); //view plane is on the camera
         }
 
-        List<Ray> rays = new LinkedList<>();
+        LinkedList<Ray> rays = new LinkedList<>();
 
         Point3D pixCenter = _p0.add(_vTo.scale(screenDistance)); //
 

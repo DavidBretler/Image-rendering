@@ -6,13 +6,13 @@ import geometries.Intersectable.GeoPoint;
 import scene.Scene;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
 public class Render {
-
     private static final  double DELTA=0.1;
     private static final int MAX_CALC_COLOR_LEVEL = 40; //the max recrusiv calc
     private static final double MIN_CALC_COLOR_K = 0.000000001;
@@ -21,6 +21,198 @@ public class Render {
     private double densitiy;
     private Scene _scene;
     private ImageWriter _imageWriter;
+        // ...........
+        private int _threads = 1;
+        private final int SPARE_THREADS = 2;
+        private boolean _print = false;
+
+        /**
+         * Pixel is an internal helper class whose objects are associated with a Render object that
+         * they are generated in scope of. It is used for multithreading in the Renderer and for follow up
+         * its progress.<br/>
+         * There is a main follow up object and several secondary objects - one in each thread.
+         * @author Dan
+         *
+         */
+        private class Pixel {
+            private long _maxRows = 0;
+            private long _maxCols = 0;
+            private long _pixels = 0;
+            public volatile int row = 0;
+            public volatile int col = -1;
+            private long _counter = 0;
+            private int _percents = 0;
+            private long _nextCounter = 0;
+
+            /**
+             * The constructor for initializing the main follow up Pixel object
+             * @param maxRows the amount of pixel rows
+             * @param maxCols the amount of pixel columns
+             */
+            public Pixel(int maxRows, int maxCols) {
+                _maxRows = maxRows;
+                _maxCols = maxCols;
+                _pixels = maxRows * maxCols;
+                _nextCounter = _pixels / 100;
+                if (Render.this._print) System.out.printf("\r %02d%%", _percents);
+            }
+
+            /**
+             *  Default constructor for secondary Pixel objects
+             */
+            public Pixel() {}
+
+            /**
+             * Internal function for thread-safe manipulating of main follow up Pixel object - this function is
+             * critical section for all the threads, and main Pixel object data is the shared data of this critical
+             * section.<br/>
+             * The function provides next pixel number each call.
+             * @param target target secondary Pixel object to copy the row/column of the next pixel
+             * @return the progress percentage for follow up: if it is 0 - nothing to print, if it is -1 - the task is
+             * finished, any other value - the progress percentage (only when it changes)
+             */
+            private synchronized int nextP(Pixel target) {
+                ++col;
+                ++_counter;
+                if (col < _maxCols) {
+                    target.row = this.row;
+                    target.col = this.col;
+                    if (_counter == _nextCounter) {
+                        ++_percents;
+                        _nextCounter = _pixels * (_percents + 1) / 100;
+                        return _percents;
+                    }
+                    return 0;
+                }
+                ++row;
+                if (row < _maxRows) {
+                    col = 0;
+                    if (_counter == _nextCounter) {
+                        ++_percents;
+                        _nextCounter = _pixels * (_percents + 1) / 100;
+                        return _percents;
+                    }
+                    return 0;
+                }
+                return -1;
+            }
+
+            /**
+             * Public function for getting next pixel number into secondary Pixel object.
+             * The function prints also progress percentage in the console window.
+             * @param target target secondary Pixel object to copy the row/column of the next pixel
+             * @return true if the work still in progress, -1 if it's done
+             */
+            public boolean nextPixel(Pixel target) {
+                int percents = nextP(target);
+                if (percents > 0)
+                    if (Render.this._print) System.out.printf("\r %02d%%", percents);
+                if (percents >= 0)
+                    return true;
+                if (Render.this._print) System.out.printf("\r %02d%%", 100);
+                return false;
+            }
+        }
+    /**
+     * Filling the buffer according to the geometries that are in the scene.
+     * This function does not creating the picture file, but create the buffer pf pixels
+     * culcs avrage of multiply ray from a pixel that crate ane middele color in the end of shape to crate smoother look
+     */
+   /* public void renderImage() {
+       java.awt.Color background = _scene.getBackground().getColor();
+        Camera camera = _scene.getCamera();
+        Intersectable geometries = _scene.getGeometries();
+        double distance = _scene.getDistance();
+
+        //width and height are the number of pixels in the rows
+        //and columns of the view plane
+        int width = (int) _imageWriter.getWidth();
+        int height = (int) _imageWriter.getHeight();
+
+        //Nx and Ny are the width and height of the image.
+        int Nx = _imageWriter.getNx(); //columns
+        int Ny = _imageWriter.getNy(); //rows
+        //pixels grid
+        if(densitiy ==0d)
+            for (int row = 0; row < Ny; ++row) {
+                for (int column = 0; column < Nx; ++column)*/
+
+
+    /**
+         * This function renders image's pixel color map from the scene included with
+         * the Renderer object
+         */
+        public void renderImage() {
+            final int nX = _imageWriter.getNx();
+            final int nY =_imageWriter.getNy();
+            final double dist = _scene.getDistance();
+            final double width = _imageWriter.getWidth();
+            final double height = _imageWriter.getHeight();
+            final Camera camera = _scene.getCamera();
+
+            final Pixel thePixel = new Pixel(nY, nX);
+
+            // Generate threads
+            Thread[] threads = new Thread[_threads];
+            for (int i = _threads - 1; i >= 0; --i) {
+                threads[i] = new Thread(() ->
+                {
+                    Pixel pixel = new Pixel();
+                    while (thePixel.nextPixel(pixel)) {
+                        LinkedList<Ray> rays=new LinkedList<Ray>();
+
+                        if (this.Amount<=1)
+                        { rays.add( camera.constructRayThroughPixel(nX, nY, pixel.col, pixel.row,dist, width, height));
+                        _imageWriter.writePixel(pixel.col, pixel.row, calcColor(rays).getColor());}
+                        else
+                        { rays=(camera.constructRayBeamThroughPixel(nX, nY, pixel.col, pixel.row, dist, (double)width, (double)height, this.densitiy, this.Amount));
+                            _imageWriter.writePixel(pixel.col, pixel.row, calcColor(rays).getColor());}
+
+                    }
+                });
+            }
+
+            // Start threads
+            for (Thread thread : threads) thread.start();
+
+            // Wait for all threads to finish
+            for (Thread thread : threads) try { thread.join(); } catch (Exception e) {}
+            if (_print) System.out.printf("\r100%%\n");
+        }
+
+        /**
+         * Set multithreading <br>
+         * - if the parameter is 0 - number of coress less 2 is taken
+         *
+         * @param threads number of threads
+         * @return the Render object itself
+         */
+        public Render setMultithreading(int threads) {
+            if (threads < 0)
+                throw new IllegalArgumentException("Multithreading patameter must be 0 or higher");
+            if (threads != 0)
+                _threads = threads;
+            else {
+                int cores = Runtime.getRuntime().availableProcessors() - SPARE_THREADS;
+                if (cores <= 2)
+                    _threads = 1;
+                else
+                    _threads = cores;
+            }
+            return this;
+        }
+
+        /**
+         * Set debug printing on
+         *
+         * @return the Render object itself
+         */
+        public Render setDebugPrint() {
+            _print = true;
+            return this;
+        }
+
+
 
     private static  final int MAX_RAYS = 6;
     public Render(Scene _scene) {
@@ -43,86 +235,6 @@ public class Render {
 
     public Scene get_scene() {
         return _scene;
-    }
-
-    /**
-     * Filling the buffer according to the geometries that are in the scene.
-     * This function does not creating the picture file, but create the buffer pf pixels
-     * culcs avrage of multiply ray from a pixel that crate ane middele color in the end of shape to crate smoother look
-     */
-    public void renderImage() {
-        java.awt.Color background = _scene.getBackground().getColor();
-        Camera camera = _scene.getCamera();
-        Intersectable geometries = _scene.getGeometries();
-        double distance = _scene.getDistance();
-
-        //width and height are the number of pixels in the rows
-        //and columns of the view plane
-        int width = (int) _imageWriter.getWidth();
-        int height = (int) _imageWriter.getHeight();
-
-        //Nx and Ny are the width and height of the image.
-        int Nx = _imageWriter.getNx(); //columns
-        int Ny = _imageWriter.getNy(); //rows
-        //pixels grid
-        if(densitiy ==0d)
-        for (int row = 0; row < Ny; ++row) {
-            for (int column = 0; column < Nx; ++column) {
-                Ray ray = camera.constructRayThroughPixel(Nx, Ny, column, row, distance, width, height);
-                List<GeoPoint> intersectionPoints = geometries.findIntersections(ray);
-
-                if (intersectionPoints == null)
-                    _imageWriter.writePixel(column, row, background);
-
-                else
-                    {
-                    GeoPoint closestPoint = getClosestPoint(intersectionPoints);
-                    java.awt.Color pixelColor = calcColor(closestPoint,ray ).getColor();
-                    _imageWriter.writePixel(column, row, pixelColor);
-                }
-            }
-        }
-
- else {    //supersampling
-            for (int row = 0; row < Ny; row++)
-            {
-                for (int collumn = 0; collumn < Nx; collumn++) {
-                        List<Ray> rays = camera.constructRayBeamThroughPixel(Nx, Ny, collumn, row, distance, width, height, densitiy,Amount);
-                    Color averageColor = Color.BLACK;
-                    //makes a list of the multiple rays that goes through different parts of the pixel
-                  //  List<Ray> rays = getRaysThroughPixel(row, collumn);
-
-                    //will store the colors in that pixel in a list later
-                    //  List<Color> raysColors = new ArrayList<>();
-
-                    Color Bckg = new Color(background);
-                    double SumR=0;
-                    double SumB=0;
-                    double SumG=0;
-                    for (Ray ray : rays) {
-                        GeoPoint closestPoint = findClosestIntersection(ray);
-                        if (closestPoint == null) {
-                            //   averageColor = averageColor.add(Bckg);
-                            SumR = Bckg.get_r();
-                            SumB = Bckg.get_b();
-                            SumG = Bckg.get_g();
-                        } else {
-                            //   averageColor = averageColor.add(calcColor(closestPoint, ray));
-                            Color c = calcColor(closestPoint, ray);
-                            SumR += c.get_r();
-                            SumB += c.get_b();
-                            SumG += c.get_g();
-                        }
-
-                        averageColor = new Color(SumR / rays.size(), SumG / rays.size(), SumB / rays.size());
-                        //averageColor.scale(1d / rays.size());
-                    }
-                    if(averageColor.get_b()!=0)
-                        averageColor=averageColor;
-                    _imageWriter.writePixel(collumn, row, averageColor.getColor());
-                }
-            }
-        }
     }
 
 
@@ -208,16 +320,42 @@ public class Render {
 
     /**
      * the entail call to calc color of the pixel
-     * @param geoPoint the shape and point
-     * @param inRay the ray intersecting the point
      * @return
      */
-    private Color calcColor(GeoPoint geoPoint, Ray inRay) {
-        GeoPoint ClosesPoint =findClosestIntersection(inRay);
-        Color resultColor =_scene.getAmbientLight().get_intensity();
-        resultColor=resultColor.add(calcColor(ClosesPoint,inRay,MAX_CALC_COLOR_LEVEL,1.0));
+    private Color calcColor(LinkedList<Ray> rays) {
+        if (rays.size() == 1) {
+            GeoPoint ClosesPoint = findClosestIntersection(rays.get(0));
+            Color resultColor = _scene.getAmbientLight().get_intensity();
+            return resultColor = resultColor.add(calcColor(ClosesPoint, rays.get(0), MAX_CALC_COLOR_LEVEL, 1.0));
+        } else {
+            Color averageColor = Color.BLACK;
 
-        return resultColor;
+
+            Color Bckg = new Color(_scene.getBackground());
+            double SumR = 0;
+            double SumB = 0;
+            double SumG = 0;
+            for (Ray ray : rays) {
+                GeoPoint closestPoint = findClosestIntersection(ray);
+                if (closestPoint == null) {
+                    SumR = Bckg.get_r();
+                    SumB = Bckg.get_b();
+                    SumG = Bckg.get_g();
+                } else {
+                    LinkedList<Ray> rays1 = new LinkedList<>();
+                    rays1.add(ray);
+                    Color c = calcColor(rays1);
+                    SumR += c.get_r();
+                    SumB += c.get_b();
+                    SumG += c.get_g();
+                }
+
+                averageColor = new Color(SumR / rays.size(), SumG / rays.size(), SumB / rays.size());
+
+            }
+            return averageColor;
+        }
+
     }
     /**
      *

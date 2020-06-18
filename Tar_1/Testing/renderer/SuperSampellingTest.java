@@ -27,7 +27,7 @@ class SuperSampellingTest {
      * sphere Triangle- Super Sampel
      * run time : 1 min 38 sec
      */
-   /* @Test
+    @Test
     public void sphereTriangleSuperSampel() {
         Scene scene = new Scene("sphereTriangleInitial Super Sampel");
         scene.setCamera(new Camera(new Point3D(0.0D, 0.0D, -1000.0D), new Vector(0.0D, 0.0D, 1.0D), new Vector(0.0D, -1.0D, 0.0D)));
@@ -41,7 +41,7 @@ class SuperSampellingTest {
         render.renderImage();
         render.writeToImage();
     }
-
+    /*
     *//**
      *Sphere Triangle Super Sampeling And SoftShadow
      * run time : 14 min 56 sec
