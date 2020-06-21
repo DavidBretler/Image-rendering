@@ -20,6 +20,7 @@ public abstract class RadialGeometry extends Geometry {
 
     public RadialGeometry(double _radius) {
         this._radius = _radius;
+
     }
 
     public RadialGeometry(RadialGeometry other) {

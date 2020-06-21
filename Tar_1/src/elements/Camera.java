@@ -124,11 +124,13 @@ public class Camera {
 
         Point3D Pij = pixCenter;
 
-        //move the pixel to pixel
-        if (!isZero(xj)) {
+        //move the  center point to wanted pixel
+        if (!isZero(xj))
+        {
             Pij = Pij.add(_vRight.scale(xj));
         }
-        if (!isZero(yi)) {
+        if (!isZero(yi))
+        {
             Pij = Pij.subtract(_vUp.scale(yi).get_head()).get_head();
         }
 
@@ -150,6 +152,8 @@ public class Camera {
                 rays.add(new Ray(_p0, point.subtract(_p0)));//add new ray to list of ray's from point
             }
         }
+        if (rays.size()<2)
+            rays=rays;
         return rays;
     }
 }

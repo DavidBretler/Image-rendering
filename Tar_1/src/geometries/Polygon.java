@@ -41,7 +41,7 @@ public class Polygon extends Geometry {
      */
     public Polygon(Color emission,Material _material ,Point3D... vertices) {
         this(vertices);
-        set_emission(emission);
+        this._emission=emission;
         this._material=_material;
 
     }

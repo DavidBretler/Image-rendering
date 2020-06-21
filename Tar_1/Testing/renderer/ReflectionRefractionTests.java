@@ -168,6 +168,7 @@ public class ReflectionRefractionTests {
  * tree spheres shading a "house"
  * triangle reflecting the "sun"
  */
+
     public void allefectTest10sheapBounos() {
         Scene scene = new Scene("Test scene");
         scene.setCamera(new Camera(new Point3D(0, 0, -1000), new Vector(0, 0, 1), new Vector(0, -1, 0)));
@@ -175,7 +176,7 @@ public class ReflectionRefractionTests {
         scene.setBackground(new Color(25,120,230));
         scene.setAmbientLight(new AmbientLight(new Color(java.awt.Color.WHITE), 0.15));
 
-        scene.addGeometries( //
+        scene.addGeometries(
                  new Sphere(new Color(java.awt.Color.yellow), new Material(0.2, 1, 100, 0, 0), // sun
                         50, new Point3D(70, -70, 0)),
                 new Sphere(new Color(java.awt.Color.RED), new Material(0.2, 1, 50, 0.55, 0), // inside sun1
@@ -207,18 +208,21 @@ public class ReflectionRefractionTests {
         scene.addLights(new SpotLight(new Color(400, 200, 200), //sun light
                          new Point3D(10, -70, -300)  , new Vector(1, 0, 1), 1, 4E-5, 2E-7));
 
-        ImageWriter imageWriter = new ImageWriter("bonusTest", 200, 200, 600, 600);
+        ImageWriter imageWriter = new ImageWriter("bonusTest2", 200, 200, 600, 600);
         Render render = new Render(imageWriter, scene);
 
         render.renderImage();
         render.writeToImage();
     }
-    /**
-     *Produce a picture of tree spheres with partly tranpresty reflecting on triangle
-     * tree spheres shading a "house"
-     * triangle reflecting the "sun"
-     * we moved the camera to 45 degrees left and 200 back
-     */
+
+
+
+        /**
+         *Produce a picture of tree spheres with partly tranpresty reflecting on triangle
+         * tree spheres shading a "house"
+         * triangle reflecting the "sun"
+         * we moved the camera to 45 degrees left and 200 back
+         */
     @Test
     public void allefectTest10sheapBounosMove() {
         Scene scene = new Scene("Test scene");

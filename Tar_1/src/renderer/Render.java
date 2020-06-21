@@ -23,7 +23,7 @@ public class Render {
     private ImageWriter _imageWriter;
         // ...........
         private int _threads = 1;
-        private final int SPARE_THREADS = 2;
+        private final int SPARE_THREADS = 5;
         private boolean _print = false;
 
         /**
@@ -113,34 +113,12 @@ public class Render {
                 return false;
             }
         }
-    /**
-     * Filling the buffer according to the geometries that are in the scene.
-     * This function does not creating the picture file, but create the buffer pf pixels
-     * culcs avrage of multiply ray from a pixel that crate ane middele color in the end of shape to crate smoother look
-     */
-   /* public void renderImage() {
-       java.awt.Color background = _scene.getBackground().getColor();
-        Camera camera = _scene.getCamera();
-        Intersectable geometries = _scene.getGeometries();
-        double distance = _scene.getDistance();
 
-        //width and height are the number of pixels in the rows
-        //and columns of the view plane
-        int width = (int) _imageWriter.getWidth();
-        int height = (int) _imageWriter.getHeight();
-
-        //Nx and Ny are the width and height of the image.
-        int Nx = _imageWriter.getNx(); //columns
-        int Ny = _imageWriter.getNy(); //rows
-        //pixels grid
-        if(densitiy ==0d)
-            for (int row = 0; row < Ny; ++row) {
-                for (int column = 0; column < Nx; ++column)*/
 
 
     /**
          * This function renders image's pixel color map from the scene included with
-         * the Renderer object
+         * the Renderer object uses multi-threads method to improve runtime
          */
         public void renderImage() {
             final int nX = _imageWriter.getNx();
@@ -160,13 +138,17 @@ public class Render {
                     Pixel pixel = new Pixel();
                     while (thePixel.nextPixel(pixel)) {
                         LinkedList<Ray> rays=new LinkedList<Ray>();
-
+                        //if amount of ray's is 1 so there is no super smaplling
                         if (this.Amount<=1)
-                        { rays.add( camera.constructRayThroughPixel(nX, nY, pixel.col, pixel.row,dist, width, height));
-                        _imageWriter.writePixel(pixel.col, pixel.row, calcColor(rays).getColor());}
+                        {
+                            rays.add( camera.constructRayThroughPixel(nX, nY, pixel.col, pixel.row,dist, width, height));
+                        _imageWriter.writePixel(pixel.col, pixel.row, calcColor(rays).getColor());
+                        }
                         else
-                        { rays=(camera.constructRayBeamThroughPixel(nX, nY, pixel.col, pixel.row, dist, (double)width, (double)height, this.densitiy, this.Amount));
-                            _imageWriter.writePixel(pixel.col, pixel.row, calcColor(rays).getColor());}
+                        {
+                            rays=(camera.constructRayBeamThroughPixel(nX, nY, pixel.col, pixel.row, dist, (double)width, (double)height, this.densitiy, this.Amount));
+                            _imageWriter.writePixel(pixel.col, pixel.row, calcColor(rays).getColor());
+                        }
 
                     }
                 });
@@ -222,8 +204,8 @@ public class Render {
     public Render( ImageWriter imageWriter,Scene scene) {
         this._imageWriter = imageWriter;
         this._scene = scene;
-        this.densitiy =0d;
-        this.Amount=50;
+        this.densitiy =1d;
+        this.Amount=1;
     }
 
     public Render(  ImageWriter _imageWriter,Scene _scene,int amount, double densitiy) {
@@ -320,27 +302,37 @@ public class Render {
 
     /**
      * the entail call to calc color of the pixel
-     * @return
+     *  calcs avrage of multiply ray from a pixel to create avg color in the end of shape to create smoother look
+     * @return avg color
      */
     private Color calcColor(LinkedList<Ray> rays) {
-        if (rays.size() == 1) {
-            GeoPoint ClosesPoint = findClosestIntersection(rays.get(0));
-            Color resultColor = _scene.getAmbientLight().get_intensity();
-            return resultColor = resultColor.add(calcColor(ClosesPoint, rays.get(0), MAX_CALC_COLOR_LEVEL, 1.0));
-        } else {
+        GeoPoint centerPiX = findClosestIntersection(rays.get(0));
+        Color Bckg = new Color(_scene.getBackground());
+
+ //       if (ClosesPoint==null)
+ //           return Bckg;
+
+        if (rays.size() == 1)
+        {
+            if (centerPiX==null)
+                return Bckg;
+            else
+            {Color resultColor = _scene.getAmbientLight().get_intensity();
+            return  resultColor.add(calcColor(centerPiX, rays.get(0), MAX_CALC_COLOR_LEVEL, 1.0));}
+        }
+        else
+            {
             Color averageColor = Color.BLACK;
 
-
-            Color Bckg = new Color(_scene.getBackground());
             double SumR = 0;
             double SumB = 0;
             double SumG = 0;
             for (Ray ray : rays) {
                 GeoPoint closestPoint = findClosestIntersection(ray);
                 if (closestPoint == null) {
-                    SumR = Bckg.get_r();
-                    SumB = Bckg.get_b();
-                    SumG = Bckg.get_g();
+                    SumR += Bckg.get_r();
+                    SumB += Bckg.get_b();
+                    SumG += Bckg.get_g();
                 } else {
                     LinkedList<Ray> rays1 = new LinkedList<>();
                     rays1.add(ray);
@@ -350,13 +342,53 @@ public class Render {
                     SumG += c.get_g();
                 }
 
-                averageColor = new Color(SumR / rays.size(), SumG / rays.size(), SumB / rays.size());
 
             }
-            return averageColor;
+              averageColor = new Color(SumR / rays.size(), SumG / rays.size(), SumB / rays.size());
+               if( centerPiX!=null)
+               return   averageColor.add(calcColor(centerPiX, rays.get(0), MAX_CALC_COLOR_LEVEL, 1.0));
+                return averageColor;
+            }
+         /*     *//*      Color result = ClosestPoint.getGeometry().get_emission();//original color of geometry
+                Point3D pointGeo = ClosestPoint.getPoint();
+
+                Vector vecGeoCamera = pointGeo.subtract(_scene.getCamera().get_p0()).normalize();//vector from geometry to camera
+                Vector normal = ClosestPoint.getGeometry().getNormal(pointGeo).normalize();
+
+                double DP_Normal_vecGeoCamera = alignZero(normal.dotProduct(vecGeoCamera));
+                if (DP_Normal_vecGeoCamera == 0) {
+                    //ray parallel to geometry surface ??
+                    //and orthogonal to normal
+                    return result;
+                }
+                *//*
+            Material material = ClosestPoint.getGeometry().get_material();
+            int nShininess = material.getnShininess();
+            double kd = material.getKd();
+            double ks = material.getKs();
+            double kr = ClosestPoint.getGeometry().get_material().getKr();
+            double kt = ClosestPoint.getGeometry().get_material().getKt();
+
+            averageColor = new Color(SumR / rays.size(), SumG / rays.size(), SumB / rays.size());
+
+            for (LightSource lightSource : _scene.get_lights()) {
+                Color lightIntensity = lightSource.getIntensity(ClosestPoint.getPoint()).scale(kr);
+                //  averageColor = averageColor.add(getLightSourcesColors(ClosestPoint, kr, result, vecGeoCamera, normal, nShininess, kd, ks));
+                Vector l = lightSource.getLightDirection(ClosestPoint.getPoint()).normalize();
+                Vector n = ClosestPoint.getGeometry().getNormal(ClosestPoint.getPoint()).normalize();
+                double nl = n.dotProduct(l);
+                Vector v = ClosestPoint.getPoint().subtract(_scene.getCamera().get_p0()).normalize();//vector from geometry to camera
+
+                averageColor = averageColor.add(
+                        calcDiffusive(kd, nl, lightIntensity),
+                        calcSpecular(ks, l, n, v, nShininess, lightIntensity));
+            }
+
+
+            return averageColor;*/
         }
 
-    }
+
     /**
      *
      * @param geoPoint the inter point
@@ -372,6 +404,8 @@ public class Render {
             return Color.BLACK; //0,0,0
         }
 
+       // if  (geoPoint==null)
+       //     return _scene.getBackground();
         Color result = geoPoint.getGeometry().get_emission();//original color of geometry
         Point3D pointGeo = geoPoint.getPoint();
 
@@ -393,7 +427,6 @@ public class Render {
         double kt = geoPoint.getGeometry().get_material().getKt();
         double kkr = k * kr;
         double kkt = k * kt;
-
         result = result.add(getLightSourcesColors(geoPoint, k, result, vecGeoCamera, normal, nShininess, kd, ks));
 
         if (kkr > MIN_CALC_COLOR_K) { //start reflected recursiv
@@ -406,7 +439,8 @@ public class Render {
         if (kkt > MIN_CALC_COLOR_K) {//start transparency recursiv
             Ray refractedRay = constructRefractedRay(pointGeo, inRay, normal);
             GeoPoint refractedPoint = findClosestIntersection(refractedRay);
-            if (refractedPoint != null) {
+            if (refractedPoint != null)
+            {
                 result = result.add(calcColor(refractedPoint, refractedRay, level - 1, kkt).scale(kt));
             }
         }
