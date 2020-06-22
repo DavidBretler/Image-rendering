@@ -39,6 +39,7 @@ public interface Intersectable
         }
 
 
+        public GeoPoint() { }
 
         /**
          * constructor with 2 parms

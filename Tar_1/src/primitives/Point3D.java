@@ -32,6 +32,10 @@ public class Point3D {
         this( new Coordinate(_x),new Coordinate(_y),new Coordinate(_z));
     }
 
+    public Point3D() {
+
+    }
+
 
     /**
      *

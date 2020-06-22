@@ -26,7 +26,11 @@ public class Render {
         private final int SPARE_THREADS = 5;
         private boolean _print = false;
 
-        /**
+    public Render() {
+
+    }
+
+    /**
          * Pixel is an internal helper class whose objects are associated with a Render object that
          * they are generated in scope of. It is used for multithreading in the Renderer and for follow up
          * its progress.<br/>
@@ -276,7 +280,7 @@ public class Render {
      * @param ray intersecting the scene
      * @return the closest point
      */
-    private GeoPoint findClosestIntersection(Ray ray) {
+    public GeoPoint findClosestIntersection(Ray ray) {
 
         if (ray == null) {
             return null;
@@ -317,8 +321,9 @@ public class Render {
             if (centerPiX==null)
                 return Bckg;
             else
-            {Color resultColor = _scene.getAmbientLight().get_intensity();
-            return  resultColor.add(calcColor(centerPiX, rays.get(0), MAX_CALC_COLOR_LEVEL, 1.0));}
+            {
+                Color resultColor = _scene.getAmbientLight().get_intensity();
+                 return  resultColor.add(calcColor(centerPiX, rays.get(0), MAX_CALC_COLOR_LEVEL, 1.0));}
         }
         else
             {
@@ -665,4 +670,184 @@ public class Render {
         }
         return Color.BLACK;
     }
+
+
+    public LinkedList<Ray> AdaptiveSuperSampaling(int nX, int nY, int j, int i,
+                                                  double screenDistance, double screenWidth, double screenHeight )
+    {
+        if (isZero(screenDistance)) {
+            throw new IllegalArgumentException("distance cannot be 0"); //view plane is on the camera
+        }
+
+        LinkedList<Ray> rays = new LinkedList<>();
+
+        Point3D pixCenter = _scene.getCamera().get_p0().add(_scene.getCamera().get_vTo().scale(screenDistance)); //
+
+
+        double ratioY = screenHeight / nY;
+        double ratioX = screenWidth / nX;
+
+        double yi = ((i - nY / 2d) * ratioY);//calc the move of the pixel to our pixel
+        double xj = ((j - nX / 2d) * ratioX);
+
+        Point3D Pij = pixCenter;
+
+        //move the  center point to wanted pixel
+        if (!isZero(xj))
+        {
+            Pij = Pij.add(_scene.getCamera().get_vRight().scale(xj));
+        }
+        if (!isZero(yi))
+        {
+            Pij = Pij.subtract(_scene.getCamera().get_vUp().scale(yi).get_head()).get_head();
+        }
+
+        //4 rays wthro edeges of pixel x=0
+        Point3D point = Pij;
+        rays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+
+        point = point.add(_scene.getCamera().get_vUp().scale((ratioY)));
+
+        rays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+        point = point.add(_scene.getCamera().get_vRight().scale((ratioX)));
+        rays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+        point = point.add(_scene.getCamera().get_vUp().scale((-ratioY)));
+        rays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+
+        Color Bckg = new Color(_scene.getBackground());
+        GeoPoint edgeIntersec = new GeoPoint();
+        Color result;
+        LinkedList<Color> colors = new LinkedList<Color>();
+
+        for (Ray ray : rays) {
+            edgeIntersec = findClosestIntersection(ray);
+            result = edgeIntersec.getGeometry().get_emission();
+            colors.add(result);
+        }
+        boolean flage = true;
+        for (int k = 0; i < colors.size(); i++)
+            if (!colors.get(i).equals(colors.get(i + 1)))
+                flage = false;
+        if (flage)
+            recursivAdaptiveSuperSampaling(100, 100, 0,0, 100,
+                    100, 100d, densitiy,  Amount, rays,pixCenter);
+         else
+             rays.clear();
+            return rays;
+       //  return null;
+    }
+
+    public LinkedList<Ray> recursivAdaptiveSuperSampaling(int nX, int nY, int j, int i, double screenDistance,
+     double screenWidth, double screenHeight, double density, int amount,LinkedList<Ray> rays,Point3D thisPix)
+    {
+
+            if (isZero(screenDistance))
+                throw new IllegalArgumentException("distance cannot be 0"); //view plane is on the camera
+
+
+        double ratioY = screenHeight / nY;
+        double ratioX = screenWidth / nX;
+
+
+
+        Point3D Pij = thisPix;
+
+        LinkedList<Ray> temprays=  nineRaysThroPixel(Pij,ratioX,ratioY);
+
+        LinkedList<Color> colors =getColorsOfRays(temprays);
+
+        boolean flage = true;
+        for (int k = 0; k < 4; k++) {
+            Pij = thisPix;
+            if (k == 2)
+                k = 3;//fix index
+            if (!colors.get(k).equals(colors.get(k + 1)) || !colors.get(k + 1).equals(colors.get(k + 3)) || !colors.get(k + 3).equals(colors.get(k + 4)))
+                flage = false;
+            if (flage)
+                if(k!=0 && k!=3)
+                    Pij=Pij.add(_scene.getCamera().get_vRight().scale((ratioX/2)));
+                if(k!=0 && k!=1)
+                    Pij=Pij.add(_scene.getCamera().get_vUp().scale((ratioY/2)));
+                recursivAdaptiveSuperSampaling(nX, nY, j, i, 100,
+                        screenWidth/4, screenHeight/4, densitiy, Amount, rays,Pij);
+
+        }
+        return rays;
+    }
+
+    private LinkedList<Color> getColorsOfRays(LinkedList<Ray> temprays)
+    {
+        Color Bckg = new Color(_scene.getBackground());
+        GeoPoint edgeIntersec = new GeoPoint();
+        Color result;
+        LinkedList<Color> colors = new LinkedList<Color>();
+
+        for (Ray ray : temprays)
+        {
+            edgeIntersec = findClosestIntersection(ray);
+            result = edgeIntersec.getGeometry().get_emission();
+            colors.add(result);
+        }
+      return colors;
+    }
+
+    private LinkedList<Ray> nineRaysThroPixel(Point3D point,double ratioX, double ratioY)
+
+    {
+        LinkedList<Ray> temprays = new LinkedList<>();
+
+        //first qurter
+        temprays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+
+        point = point.add(_scene.getCamera().get_vRight().scale((ratioX/2)));
+        temprays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+
+        point = point.add(_scene.getCamera().get_vRight().scale((ratioX/2)));
+        temprays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+        //2 more to second qurter
+
+        point = point.add(_scene.getCamera().get_vUp().scale((-ratioY/2)));
+        point = point.add(_scene.getCamera().get_vRight().scale((-ratioY)));
+        temprays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+
+        point = point.add(_scene.getCamera().get_vRight().scale((ratioX/2)));
+        temprays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+
+        point = point.add(_scene.getCamera().get_vRight().scale((ratioX/2)));
+        temprays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+        //3 row
+        point = point.add(_scene.getCamera().get_vUp().scale((-ratioY/2)));
+        point = point.add(_scene.getCamera().get_vRight().scale((-ratioX)));
+        temprays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+
+        point = point.add(_scene.getCamera().get_vRight().scale((ratioX/2)));
+        temprays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+
+        point = point.add(_scene.getCamera().get_vRight().scale((ratioX/2)));
+        temprays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+
+        return temprays;
+    }
+
+}
+   //     for (int r = 0; r < 9; r++)
+   //     {
+
+  //      }
+  /*   for (int r = 0; r < 3; r++)
+        {
+            if (!isZero(r))
+            point = Pij.add( _vUp.scale((r * nY / 2)));
+           for (int c = 0; c < 3; c++)
+           {
+               if (!isZero(c))
+                 point.add(_vRight.scale((c * nX / 2)));
+            rays.add(new Ray(_p0, point.subtract(_p0)));//add new ray to list of ray's from point
+
+           }
+
+        }
+
+
+
 }

@@ -1,8 +1,11 @@
 package elements;
 
+import geometries.*;
+import primitives.Color;
 import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
+import renderer.*;
 import scene.*;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,6 +19,7 @@ public class Camera {
     Vector _vTo;
     Vector _vUp;
     Vector _vRight;
+
     private static final Random rnd = new Random();
 
     public Point3D get_p0() {
@@ -152,10 +156,10 @@ public class Camera {
                 rays.add(new Ray(_p0, point.subtract(_p0)));//add new ray to list of ray's from point
             }
         }
-        if (rays.size()<2)
-            rays=rays;
         return rays;
     }
+
+
 }
 
 
