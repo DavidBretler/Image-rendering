@@ -4,7 +4,7 @@ import geometries.*;
 import primitives.*;
 import geometries.Intersectable.GeoPoint;
 import scene.Scene;
-
+import java.math.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -347,7 +347,6 @@ public class Render {
                     SumG += c.get_g();
                 }
 
-
             }
               averageColor = new Color(SumR / rays.size(), SumG / rays.size(), SumB / rays.size());
                if( centerPiX!=null)
@@ -671,15 +670,32 @@ public class Render {
         return Color.BLACK;
     }
 
+public class weightRay extends Ray
+    {
+           public Ray ray;
+           double weight=1 ;
 
-    public LinkedList<Ray> AdaptiveSuperSampaling(int nX, int nY, int j, int i,
+        public weightRay(Ray ray, double weight)
+        {
+            super(ray);
+            this.weight = weight;
+        }
+        public weightRay(Ray ray)
+        {
+            super(ray);
+            this.weight = 1;
+        }
+           
+    }
+    public LinkedList<weightRay> AdaptiveSuperSampaling(int nX, int nY, int j, int i,
                                                   double screenDistance, double screenWidth, double screenHeight )
     {
+        int level=0;
         if (isZero(screenDistance)) {
             throw new IllegalArgumentException("distance cannot be 0"); //view plane is on the camera
         }
 
-        LinkedList<Ray> rays = new LinkedList<>();
+        LinkedList<weightRay> rays = new LinkedList<>();
 
         Point3D pixCenter = _scene.getCamera().get_p0().add(_scene.getCamera().get_vTo().scale(screenDistance)); //
 
@@ -704,23 +720,24 @@ public class Render {
 
         //4 rays wthro edeges of pixel x=0
         Point3D point = Pij;
-        rays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+        rays.add(new weightRay(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0()))));
 
         point = point.add(_scene.getCamera().get_vUp().scale((ratioY)));
 
-        rays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+        rays.add(new weightRay(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0()))));
         point = point.add(_scene.getCamera().get_vRight().scale((ratioX)));
-        rays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+        rays.add(new weightRay(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0()))));
         point = point.add(_scene.getCamera().get_vUp().scale((-ratioY)));
-        rays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+        rays.add(new weightRay(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0()))));
 
         Color Bckg = new Color(_scene.getBackground());
         GeoPoint edgeIntersec = new GeoPoint();
         Color result;
         LinkedList<Color> colors = new LinkedList<Color>();
 
-        for (Ray ray : rays) {
-            edgeIntersec = findClosestIntersection(ray);
+        for (weightRay weightray : rays)
+        {
+            edgeIntersec = findClosestIntersection(weightray.ray);
             result = edgeIntersec.getGeometry().get_emission();
             colors.add(result);
         }
@@ -730,19 +747,18 @@ public class Render {
                 flage = false;
         if (flage)
             recursivAdaptiveSuperSampaling(100, 100, 0,0, 100,
-                    100, 100d, densitiy,  Amount, rays,pixCenter);
+                    100, 100d, densitiy,  Amount, rays,pixCenter,level);
          else
              rays.clear();
-            return rays;
+            return  rays;
        //  return null;
     }
 
-    public LinkedList<Ray> recursivAdaptiveSuperSampaling(int nX, int nY, int j, int i, double screenDistance,
-     double screenWidth, double screenHeight, double density, int amount,LinkedList<Ray> rays,Point3D thisPix)
+    public LinkedList<weightRay> recursivAdaptiveSuperSampaling(int nX, int nY, int j, int i, double screenDistance,
+     double screenWidth, double screenHeight, double density, int amount,LinkedList<weightRay> rays,Point3D thisPix,int level)
     {
-
-            if (isZero(screenDistance))
-                throw new IllegalArgumentException("distance cannot be 0"); //view plane is on the camera
+            if (level>=3)
+                return rays;
 
 
         double ratioY = screenHeight / nY;
@@ -752,7 +768,7 @@ public class Render {
 
         Point3D Pij = thisPix;
 
-        LinkedList<Ray> temprays=  nineRaysThroPixel(Pij,ratioX,ratioY);
+        LinkedList<weightRay> temprays=  nineRaysThroPixel(Pij,ratioX,ratioY,level);
 
         LinkedList<Color> colors =getColorsOfRays(temprays);
 
@@ -769,62 +785,62 @@ public class Render {
                 if(k!=0 && k!=1)
                     Pij=Pij.add(_scene.getCamera().get_vUp().scale((ratioY/2)));
                 recursivAdaptiveSuperSampaling(nX, nY, j, i, 100,
-                        screenWidth/4, screenHeight/4, densitiy, Amount, rays,Pij);
-
+                        screenWidth/4, screenHeight/4, densitiy, Amount, rays,Pij,level+1);
+                
         }
         return rays;
     }
 
-    private LinkedList<Color> getColorsOfRays(LinkedList<Ray> temprays)
+    private LinkedList<Color> getColorsOfRays(LinkedList<weightRay> temprays )
     {
         Color Bckg = new Color(_scene.getBackground());
         GeoPoint edgeIntersec = new GeoPoint();
         Color result;
         LinkedList<Color> colors = new LinkedList<Color>();
 
-        for (Ray ray : temprays)
+        for (weightRay ray : temprays)
         {
-            edgeIntersec = findClosestIntersection(ray);
+            edgeIntersec = findClosestIntersection(ray.ray);
             result = edgeIntersec.getGeometry().get_emission();
             colors.add(result);
         }
       return colors;
     }
 
-    private LinkedList<Ray> nineRaysThroPixel(Point3D point,double ratioX, double ratioY)
+    private LinkedList<weightRay> nineRaysThroPixel(Point3D point,double ratioX, double ratioY,int level)
 
     {
-        LinkedList<Ray> temprays = new LinkedList<>();
-
+        LinkedList<weightRay> temprays = new LinkedList<>();
+        double whiet =Math.pow(4/9,level);
         //first qurter
-        temprays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+        temprays.add( new weightRay( new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0()))  ,whiet)  );
 
         point = point.add(_scene.getCamera().get_vRight().scale((ratioX/2)));
-        temprays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+        temprays.add(new weightRay(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())),whiet));
 
         point = point.add(_scene.getCamera().get_vRight().scale((ratioX/2)));
-        temprays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+        temprays.add(new weightRay(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())),whiet));
         //2 more to second qurter
 
         point = point.add(_scene.getCamera().get_vUp().scale((-ratioY/2)));
         point = point.add(_scene.getCamera().get_vRight().scale((-ratioY)));
-        temprays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+        temprays.add(new weightRay((new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0()))),whiet));
 
         point = point.add(_scene.getCamera().get_vRight().scale((ratioX/2)));
-        temprays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+        temprays.add(new weightRay(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())),whiet));
 
         point = point.add(_scene.getCamera().get_vRight().scale((ratioX/2)));
-        temprays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+        temprays.add(new weightRay(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())),whiet));
         //3 row
         point = point.add(_scene.getCamera().get_vUp().scale((-ratioY/2)));
         point = point.add(_scene.getCamera().get_vRight().scale((-ratioX)));
-        temprays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+        temprays.add(new weightRay(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())),whiet));
 
         point = point.add(_scene.getCamera().get_vRight().scale((ratioX/2)));
-        temprays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+        temprays.add(new weightRay(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())),whiet));
 
         point = point.add(_scene.getCamera().get_vRight().scale((ratioX/2)));
-        temprays.add(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())));
+        temprays.add(new weightRay(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0())),whiet));
 
         return temprays;
     }
