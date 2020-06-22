@@ -31,6 +31,26 @@ public class Render {
     }
 
     /**
+     *weightRay help the AdaptiveSuperSampaling by weight every ray acording to the recursive depth
+     */
+    public class weightRay extends Ray
+    {
+        public Ray ray;
+        double weight=1 ;
+
+        public weightRay(Ray ray, double weight)
+        {
+            super(ray);
+            this.weight = weight;
+        }
+        public weightRay(Ray ray)
+        {
+            super(ray);
+            this.weight = 1;
+        }
+
+    }
+    /**
          * Pixel is an internal helper class whose objects are associated with a Render object that
          * they are generated in scope of. It is used for multithreading in the Renderer and for follow up
          * its progress.<br/>
@@ -142,6 +162,7 @@ public class Render {
                     Pixel pixel = new Pixel();
                     while (thePixel.nextPixel(pixel)) {
                         LinkedList<Ray> rays=new LinkedList<Ray>();
+
                         //if amount of ray's is 1 so there is no super smaplling
                         if (this.Amount<=1)
                         {
@@ -150,9 +171,19 @@ public class Render {
                         }
                         else
                         {
-                            rays=(camera.constructRayBeamThroughPixel(nX, nY, pixel.col, pixel.row, dist, (double)width, (double)height, this.densitiy, this.Amount));
-                            _imageWriter.writePixel(pixel.col, pixel.row, calcColor(rays).getColor());
-                        }
+                            LinkedList<weightRay> weightRays;
+
+                          //  rays=(camera.constructRayBeamThroughPixel(nX, nY, pixel.col, pixel.row, dist, (double)width, (double)height, this.densitiy, this.Amount));
+                            weightRays=(AdaptiveSuperSampaling(nX, nY, pixel.col, pixel.row, dist, (double)width, (double)height));
+                               if(weightRays.isEmpty())//all the pixel is in the same color so we can send one ray
+                               {
+                                   rays.add( camera.constructRayThroughPixel(nX, nY, pixel.col, pixel.row,dist, width, height));
+                               _imageWriter.writePixel(pixel.col, pixel.row, calcColor(rays).getColor());
+                               }
+                               else
+                            _imageWriter.writePixel(pixel.col, pixel.row, adptivCalcColor(weightRays).getColor());
+
+                    }
 
                     }
                 });
@@ -306,6 +337,58 @@ public class Render {
 
     /**
      * the entail call to calc color of the pixel
+     *  calcs avrage of multiply ray from a pixel by calc the ray according to its weight
+     *  to create avg color in the end of shape to create smoother look
+     * @return avg color
+     */
+    private Color adptivCalcColor(LinkedList<weightRay> rays) {
+        GeoPoint centerPiX = findClosestIntersection(rays.get(0));
+        Color Bckg = new Color(_scene.getBackground());
+
+        //       if (ClosesPoint==null)
+        //           return Bckg;
+
+        if (rays.size() == 1)
+        {
+            if (centerPiX==null)
+                return Bckg;
+            else
+            {
+                Color resultColor = _scene.getAmbientLight().get_intensity();
+                return  resultColor.add(calcColor(centerPiX, rays.get(0), MAX_CALC_COLOR_LEVEL, 1.0));}
+        }
+        else
+        {
+            Color averageColor = Color.BLACK;
+
+            double SumR = 0;
+            double SumB = 0;
+            double SumG = 0;
+            for (weightRay ray : rays) {
+                GeoPoint closestPoint = findClosestIntersection(ray);
+                if (closestPoint == null) {
+                    SumR += Bckg.get_r()*ray.weight;
+                    SumB += Bckg.get_b()*ray.weight;
+                    SumG += Bckg.get_g()*ray.weight;
+                } else {
+                    LinkedList<weightRay> rays1 = new LinkedList<>();
+                    rays1.add(ray);
+                    Color c = adptivCalcColor(rays1);
+                    SumR += c.get_r()*ray.weight;
+                    SumB += c.get_b()*ray.weight;
+                    SumG += c.get_g()*ray.weight;
+                }
+
+            }
+            averageColor = new Color(SumR / rays.size(), SumG / rays.size(), SumB / rays.size());
+            if( centerPiX!=null)
+                return   averageColor.add(calcColor(centerPiX, rays.get(3), MAX_CALC_COLOR_LEVEL, 1.0));
+            return averageColor;
+        }
+    }
+
+    /**
+     * the entail call to calc color of the pixel
      *  calcs avrage of multiply ray from a pixel to create avg color in the end of shape to create smoother look
      * @return avg color
      */
@@ -408,8 +491,8 @@ public class Render {
             return Color.BLACK; //0,0,0
         }
 
-       // if  (geoPoint==null)
-       //     return _scene.getBackground();
+        //if  (geoPoint==null)
+        //   return _scene.getBackground();
         Color result = geoPoint.getGeometry().get_emission();//original color of geometry
         Point3D pointGeo = geoPoint.getPoint();
 
@@ -670,23 +753,18 @@ public class Render {
         return Color.BLACK;
     }
 
-public class weightRay extends Ray
-    {
-           public Ray ray;
-           double weight=1 ;
-
-        public weightRay(Ray ray, double weight)
-        {
-            super(ray);
-            this.weight = weight;
-        }
-        public weightRay(Ray ray)
-        {
-            super(ray);
-            this.weight = 1;
-        }
-           
-    }
+    /**
+     *
+     * @param nX             number of pixel in x axis
+     * @param nY             number of pixel in y axis
+     * @param j              index in x axis
+     * @param i              index in x axis
+     * @param screenDistance distance form camera to view plane
+     * @param screenWidth    screen width
+     * @param screenHeight   screen height
+     *  check if all the pixel is in the same color and if so we will not start the recursive check
+     * @return list of weight rays , every ray acording to its recursive depth
+     */
     public LinkedList<weightRay> AdaptiveSuperSampaling(int nX, int nY, int j, int i,
                                                   double screenDistance, double screenWidth, double screenHeight )
     {
@@ -718,7 +796,7 @@ public class weightRay extends Ray
             Pij = Pij.subtract(_scene.getCamera().get_vUp().scale(yi).get_head()).get_head();
         }
 
-        //4 rays wthro edeges of pixel x=0
+        //4 rays thwro edeges of pixel x=0
         Point3D point = Pij;
         rays.add(new weightRay(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0()))));
 
@@ -730,32 +808,33 @@ public class weightRay extends Ray
         point = point.add(_scene.getCamera().get_vUp().scale((-ratioY)));
         rays.add(new weightRay(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0()))));
 
-        Color Bckg = new Color(_scene.getBackground());
-        GeoPoint edgeIntersec = new GeoPoint();
-        Color result;
-        LinkedList<Color> colors = new LinkedList<Color>();
+        LinkedList<Color> colors =getColorsOfRays(rays);
 
-        for (weightRay weightray : rays)
-        {
-            edgeIntersec = findClosestIntersection(weightray.ray);
-            result = edgeIntersec.getGeometry().get_emission();
-            colors.add(result);
-        }
         boolean flage = true;
-        for (int k = 0; i < colors.size(); i++)
-            if (!colors.get(i).equals(colors.get(i + 1)))
+        for (int k = 0; k < colors.size()-1; k++)
+            if (!colors.get(k).equals(colors.get(k + 1)))
                 flage = false;
         if (flage)
-            recursivAdaptiveSuperSampaling(100, 100, 0,0, 100,
-                    100, 100d, densitiy,  Amount, rays,pixCenter,level);
+            recursivAdaptiveSuperSampaling(100, 100,
+                    100, 100d, rays,pixCenter,level);
          else
              rays.clear();
             return  rays;
        //  return null;
     }
 
-    public LinkedList<weightRay> recursivAdaptiveSuperSampaling(int nX, int nY, int j, int i, double screenDistance,
-     double screenWidth, double screenHeight, double density, int amount,LinkedList<weightRay> rays,Point3D thisPix,int level)
+    /**
+     *
+     * @param nX             number of pixel in x axis
+     * @param nY             number of pixel in y axis
+     * @param screenWidth    screen width
+     * @param screenHeight   screen height
+     * @param level the depth of the recursive
+     * @param thisPix the upper left point of the wanted part of pixel
+     * @return list of weight rays of the specipic recursive call
+     */
+    public LinkedList<weightRay> recursivAdaptiveSuperSampaling(int nX, int nY,
+     double screenWidth, double screenHeight, LinkedList<weightRay> rays,Point3D thisPix,int level)
     {
             if (level>=3)
                 return rays;
@@ -784,13 +863,18 @@ public class weightRay extends Ray
                     Pij=Pij.add(_scene.getCamera().get_vRight().scale((ratioX/2)));
                 if(k!=0 && k!=1)
                     Pij=Pij.add(_scene.getCamera().get_vUp().scale((ratioY/2)));
-                recursivAdaptiveSuperSampaling(nX, nY, j, i, 100,
-                        screenWidth/4, screenHeight/4, densitiy, Amount, rays,Pij,level+1);
+                recursivAdaptiveSuperSampaling(nX, nY,
+                        screenWidth/4, screenHeight/4,  rays,Pij,level+1);
                 
         }
         return rays;
     }
 
+    /**
+     *
+     * @param temprays
+     * @return list of colors according to the list of rays
+     */
     private LinkedList<Color> getColorsOfRays(LinkedList<weightRay> temprays )
     {
         Color Bckg = new Color(_scene.getBackground());
@@ -801,12 +885,23 @@ public class weightRay extends Ray
         for (weightRay ray : temprays)
         {
             edgeIntersec = findClosestIntersection(ray.ray);
+            if (edgeIntersec==null)
+                result= Bckg;
+            else
             result = edgeIntersec.getGeometry().get_emission();
             colors.add(result);
         }
       return colors;
     }
 
+    /**
+     *
+     * @param point the upper left point of the wanted part of pixel
+     * @param ratioX x exil of pixel
+     * @param ratioY y exil of pixel
+     * @param level depth of recursive
+     * @return add 9 rays throw the wanted part in pixel to the list
+     */
     private LinkedList<weightRay> nineRaysThroPixel(Point3D point,double ratioX, double ratioY,int level)
 
     {
@@ -866,4 +961,4 @@ public class weightRay extends Ray
 
 
 
-}
+}*/

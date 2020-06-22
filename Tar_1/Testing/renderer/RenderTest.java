@@ -102,26 +102,6 @@ import java.util.LinkedList;
             render.printGrid(50, java.awt.Color.WHITE);
             render.writeToImage();
         }
-    @Test
-    public void Test9rays()
-    {
-        Scene _scene = new Scene("Test scene");
-        _scene.setCamera(new Camera(Point3D.ZERO, new Vector(0, 0, 1), new Vector(0, -1, 0)));
-        _scene.setDistance(100);
-        _scene.setBackground(Color.BLACK);
-        _scene.setAmbientLight(new AmbientLight(new Color(java.awt.Color.WHITE), 0.2));
-
-
-        ImageWriter imageWriter = new ImageWriter("test9rays", 100, 100, 100, 100);
-        Render render = new Render(imageWriter, _scene);
-
-        render.renderImage();
-        LinkedList<Ray> rays= render.AdaptiveSuperSampaling(100, 100, 0,0,
-            100,100, 100d);
-
-        render.printGrid(50, java.awt.Color.YELLOW);
-        render.writeToImage();
-    }
 
     }
 
