@@ -16,7 +16,7 @@ public class Render {
     private static final  double DELTA=0.1;
     private static final int MAX_CALC_COLOR_LEVEL = 40; //the max recrusiv calc
     private static final double MIN_CALC_COLOR_K = 0.000000001;
-
+    private static final double adptivRecrsivLevel=4;
     private int Amount;
     private double densitiy;
     private Scene _scene;
@@ -519,6 +519,7 @@ public class Render {
         double kt = geoPoint.getGeometry().get_material().getKt();
         double kkr = k * kr;
         double kkt = k * kt;
+
         result = result.add(getLightSourcesColors(geoPoint, k, result, vecGeoCamera, normal, nShininess, kd, ks));
 
         if (kkr > MIN_CALC_COLOR_K) { //start reflected recursiv
@@ -804,12 +805,12 @@ public class Render {
         Point3D point = Pij;
         rays.add(new weightRay(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0()))));
 
-        point = point.add(_scene.getCamera().get_vUp().scale((ratioY)));
+        point = point.add(_scene.getCamera().get_vUp().scale((-ratioY)));
 
         rays.add(new weightRay(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0()))));
         point = point.add(_scene.getCamera().get_vRight().scale((ratioX)));
         rays.add(new weightRay(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0()))));
-        point = point.add(_scene.getCamera().get_vUp().scale((-ratioY)));
+        point = point.add(_scene.getCamera().get_vUp().scale((ratioY)));
         rays.add(new weightRay(new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0()))));
 
         LinkedList<Color> colors =getColorsOfRays(rays);
@@ -822,7 +823,7 @@ public class Render {
                 flage = true;
         if (flage)
             recursivAdaptiveSuperSampaling(100, 100,
-                    100, 100d, rays,pixCenter,level);
+                    100, 100d, rays,Pij,level);
          else
              rays.clear();
             return  rays;
@@ -842,7 +843,7 @@ public class Render {
     public LinkedList<weightRay> recursivAdaptiveSuperSampaling(int nX, int nY,
      double screenWidth, double screenHeight, LinkedList<weightRay> rays,Point3D thisPix,int level)
     {
-            if (level>=3)
+            if (level>=adptivRecrsivLevel)
                 return rays;
 
         double ratioY = screenHeight / nY;
@@ -854,20 +855,20 @@ public class Render {
 
         LinkedList<Color> colors =getColorsOfRays(nineRays);
 
-        boolean flage =true ;
+        boolean flag  ;
         for (int k = 0; k < 4; k++) {
-            flage =true ;
+            flag =false ;
             Pij = thisPix;
             if (k == 2)
                 k = 3;//fix index
             if (!colors.get(k).equals(colors.get(k + 1)) || !colors.get(k + 1).equals(colors.get(k + 3)) || !colors.get(k + 3).equals(colors.get(k + 4)))
-                 flage = false;
-            if (flage)// TODO: 23/06/2020  
+                 flag = true;
+            if (flag)
             {
                 if (k != 0 && k != 3)
                     Pij = Pij.add(_scene.getCamera().get_vRight().scale((ratioX / 2)));
                 if (k != 0 && k != 1)
-                    Pij = Pij.add(_scene.getCamera().get_vUp().scale((ratioY / 2)));
+                    Pij = Pij.add(_scene.getCamera().get_vUp().scale((-ratioY / 2)));
                 recursivAdaptiveSuperSampaling(nX, nY,
                         screenWidth / 4, screenHeight / 4, rays, Pij, level + 1);
             }
@@ -910,7 +911,7 @@ public class Render {
      */
     private LinkedList<weightRay> nineRaysThroPixel(Point3D point,double ratioX, double ratioY,int level)
 
-    {// TODO: 23/06/2020 check the move 
+    {
         LinkedList<weightRay> temprays = new LinkedList<>();
         double whiet =Math.pow((double)4/9,level+2);
         //first qurter
@@ -924,7 +925,7 @@ public class Render {
         //2 more to second qurter
 
         point = point.add(_scene.getCamera().get_vUp().scale((-ratioY/2)));
-        point = point.add(_scene.getCamera().get_vRight().scale((-ratioY)));
+        point = point.add(_scene.getCamera().get_vRight().scale((-ratioX)));
         temprays.add(new weightRay((new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0()))),whiet));
 
         point = point.add(_scene.getCamera().get_vRight().scale((ratioX/2)));

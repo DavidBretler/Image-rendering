@@ -172,10 +172,10 @@ class ShadowTests {
                 new Sphere(new Color(java.awt.Color.BLUE), new Material(0.5, 0.5, 30), // )
                         30, new Point3D(0, 0, 115)));
 
-        scene.addLights(new SpotLight(new Color(700, 400, 400), //
-                new Point3D(40, -40, -115), new Vector(-1, 1, 4), 1, 4E-4, 2E-5));
+        scene.addLights(new PointLight(new Color(700, 400, 400), //
+                new Point3D(40, -40, -115),  1, 4E-4, 2E-5));
 
-        ImageWriter imageWriter = new ImageWriter("trianglesSphere", 200, 200, 600, 600);
+        ImageWriter imageWriter = new ImageWriter("Adptive TrianglesSphere", 200, 200, 600, 600);
         Render render = new Render(imageWriter, scene);
 
         render.renderImage();
