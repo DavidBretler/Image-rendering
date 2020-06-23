@@ -45,7 +45,7 @@ import java.util.LinkedList;
         Render render = new Render(imageWriter, scene);
 
         render.renderImage();
-        render.printGrid(50, java.awt.Color.YELLOW);//todo
+        render.printGrid(50, java.awt.Color.YELLOW);
         render.writeToImage();
     }
 

@@ -37,11 +37,11 @@ class SuperSampellingTest {
         scene.addGeometries(
                 new Sphere(
                         new Color(java.awt.Color.BLUE),
-                        new Material(0.5D, 0.5D, 30), 60.0D,
+                        new Material(0.5D, 0.7D, 100), 60.0D,
                         new Point3D(0.0D, 0.0D, 200.0D)),
                 new Triangle(
                         new Color(java.awt.Color.BLUE),
-                        new Material(0.5D, 0.5D, 30),
+                        new Material(0.5D, 0.5D, 30,0.2,0.2),
                         new Point3D(-60.0D, 30.0D, 0.0D),
                         new Point3D(-30.0D, 60.0D, 0.0D),
                         new Point3D(-58.0D, 58.0D, 4.0D)));
@@ -231,7 +231,7 @@ class SuperSampellingTest {
         scene.addLights(new SpotLight(new Color(400, 200, 200), //sun light
                 new Point3D(10, -70, -300)  , new Vector(1, 0, 1), 1, 4E-5, 2E-7));
 
-        ImageWriter imageWriter = new ImageWriter("superSampel", 200, 200, 600, 600);
+        ImageWriter imageWriter = new ImageWriter("Adptive superSampel", 200, 200, 600, 600);
         Render render = new Render(imageWriter, scene,50,1.25);
 
         render.renderImage();

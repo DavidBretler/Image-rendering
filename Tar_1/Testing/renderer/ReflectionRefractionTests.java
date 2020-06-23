@@ -208,7 +208,7 @@ public class ReflectionRefractionTests {
         scene.addLights(new SpotLight(new Color(400, 200, 200), //sun light
                          new Point3D(10, -70, -300)  , new Vector(1, 0, 1), 1, 4E-5, 2E-7));
 
-        ImageWriter imageWriter = new ImageWriter("bonusTest2", 200, 200, 600, 600);
+        ImageWriter imageWriter = new ImageWriter("Adptive bonusTest", 200, 200, 600, 600);
         Render render = new Render(imageWriter, scene);
 
         render.renderImage();

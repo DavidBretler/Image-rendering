@@ -25,7 +25,6 @@ public class  AmbientLight extends Light
      * constructor with default val ka=1
      * @param _intensity
      */
-    // TODO: 17/05/2020 check if ok 
     public AmbientLight(Color _intensity) {
     super(_intensity); 
     }

@@ -22,8 +22,8 @@ public class Render {
     private Scene _scene;
     private ImageWriter _imageWriter;
         // ...........
-        private int _threads = 1;
-        private final int SPARE_THREADS = 5;
+        private int _threads = 5;
+        private final int SPARE_THREADS =2;
         private boolean _print = false;
 
     public Render() {
@@ -41,11 +41,13 @@ public class Render {
         public weightRay(Ray ray, double weight)
         {
             super(ray);
+           this.ray=ray;
             this.weight = weight;
         }
         public weightRay(Ray ray)
         {
             super(ray);
+            this.ray=ray;
             this.weight = 1;
         }
 
@@ -175,13 +177,14 @@ public class Render {
 
                           //  rays=(camera.constructRayBeamThroughPixel(nX, nY, pixel.col, pixel.row, dist, (double)width, (double)height, this.densitiy, this.Amount));
                             weightRays=(AdaptiveSuperSampaling(nX, nY, pixel.col, pixel.row, dist, (double)width, (double)height));
+
                                if(weightRays.isEmpty())//all the pixel is in the same color so we can send one ray
                                {
                                    rays.add( camera.constructRayThroughPixel(nX, nY, pixel.col, pixel.row,dist, width, height));
                                _imageWriter.writePixel(pixel.col, pixel.row, calcColor(rays).getColor());
                                }
                                else
-                            _imageWriter.writePixel(pixel.col, pixel.row, adptivCalcColor(weightRays).getColor());
+                                   _imageWriter.writePixel(pixel.col, pixel.row, adptivCalcColor(weightRays).getColor());
 
                     }
 
@@ -382,7 +385,7 @@ public class Render {
             }
             averageColor = new Color(SumR / rays.size(), SumG / rays.size(), SumB / rays.size());
             if( centerPiX!=null)
-                return   averageColor.add(calcColor(centerPiX, rays.get(3), MAX_CALC_COLOR_LEVEL, 1.0));
+                return   averageColor.add(calcColor(centerPiX, rays.get(4), MAX_CALC_COLOR_LEVEL, 1.0));
             return averageColor;
         }
     }
@@ -486,6 +489,8 @@ public class Render {
      */
     private Color calcColor(GeoPoint geoPoint, Ray inRay, int level, double k)
     {
+       if(level<39)
+           level=level;
         if (level == 1 || k < MIN_CALC_COLOR_K) //stop condition
         {
             return Color.BLACK; //0,0,0
@@ -752,7 +757,6 @@ public class Render {
         }
         return Color.BLACK;
     }
-
     /**
      *
      * @param nX             number of pixel in x axis
@@ -810,10 +814,12 @@ public class Render {
 
         LinkedList<Color> colors =getColorsOfRays(rays);
 
-        boolean flage = true;
+        //if (colors.get(1).get_b()!=0)
+        //    _print=_print;
+        boolean flage = false;
         for (int k = 0; k < colors.size()-1; k++)
             if (!colors.get(k).equals(colors.get(k + 1)))
-                flage = false;
+                flage = true;
         if (flage)
             recursivAdaptiveSuperSampaling(100, 100,
                     100, 100d, rays,pixCenter,level);
@@ -839,35 +845,35 @@ public class Render {
             if (level>=3)
                 return rays;
 
-
         double ratioY = screenHeight / nY;
         double ratioX = screenWidth / nX;
 
-
-
         Point3D Pij = thisPix;
 
-        LinkedList<weightRay> temprays=  nineRaysThroPixel(Pij,ratioX,ratioY,level);
+        LinkedList<weightRay> nineRays=  nineRaysThroPixel(Pij,ratioX,ratioY,level);
 
-        LinkedList<Color> colors =getColorsOfRays(temprays);
+        LinkedList<Color> colors =getColorsOfRays(nineRays);
 
-        boolean flage = true;
+        boolean flage =true ;
         for (int k = 0; k < 4; k++) {
+            flage =true ;
             Pij = thisPix;
             if (k == 2)
                 k = 3;//fix index
             if (!colors.get(k).equals(colors.get(k + 1)) || !colors.get(k + 1).equals(colors.get(k + 3)) || !colors.get(k + 3).equals(colors.get(k + 4)))
-                flage = false;
-            if (flage)
-                if(k!=0 && k!=3)
-                    Pij=Pij.add(_scene.getCamera().get_vRight().scale((ratioX/2)));
-                if(k!=0 && k!=1)
-                    Pij=Pij.add(_scene.getCamera().get_vUp().scale((ratioY/2)));
+                 flage = false;
+            if (flage)// TODO: 23/06/2020  
+            {
+                if (k != 0 && k != 3)
+                    Pij = Pij.add(_scene.getCamera().get_vRight().scale((ratioX / 2)));
+                if (k != 0 && k != 1)
+                    Pij = Pij.add(_scene.getCamera().get_vUp().scale((ratioY / 2)));
                 recursivAdaptiveSuperSampaling(nX, nY,
-                        screenWidth/4, screenHeight/4,  rays,Pij,level+1);
-                
+                        screenWidth / 4, screenHeight / 4, rays, Pij, level + 1);
+            }
         }
-        return rays;
+        rays.addAll(nineRays);
+        return  rays;
     }
 
     /**
@@ -904,9 +910,9 @@ public class Render {
      */
     private LinkedList<weightRay> nineRaysThroPixel(Point3D point,double ratioX, double ratioY,int level)
 
-    {
+    {// TODO: 23/06/2020 check the move 
         LinkedList<weightRay> temprays = new LinkedList<>();
-        double whiet =Math.pow(4/9,level);
+        double whiet =Math.pow((double)4/9,level+2);
         //first qurter
         temprays.add( new weightRay( new Ray(_scene.getCamera().get_p0(), point.subtract(_scene.getCamera().get_p0()))  ,whiet)  );
 

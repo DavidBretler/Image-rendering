@@ -60,11 +60,9 @@ class CameraIntegartionTest
         Sphere sph =  new Sphere(2.5, new Point3D(0, 0, 2.5));
         List<Intersectable.GeoPoint> results;
         int count = 0;
-        // TODO explanations
         int Nx =3;//number of pixel in x line
         int Ny =3;// number of pixel in y line
 
-        // TODO explanations
         for (int i = 0; i < 3; ++i) {// go over all the pixels like a 2 Dimension array
             for (int j = 0; j < 3; ++j) {
                 results = sph.findIntersections(cam2.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
@@ -87,11 +85,9 @@ class CameraIntegartionTest
         List<Intersectable.GeoPoint> results;
 
         int count = 0;
-        // TODO explanations
         int Nx =3;//number of pixel in x line
         int Ny =3;// number of pixel in y line
 
-        // TODO explanations
         for (int i = 0; i < 3; ++i) {// go over all the pixels like a 2 Dimension array
             for (int j = 0; j < 3; ++j) {
                 results = sph.findIntersections(cam2.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
@@ -114,11 +110,9 @@ class CameraIntegartionTest
         List<Intersectable.GeoPoint> results;
 
         int count = 0;
-        // TODO explanations
         int Nx =3;//number of pixel in x line
         int Ny =3;// number of pixel in y line
 
-        // TODO explanations
         for (int i = 0; i < 3; ++i) {// go over all the pixels like a 2 Dimension array
             for (int j = 0; j < 3; ++j) {
                 results = sph.findIntersections(cam2.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
@@ -141,11 +135,9 @@ class CameraIntegartionTest
         List<Intersectable.GeoPoint> results;
 
         int count = 0;
-        // TODO explanations
         int Nx =3;//number of pixel in x line
         int Ny =3;// number of pixel in y line
 
-        // TODO explanations
         for (int i = 0; i < 3; ++i) {// go over all the pixels like a 2 Dimension array
             for (int j = 0; j < 3; ++j) {
                 results = sph.findIntersections(cam2.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
@@ -168,11 +160,9 @@ class CameraIntegartionTest
         List<Intersectable.GeoPoint> results;
 
         int count = 0;
-        // TODO explanations
         int Nx =3;//number of pixel in x line
         int Ny =3;// number of pixel in y line
 
-        // TODO explanations
         for (int i = 0; i < 3; ++i) {// go over all the pixels like a 2 Dimension array
             for (int j = 0; j < 3; ++j) {
                 results = pl.findIntersections(cam2.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
@@ -195,11 +185,9 @@ class CameraIntegartionTest
         List<Intersectable.GeoPoint> results;
 
         int count = 0;
-        // TODO explanations
         int Nx =3;//number of pixel in x line
         int Ny =3;// number of pixel in y line
 
-        // TODO explanations
         for (int i = 0; i < 3; ++i) {// go over all the pixels like a 2 Dimension array
             for (int j = 0; j < 3; ++j) {
                 results = pl.findIntersections(cam2.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
@@ -222,11 +210,9 @@ class CameraIntegartionTest
         List<Intersectable.GeoPoint> results;
 
         int count = 0;
-        // TODO explanations
         int Nx =3;//number of pixel in x line
         int Ny =3;// number of pixel in y line
 
-        // TODO explanations
         for (int i = 0; i < 3; ++i) {// go over all the pixels like a 2 Dimension array
             for (int j = 0; j < 3; ++j) {
                 results = pl.findIntersections(cam2.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
@@ -249,11 +235,9 @@ class CameraIntegartionTest
         List<Intersectable.GeoPoint> results;
 
         int count = 0;
-        // TODO explanations
         int Nx =3;//number of pixel in x line
         int Ny =3;// number of pixel in y line
 
-        // TODO explanations
         for (int i = 0; i < 3; ++i) {// go over all the pixels like a 2 Dimension array
             for (int j = 0; j < 3; ++j) {
                 results = tri.findIntersections(cam2.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
@@ -275,11 +259,9 @@ class CameraIntegartionTest
         List<Intersectable.GeoPoint> results;
         Triangle tri=new Triangle (new Point3D(1, 1, 2),new Point3D(-1, 1, 2),new Point3D(0, -20, 2));
         int count = 0;
-        // TODO explanations
         int Nx =3;//number of pixel in x line
         int Ny =3;// number of pixel in y line
 
-        // TODO explanations
         for (int i = 0; i < 3; ++i) {// go over all the pixels like a 2 Dimension array
             for (int j = 0; j < 3; ++j) {
                 results = tri.findIntersections(cam2.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
@@ -302,11 +284,9 @@ class CameraIntegartionTest
         List<Intersectable.GeoPoint> results;
 
         int count = 0;
-        // TODO explanations
         int Nx =3;//number of pixel in x line
         int Ny =3;// number of pixel in y line
 
-        // TODO explanations
         for (int i = 0; i < 3; ++i) {// go over all the pixels like a 2 Dimension array
             for (int j = 0; j < 3; ++j) {
                 results = tri.findIntersections(cam2.constructRayThroughPixel(Nx, Ny, j, i, 1, 3, 3));
