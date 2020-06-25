@@ -82,8 +82,7 @@ public class Vector {
      */
     public Vector scale(double num)
     {
-        //if(((_head.get_x().get())==0 ) && ( (_head.get_y().get())==0)  &&  ((_head.get_z().get())==0))
-           // num=0.6;
+
         return new Vector(_head.get_x().get()*num, _head.get_y().get()*num,_head.get_z().get()*num);
     }
     public Point3D get_head() {

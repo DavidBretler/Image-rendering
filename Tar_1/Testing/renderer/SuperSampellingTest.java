@@ -158,10 +158,10 @@ class SuperSampellingTest {
 
         scene.addLights(new SpotLight(new Color(600, 400, 400), //shade
                 new Point3D(-600 ,-600, -600), new Vector(1, -1, 1),
-                1, 4E-5, 2E-7,1,0));
+                1, 4E-5, 2E-7,1));
         scene.addLights(new SpotLight(new Color(600, 400, 400), //shade
                 new Point3D(0 ,-700, -130), new Vector(0, 10, 3),
-                1, 4E-5, 2E-7,1,0));
+                1, 4E-5, 2E-7,1));
 
 
         scene.addLights(new SpotLight(new Color(400, 200, 200), //sun light
@@ -221,10 +221,10 @@ class SuperSampellingTest {
 
         scene.addLights(new SpotLight(new Color(600, 400, 400), //shade
                 new Point3D(-600 ,-600, -600), new Vector(1, -1, 1),
-                1, 4E-5, 2E-7,1,0));
+                1, 4E-5, 2E-7,1));
         scene.addLights(new SpotLight(new Color(600, 400, 400), //shade
                 new Point3D(0 ,-700, -130), new Vector(0, 10, 3),
-                1, 4E-5, 2E-7,1,0));
+                1, 4E-5, 2E-7,1));
 
 
 
@@ -232,12 +232,64 @@ class SuperSampellingTest {
                 new Point3D(10, -70, -300)  , new Vector(1, 0, 1), 1, 4E-5, 2E-7));
 
         ImageWriter imageWriter = new ImageWriter("Adptive superSampel", 200, 200, 600, 600);
-        Render render = new Render(imageWriter, scene,50,1.25);
+        Render render = new Render(imageWriter, scene,50,1.25).setMultithreading(3).setDebugPrint();
 
         render.renderImage();
         render.writeToImage();
     }
 
+
+    /**
+     *Super Sampell
+     * run time: 1 min 38 sec
+     */
+    @Test
+    public void finalscene() {
+        Scene scene = new Scene("Test scene");
+        scene.setCamera(new Camera(new Point3D(0, 0, -1000), new Vector(0, 0, 1), new Vector(0, -1, 0)));
+        scene.setDistance(1000);
+        scene.setBackground(new Color(java.awt.Color.WHITE));
+        scene.setAmbientLight(new AmbientLight(new Color(java.awt.Color.WHITE), 0.15));
+
+        scene.addGeometries( //
+                new Sphere(new Color(java.awt.Color.orange), new Material(0.2, 1, 100, 0, 0), // wheel
+                        15, new Point3D(0, 50, 0)),
+                new Sphere(new Color(java.awt.Color.red), new Material(0.2, 1, 100, 0.5, 0), // wheel
+                        15, new Point3D(-20, 35, -20)),
+                new Sphere(new Color(java.awt.Color.yellow), new Material(0.2, 1, 100, 0, 0.5), // wheel
+                        15, new Point3D(20, 30, -25))
+        /*        new Sphere(new Color(java.awt.Color.yellow), new Material(0.2, 1, 100, 0, 0), // wheel
+                        25, new Point3D(50, -25, -150)),
+
+
+                new Polygon(new Color(java.awt.Color.BLACK), new Material(1, 0.25, 5,0, 0.5) ,//tree
+                        new Point3D(-75, -25, -175),  new Point3D(75, -25, -175),new Point3D(75, -55, -175),new Point3D(-75, -55, -175)),
+                new Polygon(new Color(java.awt.Color.BLACK), new Material(1, 0.25, 5,0, 0.5) ,//tree
+                        new Point3D(-75, -55, -125),  new Point3D(75, -55, -125),new Point3D(75, -55, -175),new Point3D(-75, -55, -175))
+*/
+
+
+
+
+                );
+
+
+        scene.addLights(new SpotLight(new Color(600, 400, 400), //shade
+                new Point3D(-600 ,-600, -600), new Vector(1, -1, 1),
+                1, 4E-5, 2E-7,1));
+        scene.addLights(new SpotLight(new Color(600, 400, 400), //shade
+                new Point3D(0 ,-700, -130), new Vector(0, 10, 3),
+                1, 4E-5, 2E-7,1));
+
+        scene.addLights(new SpotLight(new Color(400, 200, 200), //sun light
+                new Point3D(10, -70, -300)  , new Vector(1, 0, 1), 1, 4E-5, 2E-7));
+
+        ImageWriter imageWriter = new ImageWriter("finalscene", 200, 200, 600, 600);
+        Render render = new Render(imageWriter, scene,50,1.25);
+
+        render.renderImage();
+        render.writeToImage();
+    }
 
 
 

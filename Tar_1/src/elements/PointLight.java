@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  */
 public class PointLight extends Light implements LightSource {
   protected   Point3D _positionOfLight;
-public double radius;
+//public double radius;
     protected  double _kC;
     protected double _kL;
     protected double _kQ;
@@ -26,26 +26,26 @@ public double radius;
 
     }
 
-    public double getRadius() {
-        return radius;
-    }
+  //  public double getRadius() {
+  //      return radius;
+  //  }
 
-    public PointLight(Point3D _positionOfLight, double radius, double _kC, double _kL, double _kQ) {
+ /*   public PointLight(Point3D _positionOfLight, double radius, double _kC, double _kL, double _kQ) {
         this._positionOfLight = _positionOfLight;
         this.radius = 0;
         this._kC = _kC;
         this._kL = _kL;
         this._kQ = _kQ;
-    }
+    }*/
 
-    public PointLight(Color _intensity, Point3D _positionOfLight, double _kC, double _kL, double _kQ, double radius) {
+ /*   public PointLight(Color _intensity, Point3D _positionOfLight, double _kC, double _kL, double _kQ, double radius) {
         super(_intensity);
         this._positionOfLight = _positionOfLight;
         this.radius = radius;
         this._kC = _kC;
         this._kL = _kL;
         this._kQ = _kQ;
-    }
+    }*/
 
     /**
      * constructor
@@ -71,7 +71,7 @@ public double radius;
         this(colorIntensity, position, 1d, 0d, 0d);
     }
 
-    public List<Vector> getListRaysToLight(Point3D p) {
+   /* public List<Vector> getListRaysToLight(Point3D p) {
         // double size = _radius * _radius * Math.PI;
         List<Point3D> pointLights = new LinkedList<Point3D>();
         for (int x = 0; x < radius; x++)
@@ -90,7 +90,7 @@ public double radius;
             allSubstract.add(p.subtract(po).normalize());
         return allSubstract;
 
-    }
+    }*/
 
     /**
      *     overriding Light getIntensity()
@@ -135,7 +135,7 @@ public double radius;
         return _positionOfLight;
     }
 
-    public  List<Ray> beemFromPoint(Point3D StartOfRay, PointLight light)
+  /*  public  List<Ray> beemFromPoint(Point3D StartOfRay, PointLight light)
     //(int nX, int nY, Point3D StartOfRay,
     //  double screenDistance, double screenWidth, double screenHeight,
     //   double density, int amount,PointLight light)
@@ -147,9 +147,9 @@ public double radius;
         //  double index=Math.sqrt(amount);
         //   double radius=light.getRadius();
         Point3D DirectionOfRay= light.get_positionOfLight();
-        /*    Vector VecTolight=DirectionOfRay.subtract(StartOfRay);
+        *//*    Vector VecTolight=DirectionOfRay.subtract(StartOfRay);
             Vector ortganl1=VecTolight.createorthogonalVec();
-            Vector ortognal2=VecTolight.crossProduct(ortganl1);*/
+            Vector ortognal2=VecTolight.crossProduct(ortganl1);*//*
 
         //    double density2=Math.sqrt(index);
         for (int x = 0; x <= light.radius; x++) //create ray's
@@ -168,5 +168,5 @@ public double radius;
         }
 
         return rays;
-    }
+    }*/
 }

@@ -191,14 +191,14 @@ public class ReflectionRefractionTests {
                 new Sphere(new Color(java.awt.Color.white), new Material(0.2, 0.2, 0, 0, 0), //cloude
                         20, new Point3D(-17 ,-55, -250)),
 
-                new Polygon(new Color(java.awt.Color.BLACK), new Material(1, 0.25, 5,0, 0.5) ,//tree
+                new Polygon(new Color(java.awt.Color.yellow), new Material(1, 0.25, 5,0, 0.5) ,//tree
                         new Point3D(20, 120, 200), new Point3D(40, 120, 200), new Point3D(40, 50, 200),new Point3D(20, 50, 200)),
                 new Triangle(new Color(java.awt.Color.green), new Material(0.5, 0.5, 300,0, 0.6), //
                         new Point3D(30, -25, 130),  new Point3D(0, 50, 115),new Point3D(60, 50, 115)), //
 
                 new Polygon(new Color(java.awt.Color.red), new Material(1, 0.25, 5,0.3, 0) ,//house
                         new Point3D(-80, 115, 115), new Point3D(-30, 115, 115), new Point3D(-30, 50, 115),new Point3D(-80, 50, 115)),
-                new Triangle(Color.BLACK, new Material(0.5, 1, 200), //
+                new Triangle(new Color(java.awt.Color.yellow), new Material(0.5, 1, 200), //
                         new Point3D(-55, 10, 130),  new Point3D(-30, 50, 115),new Point3D(-80, 50, 115)));
 
 
@@ -209,7 +209,7 @@ public class ReflectionRefractionTests {
                          new Point3D(10, -70, -300)  , new Vector(1, 0, 1), 1, 4E-5, 2E-7));
 
         ImageWriter imageWriter = new ImageWriter("Adptive bonusTest", 200, 200, 600, 600);
-        Render render = new Render(imageWriter, scene);
+        Render render = new Render(imageWriter, scene,70,1.25);
 
         render.renderImage();
         render.writeToImage();

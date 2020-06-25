@@ -16,13 +16,13 @@ public class Render {
     private static final  double DELTA=0.1;
     private static final int MAX_CALC_COLOR_LEVEL = 40; //the max recrusiv calc
     private static final double MIN_CALC_COLOR_K = 0.000000001;
-    private static final double adptivRecrsivLevel=4;
+    private static final double adptivRecrsivLevel=3;
     private int Amount;
     private double densitiy;
     private Scene _scene;
     private ImageWriter _imageWriter;
         // ...........
-        private int _threads = 5;
+        private int _threads =5;
         private final int SPARE_THREADS =2;
         private boolean _print = false;
 
@@ -175,8 +175,8 @@ public class Render {
                         {
                             LinkedList<weightRay> weightRays;
 
-                          //  rays=(camera.constructRayBeamThroughPixel(nX, nY, pixel.col, pixel.row, dist, (double)width, (double)height, this.densitiy, this.Amount));
-                            weightRays=(AdaptiveSuperSampaling(nX, nY, pixel.col, pixel.row, dist, (double)width, (double)height));
+                         // rays=(camera.constructRayBeamThroughPixel(nX, nY, pixel.col, pixel.row, dist, (double)width, (double)height, this.densitiy, this.Amount));
+                          weightRays=(AdaptiveSuperSampaling(nX, nY, pixel.col, pixel.row, dist, (double)width, (double)height));
 
                                if(weightRays.isEmpty())//all the pixel is in the same color so we can send one ray
                                {
@@ -184,7 +184,7 @@ public class Render {
                                _imageWriter.writePixel(pixel.col, pixel.row, calcColor(rays).getColor());
                                }
                                else
-                                   _imageWriter.writePixel(pixel.col, pixel.row, adptivCalcColor(weightRays).getColor());
+                                  _imageWriter.writePixel(pixel.col, pixel.row, adptivCalcColor(weightRays).getColor());
 
                     }
 
@@ -345,47 +345,50 @@ public class Render {
      * @return avg color
      */
     private Color adptivCalcColor(LinkedList<weightRay> rays) {
-        GeoPoint centerPiX = findClosestIntersection(rays.get(0));
+
         Color Bckg = new Color(_scene.getBackground());
 
-        //       if (ClosesPoint==null)
-        //           return Bckg;
 
         if (rays.size() == 1)
         {
-            if (centerPiX==null)
+            GeoPoint ClosestPoint = findClosestIntersection(rays.get(0).ray);
+            if (ClosestPoint==null)
                 return Bckg;
             else
             {
+
                 Color resultColor = _scene.getAmbientLight().get_intensity();
-                return  resultColor.add(calcColor(centerPiX, rays.get(0), MAX_CALC_COLOR_LEVEL, 1.0));}
+                return  resultColor.add(calcColor( ClosestPoint , rays.get(0), MAX_CALC_COLOR_LEVEL, 1.0));}
         }
         else
         {
             Color averageColor = Color.BLACK;
-
+            GeoPoint centerPiX = findClosestIntersection(rays.get(4).ray);
             double SumR = 0;
             double SumB = 0;
             double SumG = 0;
             for (weightRay ray : rays) {
                 GeoPoint closestPoint = findClosestIntersection(ray);
                 if (closestPoint == null) {
-                    SumR += Bckg.get_r()*ray.weight;
-                    SumB += Bckg.get_b()*ray.weight;
-                    SumG += Bckg.get_g()*ray.weight;
+                    SumR += (Bckg.get_r()*ray.weight);
+                    SumB += (Bckg.get_b()*ray.weight);
+                    SumG += (Bckg.get_g()*ray.weight);
                 } else {
                     LinkedList<weightRay> rays1 = new LinkedList<>();
                     rays1.add(ray);
-                    Color c = adptivCalcColor(rays1);
-                    SumR += c.get_r()*ray.weight;
-                    SumB += c.get_b()*ray.weight;
-                    SumG += c.get_g()*ray.weight;
+             //       Color c = new Color(adptivCalcColor(rays1).getColor());
+                    Color c =adptivCalcColor(rays1);
+                    SumR +=(c.get_r()*ray.weight);
+                    SumB += (c.get_b()*ray.weight);
+                    SumG += (c.get_g()*ray.weight);
                 }
 
             }
-            averageColor = new Color(SumR / rays.size(), SumG / rays.size(), SumB / rays.size());
+            averageColor = new Color(SumR*3 / rays.size(), SumG*3 / rays.size(), SumB*3 / rays.size());
             if( centerPiX!=null)
                 return   averageColor.add(calcColor(centerPiX, rays.get(4), MAX_CALC_COLOR_LEVEL, 1.0));
+        //    if(averageColor.get_b()<25&&averageColor.get_r()<25&&averageColor.get_g()<25)
+        //        averageColor=averageColor;
             return averageColor;
         }
     }
@@ -427,7 +430,7 @@ public class Render {
                 } else {
                     LinkedList<Ray> rays1 = new LinkedList<>();
                     rays1.add(ray);
-                    Color c = calcColor(rays1);
+                    Color c = calcColor(rays1);  // TODO: 23/06/2020 check if calc is good ? black line problam in bonos test is becuase adptive or any super sapmling
                     SumR += c.get_r();
                     SumB += c.get_b();
                     SumG += c.get_g();
@@ -489,8 +492,7 @@ public class Render {
      */
     private Color calcColor(GeoPoint geoPoint, Ray inRay, int level, double k)
     {
-       if(level<39)
-           level=level;
+
         if (level == 1 || k < MIN_CALC_COLOR_K) //stop condition
         {
             return Color.BLACK; //0,0,0
@@ -520,7 +522,7 @@ public class Render {
         double kkr = k * kr;
         double kkt = k * kt;
 
-        result = result.add(getLightSourcesColors(geoPoint, k, result, vecGeoCamera, normal, nShininess, kd, ks));
+        result = result.add(getLightSourcesColors(geoPoint, k, result, vecGeoCamera, normal,DP_Normal_vecGeoCamera, nShininess ,   kd, ks));
 
         if (kkr > MIN_CALC_COLOR_K) { //start reflected recursiv
             Ray reflectedRay = constructReflectedRay(normal, pointGeo, inRay);
@@ -619,11 +621,10 @@ public class Render {
      * in class (and also used for ray tracing), and where p is a specular power. The higher the value of p, the shinier
      * the surface.
      */
-    private Color calcSpecular(double ks, Vector l, Vector n,  Vector v, int nShininess, Color ip) {
+    private Color calcSpecular(double ks, Vector l, Vector n, double nl, Vector v, int nShininess, Color ip) {
         double p = nShininess;
-        double DP_n_l = alignZero(n.dotProduct(l));
 
-        Vector R = l.add(n.scale(-2 * DP_n_l).normalize()); // nl must not be zero!
+        Vector R = l.add(n.scale(-2 * nl)); // nl must not be zero!
         double minusVR = -alignZero(R.dotProduct(v));
         if (minusVR <= 0) {
             return Color.BLACK; // view from direction opposite to r vector
@@ -682,7 +683,6 @@ public class Render {
      *
      * @param geoPoint intersec point on object
      * @param k
-     * @param color
      * @param v vec
      * @param n norml
      * @param nShininess Shininess factor of matireal
@@ -691,36 +691,31 @@ public class Render {
      * culcs a shopt shadow from light to object by sending multiply ray from point to light and culcs avg of ktr of all rays
      * @return final color in point
      */
-    private Color getLightSourcesColors(GeoPoint geoPoint, double k, Color color,
-                                       Vector v, Vector n, int nShininess,
-                                       double kd, double ks)
-    {
+    private Color getLightSourcesColors(GeoPoint geoPoint, double k, Color result, Vector v, Vector n, double nv, int nShininess, double kd, double ks) {
         Point3D pointGeo = geoPoint.getPoint();
-        if (_scene.get_lights() != null)
-        {
+        List<LightSource> lightSources = _scene.get_lights();
+        if (lightSources != null) {
+            for (LightSource lightSource : lightSources) {
+                Vector l = lightSource.getLightDirection(pointGeo);
+                double DP_n_l = alignZero(n.dotProduct(l));
+                if (DP_n_l * nv > 0) {
+//                if (sign(DP_n_l) == sign(nv) && DP_n_l != 0 && nv != 0) {
+//                    if (unshaded(lightSource, l, n, geoPoint)) {
 
-            for (LightSource lightSource : _scene.get_lights()) {
-
-                if (((PointLight)lightSource).getRadius() == 0)
-                {
-                    Vector l = lightSource.getLightDirection(pointGeo).normalize();
-
-                    double nl = n.dotProduct(l);
-                    double nv = n.dotProduct(v);
-                    double ktr;
-                    if (nl * nv > 0) {
-
-                        ktr = transparency(lightSource, l, n, geoPoint);
-                        if (ktr * k > MIN_CALC_COLOR_K) {
-                            Color lightIntensity = lightSource.getIntensity(pointGeo).scale(ktr);
-                            color = color.add(
-                                    calcDiffusive(kd, nl, lightIntensity),
-                                    calcSpecular(ks, l, n, v, nShininess, lightIntensity));
-                        }
+                    double ktr = transparency(lightSource, l, n, geoPoint);
+                    if (ktr * k > MIN_CALC_COLOR_K) {
+                        Color ip = lightSource.getIntensity(pointGeo).scale(ktr);
+                        result = result.add(
+                                calcDiffusive(kd, DP_n_l, ip),
+                                calcSpecular(ks, l, n, DP_n_l, v, nShininess, ip));
                     }
-                    return color;
                 }
-                else
+            }
+        }
+        return result;
+    }
+
+/*                else
                     {
                     double ktr=0.0;
                     double sizeVecList=0.0;
@@ -757,7 +752,7 @@ public class Render {
 
         }
         return Color.BLACK;
-    }
+    }*/
     /**
      *
      * @param nX             number of pixel in x axis
@@ -852,6 +847,7 @@ public class Render {
         Point3D Pij = thisPix;
 
         LinkedList<weightRay> nineRays=  nineRaysThroPixel(Pij,ratioX,ratioY,level);
+        LinkedList<weightRay> nineRays2=  nineRaysThroPixel(Pij,ratioX,ratioY,level);
 
         LinkedList<Color> colors =getColorsOfRays(nineRays);
 
@@ -870,10 +866,15 @@ public class Render {
                 if (k != 0 && k != 1)
                     Pij = Pij.add(_scene.getCamera().get_vUp().scale((-ratioY / 2)));
                 recursivAdaptiveSuperSampaling(nX, nY,
-                        screenWidth / 4, screenHeight / 4, rays, Pij, level + 1);
+                        screenWidth / 6, screenHeight / 6, rays, Pij, level + 1);
             }
         }
-        rays.addAll(nineRays);
+        for (weightRay ray:nineRays)
+        {
+            if(!rays.contains(ray))
+                rays.add(ray);
+        }
+     //   rays.addAll(nineRays);
         return  rays;
     }
 
