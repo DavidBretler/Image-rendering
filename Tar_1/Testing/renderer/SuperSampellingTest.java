@@ -50,7 +50,7 @@ class SuperSampellingTest {
                 new Color(400.0D, 240.0D, 0.0D),
                 new Point3D(-100.0D, 100.0D, -200.0D),
                 new Vector(1.0D, -1.0D, 3.0D), 1.0D, 1.0E-5D, 1.5E-7D ));
-        ImageWriter imageWriter = new ImageWriter("sphereTriangleSuperSampel", 200.0D, 200.0D, 400, 400);
+        ImageWriter imageWriter = new ImageWriter("sphereTriangleSuperSampel", 200.0D, 200.0D, 5000, 5000);
         Render render = new Render(imageWriter, scene, 70, 1.25D);
         render.renderImage();
         render.writeToImage();
@@ -241,30 +241,44 @@ class SuperSampellingTest {
 
 
     /**
-     *Super Sampell
-     * run time: 1 min 38 sec
+     * 3 polygons that create a corridor
+     * with 3 sphere in the center diffrent transparency levels
+     * and a triangle on top ,with reflection of the spheres  and the triangle on the polygons
+     * shade from sphere on the polygon
+     * 2 small shiny sphere in the bckg that reflect on the polygons
+
+     * adaptive Super Sample
+     * not adaptive super sample run time: 2 min 48 sec
+     * adaptive super sample run time: 4 sec 535 ms
      */
     @Test
-    public void finalscene() {
+    public void finalscene1() {
         Scene scene = new Scene("Test scene");
         scene.setCamera(new Camera(new Point3D(0, 0, -20000), new Vector(0, 0, 1), new Vector(0, -1, 0)));
         scene.setDistance(10000);
-        scene.setBackground(new Color(30, 20, 10));
+        scene.setBackground(new Color(0, 0, 0));
         scene.setAmbientLight(new AmbientLight(new Color(255, 255, 255), 0.1));
 
 
         scene.addGeometries( //
 
-                new Sphere(new Color(80, 30, 170), new Material(0.2, 1, 20, 0, 0), //
+                new Sphere(new Color(80, 30, 170), new Material(0.2, 1, 20, 0, 0),
                         350,                        new Point3D(-0, 0, 1000)),
 
 
-                new Sphere(new Color(80, 30, 170), new Material(0.2, 1, 20, 0.7, 0), //
+                new Sphere(new Color(80, 30, 170), new Material(0.2, 1, 20, 0.7, 0),
                         300,                        new Point3D(-0, 0, 500)),
 
 
-                new Sphere(new Color(80, 30, 170), new Material(0.2, 1, 20, 0.9, 0), //
+                new Sphere(new Color(80, 30, 170), new Material(0.2, 1, 20, 0.9, 0),
                         250,                        new Point3D(-0, 0, 0)),
+
+
+                new Sphere(new Color(255, 255, 255), new Material(0.2, 1, 110, 0, 0),
+                        50,                        new Point3D(-1300, -1900, 2000)),
+                new Sphere(new Color(255, 255, 255), new Material(0.2, 1, 110, 0, 0),
+                        50,                        new Point3D(1300, -1900, 2000)),
+
 
                 new Triangle( new Color(20, 20, 20), new Material(1, 0.25, 0,0, 0.8) ,new Point3D(1000, -500, 2000),new Point3D(-1000, -500, 2000),new Point3D(0, 200, 2000)),
 
@@ -280,15 +294,6 @@ class SuperSampellingTest {
         new Polygon( new Color(20, 20, 20), new Material(1, 0.25, 0,0, 0.8) ,////left surface
                 new Point3D(-3000, 4000, -2000),  new Point3D(-3000, -4000, -2000),new Point3D(-1000, -500, 2000),new Point3D(-1000, 200, 2000)));
 
-     //   new Polygon( new Color(20, 20, 20), new Material(1, 0.25, 0,0, 0.8) ,//tree
-         //       new Point3D(-3000, 4000, -2000),  new Point3D(3000, 4000, -2000),new Point3D(1000, 200, 2000),new Point3D(-1000, 200, 2000)));
-
-
-
-
-       // scene.addLights(new SpotLight(new Color(600, 400, 400), //shade
-       //         new Point3D(-600 ,-600, -600), new Vector(1, -1, 1),
-       //         1, 4E-5, 2E-7,1));
 
         scene.addLights(
                 new SpotLight(
@@ -303,75 +308,84 @@ class SuperSampellingTest {
         scene.addLights(new PointLight(new Color(400, 200, 200), //sun light
                 new Point3D(10, -1000, -13000)  , 1, 4E-5, 2E-7));
 
-        ImageWriter imageWriter = new ImageWriter("finalscene", 2500, 2500, 500, 500);
-        Render render = new Render(imageWriter, scene,50,1);
+        ImageWriter imageWriter = new ImageWriter("finale scene 1", 2500, 2500, 500, 500);
+        Render render = new Render(imageWriter, scene,50,1).setMultithreading(3);;
 
         render.renderImage();
         render.writeToImage();
     }
+
+
+    /**
+     * same scene with only diffrent z axis position to show effect of the proximity
+     * 3 polygons that create a corridor
+     * with 3 sphere in the center diffrent transparency levels
+     * and a triangle on top ,with reflection of the spheres  and the triangle on the polygons
+     * shade from sphere on the polygon
+     *
+     *  * 2 small shiny sphere in the bckg that reflect on the polygons
+     * adaptive Super Sample
+     * not adaptive super sample run time: 1 min 25 sec
+     * adaptive super sample run time: 4 sec 525 ms
+     */
     @Test
-    public void twoSpheresOnMirrors()
-    {
+    public void finalscene2() {
         Scene scene = new Scene("Test scene");
-        scene.setCamera(new Camera(new Point3D(0, 0, -10000), new Vector(0, 0, 1), new Vector(0, -1, 0)));
-        scene.setDistance(10000);
-        scene.setBackground(Color.BLACK);
+        scene.setCamera(new Camera(new Point3D(0, 0, -2000), new Vector(0, 0, 1), new Vector(0, -1, 0)));
+        scene.setDistance(1000);
+        scene.setBackground(new Color(0, 0, 0));
         scene.setAmbientLight(new AmbientLight(new Color(255, 255, 255), 0.1));
 
-        scene.addGeometries(
 
-                new Sphere(new Color(java.awt.Color.orange), new Material(0.2, 1, 20, 0, 0), // wheel
-                        150,                        new Point3D(-950, 900, 1000)),
+        scene.addGeometries( //
 
-
-                new Sphere(new Color(java.awt.Color.cyan), new Material(0.2, 1, 20, 0.1, 0), // wheel
-                        150, new Point3D(-20, -30, 1000)),
-                new Sphere(new Color(java.awt.Color.yellow), new Material(0.2, 1, 20, 0, 0), // wheel
-                        150, new Point3D(20, -30, 1000)),
-
-                new Sphere(new Color(java.awt.Color.green), new Material(0.2, 1, 20, 0.5, 0), // wheel
-                        150, new Point3D(40, -20, 1000)),
-                new Sphere(new Color(java.awt.Color.yellow), new Material(0.2, 1, 20, 0, 0), // wheel
-                        150, new Point3D(-40, -20, 1000)),
+                new Sphere(new Color(80, 30, 170), new Material(0.2, 1, 20, 0, 0), //
+                        350,                        new Point3D(-0, 0, 100)),
 
 
-                new Sphere(new Color(java.awt.Color.yellow), new Material(0.2, 1, 20, 0, 0), // wheel
-                        150, new Point3D(-60, -10, 1000)),
-                new Sphere(new Color(java.awt.Color.gray), new Material(0.2, 1, 20, 0.5, 0), // wheel
-                        150, new Point3D(60, -10, 1000)),
+                new Sphere(new Color(80, 30, 170), new Material(0.2, 1, 20, 0.7, 0), //
+                        300,                        new Point3D(-0, 0, 50)),
 
-                new Sphere(
-                        new Color(0, 0, 100),
-                        new Material(0.25, 0.25, 20, 0.5, 0),
-                        400,
-                        new Point3D(-950, 900, 1000)),
-                new Sphere(
-                        new Color(100, 20, 20),
-                        new Material(0.25, 0.25, 20),
-                        200,
-                        new Point3D(-950, 900, 1000)),
-                new Triangle(
-                        new Color(20, 20, 20),
-                        new Material(0, 0, 0, 0, 1),
-                        new Point3D(1500, 1500, 1500),
-                        new Point3D(-1500, -1500, 1500),
-                        new Point3D(670, -670, -3000)),
-                new Triangle(
-                        new Color(20, 20, 20),
-                        new Material(0, 0, 0, 0, 0.5),
-                        new Point3D(1500, 1500, 1500),
-                        new Point3D(-1500, -1500, 1500),
-                        new Point3D(-1500, 1500, 2000)));
+
+                new Sphere(new Color(255, 255, 255), new Material(0.2, 1, 110, 0, 0),
+                        50,                        new Point3D(-1300, -1900, 200)),
+                new Sphere(new Color(255, 255, 255), new Material(0.2, 1, 110, 0, 0),
+                        50,                        new Point3D(1300, -1900, 200)),
+
+
+                new Sphere(new Color(80, 30, 170), new Material(0.2, 1, 20, 0.9, 0), //
+                        250,                        new Point3D(-0, 0, 0)),
+
+                new Triangle( new Color(20, 20, 20), new Material(1, 0.25, 0,0, 0.8) ,new Point3D(1000, -500, 2000),new Point3D(-1000, -500, 2000),new Point3D(0, 200, 200)),
+
+                new Triangle( new Color(20, 20, 20), new Material(1, 0.25, 0,0, 0.8) ,new Point3D(1000, -500, 2000),new Point3D(-1000, -500, 2000),new Point3D(0, -4000, -200)),
+
+
+                new Polygon( new Color(20, 20, 20), new Material(1, 0.25, 0,0, 0.8) ,//down surface
+                        new Point3D(-3000, 4000, -200),  new Point3D(3000, 4000, -200),new Point3D(1000, 200, 200),new Point3D(-1000, 200, 200)),
+
+                new Polygon( new Color(20, 20, 20), new Material(1, 0.25, 0,0, 0.8) ,////right surface
+                        new Point3D(3000, 4000, -200),  new Point3D(3000, -4000, -200),new Point3D(1000, -500, 200),new Point3D(1000, 200, 200)),
+
+                new Polygon( new Color(20, 20, 20), new Material(1, 0.25, 0,0, 0.8) ,////left surface
+                        new Point3D(-3000, 4000, -200),  new Point3D(-3000, -4000, -200),new Point3D(-1000, -500, 200),new Point3D(-1000, 200, 200)));
+
 
         scene.addLights(
-            new SpotLight(
-                    new Color(1020, 400, 400),
-                    new Point3D(-750, 750, 150),
-                    new Vector(-1, 1, 4),
-                    1, 0.00001, 0.000005));
+                new SpotLight(
+                        new Color(1020, 400, 400),
+                        new Point3D(-750, -750, 1900),
+                        new Vector(-1, 1, 4),
+                        1, 0.00001, 0.000005));
+        scene.addLights(new SpotLight(new Color(600, 400, 400), //shade
+                new Point3D(0 ,-1000, 100), new Vector(0, 10, 0),
+                1, 4E-5, 2E-7,1));
 
-        ImageWriter imageWriter = new ImageWriter("jhgfd", 2500, 2500, 500, 500);
-        Render render = new Render(imageWriter, scene,50,1);
+        scene.addLights(new PointLight(new Color(400, 200, 200), //sun light
+                new Point3D(10, -1000, -1300)  , 1, 4E-5, 2E-7));
+
+        ImageWriter imageWriter = new ImageWriter("finale scene 2", 2500, 2500, 500, 500);
+        Render render = new Render(imageWriter, scene,50,1).setMultithreading(3);;
 
         render.renderImage();
         render.writeToImage();
