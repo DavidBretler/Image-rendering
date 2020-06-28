@@ -434,7 +434,7 @@ public class Render {
                 } else {
                     LinkedList<Ray> rays1 = new LinkedList<>();
                     rays1.add(ray);
-                    Color c = calcColor(rays1);  // TODO: 23/06/2020 check if calc is good ? black line problam in bonos test is becuase adptive or any super sapmling
+                    Color c = calcColor(rays1);
                     SumR += c.get_r();
                     SumB += c.get_b();
                     SumG += c.get_g();
