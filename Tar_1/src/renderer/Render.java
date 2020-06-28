@@ -55,7 +55,6 @@ public class Render {
     /**
          * Pixel is an internal helper class whose objects are associated with a Render object that
          * they are generated in scope of. It is used for multithreading in the Renderer and for follow up
-         * its progress.<br/>
          * There is a main follow up object and several secondary objects - one in each thread.
          * @author Dan
          *
@@ -91,7 +90,6 @@ public class Render {
             /**
              * Internal function for thread-safe manipulating of main follow up Pixel object - this function is
              * critical section for all the threads, and main Pixel object data is the shared data of this critical
-             * section.<br/>
              * The function provides next pixel number each call.
              * @param target target secondary Pixel object to copy the row/column of the next pixel
              * @return the progress percentage for follow up: if it is 0 - nothing to print, if it is -1 - the task is
@@ -165,29 +163,32 @@ public class Render {
                     while (thePixel.nextPixel(pixel)) {
                         LinkedList<Ray> rays=new LinkedList<Ray>();
 
-                        //if amount of ray's is 1 so there is no super smaplling
-                        if (this.Amount<=1)
-                        {
-                            rays.add( camera.constructRayThroughPixel(nX, nY, pixel.col, pixel.row,dist, width, height));
-                        _imageWriter.writePixel(pixel.col, pixel.row, calcColor(rays).getColor());
+
+                                //if amount of ray's is 1 so there is no super smaplling
+
+                        if (this.Amount <= 1) {
+                            rays.add(camera.constructRayThroughPixel(nX, nY, pixel.col, pixel.row, dist, width, height));
+                            _imageWriter.writePixel(pixel.col, pixel.row, calcColor(rays).getColor());
+                        } else {
+
+
+                            if (densitiy != 0) {
+                                rays = (camera.constructRayBeamThroughPixel(nX, nY, pixel.col, pixel.row, dist, (double) width, (double) height, this.densitiy, this.Amount));
+                                _imageWriter.writePixel(pixel.col, pixel.row, calcColor(rays).getColor());
+                            } else {
+                                LinkedList<weightRay> weightRays;
+
+                                weightRays = (AdaptiveSuperSampaling(nX, nY, pixel.col, pixel.row, dist, (double) width, (double) height));
+
+                                if (weightRays.isEmpty())//all the pixel is in the same color so we can send one ray
+                                {
+                                    rays.add(camera.constructRayThroughPixel(nX, nY, pixel.col, pixel.row, dist, width, height));
+                                    _imageWriter.writePixel(pixel.col, pixel.row, calcColor(rays).getColor());
+                                } else
+                                    _imageWriter.writePixel(pixel.col, pixel.row, adptivCalcColor(weightRays).getColor());
+
+                            }
                         }
-                        else
-                        {
-                            LinkedList<weightRay> weightRays;
-
-                        //  rays=(camera.constructRayBeamThroughPixel(nX, nY, pixel.col, pixel.row, dist, (double)width, (double)height, this.densitiy, this.Amount));
-                          weightRays=(AdaptiveSuperSampaling(nX, nY, pixel.col, pixel.row, dist, (double)width, (double)height));
-
-                              if(weightRays.isEmpty())//all the pixel is in the same color so we can send one ray
-                               {
-                                  rays.add( camera.constructRayThroughPixel(nX, nY, pixel.col, pixel.row,dist, width, height));
-                               _imageWriter.writePixel(pixel.col, pixel.row, calcColor(rays).getColor());
-                               }
-                              else
-                                 _imageWriter.writePixel(pixel.col, pixel.row, adptivCalcColor(weightRays).getColor());
-
-                    }
-
                     }
                 });
             }
@@ -347,7 +348,7 @@ public class Render {
     private Color adptivCalcColor(LinkedList<weightRay> rays) {
 
         Color Bckg = new Color(_scene.getBackground());//set default color
-
+        double brightnes=3;
 
         if (rays.size() == 1) //if only one ray check if intresects with any object
         {
@@ -388,7 +389,7 @@ public class Render {
                 }
 
             }
-            averageColor = new Color(SumR*3 / rays.size(), SumG*3 / rays.size(), SumB*3 / rays.size());
+            averageColor = new Color(SumR*brightnes / rays.size(), SumG*brightnes / rays.size(), SumB*brightnes / rays.size());
             if( centerPiX!=null)
                 return   averageColor.add(calcColor(centerPiX, rays.get(4), MAX_CALC_COLOR_LEVEL, 1.0));
         //    if(averageColor.get_b()<25&&averageColor.get_r()<25&&averageColor.get_g()<25)
@@ -405,9 +406,8 @@ public class Render {
     private Color calcColor(LinkedList<Ray> rays) {
         GeoPoint centerPiX = findClosestIntersection(rays.get(0));
         Color Bckg = new Color(_scene.getBackground());
+        double brightnes=0.2;
 
- //       if (ClosesPoint==null)
- //           return Bckg;
 
         if (rays.size() == 1)
         {
@@ -441,7 +441,7 @@ public class Render {
                 }
 
             }
-              averageColor = new Color(SumR / rays.size(), SumG / rays.size(), SumB / rays.size());
+              averageColor = new Color(SumR*brightnes / rays.size(), SumG*brightnes / rays.size(), SumB*brightnes / rays.size());
                if( centerPiX!=null)
                return   averageColor.add(calcColor(centerPiX, rays.get(0), MAX_CALC_COLOR_LEVEL, 1.0));
                 return averageColor;
@@ -720,44 +720,6 @@ public class Render {
         return result;
     }
 
-/*                else
-                    {
-                    double ktr=0.0;
-                    double sizeVecList=0.0;
-
-                    // double  nl2=0.0;
-                    double nv=0.0;
-                  for (LightSource lightSource2 : _scene.get_lights())
-                        for (Ray ray : ((PointLight)lightSource).beemFromPoint(pointGeo,(PointLight)lightSource))
-                        {
-                            sizeVecList += 1;
-                            double  nl = n.dotProduct(ray.getDirection());
-
-                            nv = n.dotProduct(v);
-
-                            if (nl * nv > 0) {
-
-                                ktr += transparency(lightSource, ray.getDirection().normalize(), n, geoPoint);
-                            }
-                        }
-
-                    ktr = ktr / (sizeVecList/2);
-                    Vector l = lightSource.getLightDirection(pointGeo).normalize();
-                    double nl = n.dotProduct(l);
-                    // double nl = n.dotProduct(l);
-                    if (ktr * k > MIN_CALC_COLOR_K) {
-                        Color lightIntensity = lightSource.getIntensity(pointGeo).scale(ktr);
-                        color = color.add(
-                                calcDiffusive(kd, nl, lightIntensity),
-                                calcSpecular(ks, l, n, v, nShininess, lightIntensity));
-                    }
-                }
-            }
-            return color;
-
-        }
-        return Color.BLACK;
-    }*/
     /**
      *
      * @param nX             number of pixel in x axis

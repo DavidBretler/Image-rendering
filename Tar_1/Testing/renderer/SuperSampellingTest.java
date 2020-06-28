@@ -55,63 +55,7 @@ class SuperSampellingTest {
         render.renderImage();
         render.writeToImage();
     }
-    /*
-    *//**
-     *Sphere Triangle Super Sampeling And SoftShadow
-     * run time : 14 min 56 sec
-     *//*
-    @Test
-    public void SphereTriangleSuperSampelingAndSoftShadow() {
-        Scene scene = new Scene("Test scene");
-        scene.setCamera(new Camera(new Point3D(0.0D, 0.0D, -1000.0D), new Vector(0.0D, 0.0D, 1.0D), new Vector(0.0D, -1.0D, 0.0D)));
-        scene.setDistance(1000.0D);
-        scene.setBackground(Color.BLACK);
-        scene.setAmbientLight(new AmbientLight(Color.BLACK, 0.0D));
-        scene.addGeometries(new Intersectable[]{new Sphere(new Color(java.awt.Color.BLUE), new Material(0.5D, 0.5D, 30), 60.0D, new Point3D(0.0D, 0.0D, 200.0D)), new Triangle(new Color(java.awt.Color.BLUE), new Material(0.5D, 0.5D, 30), new Point3D(-60.0D, 30.0D, 0.0D), new Point3D(-30.0D, 60.0D, 0.0D), new Point3D(-58.0D, 58.0D, 4.0D))});
-        scene.addLights(new SpotLight(new Color(400.0D, 240.0D, 0.0D), new Point3D(-100.0D, 100.0D, -200.0D), new Vector(1.0D, -1.0D, 3.0D), 1.0D, 1.0E-5D, 1.5E-7D, 1.0D, 4.0D));
-        ImageWriter imageWriter = new ImageWriter("SphereTriangleSuperSampelingAndSoftShadow", 200.0D, 200.0D, 400, 400);
-        Render render = new Render(imageWriter, scene, 70, 1.25D);
-        render.renderImage();
-        render.writeToImage();
-    }
 
-    *//**
-     * Sphere Triangle Soft Shadow
-     * run time: 39 sec
-     *//*
-    @Test
-    public void SphereTriangleSoftShadow() {
-        Scene scene = new Scene("Test scene");
-        scene.setCamera(new Camera(new Point3D(0.0D, 0.0D, -1000.0D), new Vector(0.0D, 0.0D, 1.0D), new Vector(0.0D, -1.0D, 0.0D)));
-        scene.setDistance(1000.0D);
-        scene.setBackground(Color.BLACK);
-        scene.setAmbientLight(new AmbientLight(Color.BLACK, 0.0D));
-        scene.addGeometries(new Intersectable[]{new Sphere(new Color(java.awt.Color.BLUE), new Material(0.5D, 0.5D, 30), 60.0D, new Point3D(0.0D, 0.0D, 200.0D)), new Triangle(new Color(java.awt.Color.BLUE), new Material(0.5D, 0.5D, 30), new Point3D(-60.0D, 30.0D, 0.0D), new Point3D(-30.0D, 60.0D, 0.0D), new Point3D(-58.0D, 58.0D, 4.0D))});
-        scene.addLights(new SpotLight(new Color(400.0D, 240.0D, 0.0D), new Point3D(-100.0D, 100.0D, -200.0D), new Vector(1.0D, -1.0D, 3.0D), 1.0D, 1.0E-5D, 1.5E-7D, 1.0D, 4.0D));
-        ImageWriter imageWriter = new ImageWriter("SphereTriangleSoftShadow", 200.0D, 200.0D, 400, 400);
-        Render render = new Render(imageWriter, scene);
-        render.renderImage();
-        render.writeToImage();
-    }
-
-    *//**
-     *Sphere Triangle NoEffect
-     * run time: 6 sec 375
-     *//*
-    @Test
-    public void SphereTriangleNoEffect() {
-        Scene scene = new Scene("Test scene");
-        scene.setCamera(new Camera(new Point3D(0.0D, 0.0D, -1000.0D), new Vector(0.0D, 0.0D, 1.0D), new Vector(0.0D, -1.0D, 0.0D)));
-        scene.setDistance(1000.0D);
-        scene.setBackground(Color.BLACK);
-        scene.setAmbientLight(new AmbientLight(Color.BLACK, 0.0D));
-        scene.addGeometries(new Sphere(new Color(java.awt.Color.BLUE), new Material(0.5D, 0.5D, 30), 60.0D, new Point3D(0.0D, 0.0D, 200.0D)), new Triangle(new Color(java.awt.Color.BLUE), new Material(0.5D, 0.5D, 30), new Point3D(-60.0D, 30.0D, 0.0D), new Point3D(-30.0D, 60.0D, 0.0D), new Point3D(-58.0D, 58.0D, 4.0D)));
-        scene.addLights(new SpotLight(new Color(400.0D, 240.0D, 0.0D), new Point3D(-100.0D, 100.0D, -200.0D), new Vector(1.0D, -1.0D, 3.0D), 1.0D, 1.0E-5D, 1.5E-7D, 1.0D, 0.0D));
-        ImageWriter imageWriter = new ImageWriter("SphereTriangleNoEffect", 200.0D, 200.0D, 400, 400);
-        Render render = new Render(imageWriter, scene);
-        render.renderImage();
-        render.writeToImage();
-    }*/
     /**
      *Sphere Triangle NoEffect
      * run time: 2 sec
@@ -232,8 +176,8 @@ class SuperSampellingTest {
         scene.addLights(new SpotLight(new Color(400, 200, 200), //sun light
                 new Point3D(10, -70, -300)  , new Vector(1, 0, 1), 1, 4E-5, 2E-7));
 
-        ImageWriter imageWriter = new ImageWriter("Adptive superSampel", 200, 200, 600, 600);
-        Render render = new Render(imageWriter, scene,50,1.25).setMultithreading(3).setDebugPrint();
+        ImageWriter imageWriter = new ImageWriter("adaptive super Sample minni project 1", 200, 200, 600, 600);
+        Render render = new Render(imageWriter, scene,50,0).setMultithreading(3).setDebugPrint();
 
         render.renderImage();
         render.writeToImage();
@@ -256,27 +200,27 @@ class SuperSampellingTest {
         Scene scene = new Scene("Test scene");
         scene.setCamera(new Camera(new Point3D(0, 0, -20000), new Vector(0, 0, 1), new Vector(0, -1, 0)));
         scene.setDistance(10000);
-        scene.setBackground(new Color(0, 0, 0));
+        scene.setBackground(new Color(5, 10, 20));
         scene.setAmbientLight(new AmbientLight(new Color(255, 255, 255), 0.1));
 
 
         scene.addGeometries( //
 
-                new Sphere(new Color(80, 30, 170), new Material(0.2, 1, 20, 0, 0),
+                new Sphere(new Color(80, 30, 170), new Material(0.2, 1, 20, 0, 0),//middle sphere
                         350,                        new Point3D(-0, 0, 1000)),
 
 
-                new Sphere(new Color(80, 30, 170), new Material(0.2, 1, 20, 0.7, 0),
+                new Sphere(new Color(80, 30, 170), new Material(0.2, 1, 20, 0.7, 0),//middle sphere
                         300,                        new Point3D(-0, 0, 500)),
 
 
-                new Sphere(new Color(80, 30, 170), new Material(0.2, 1, 20, 0.9, 0),
+                new Sphere(new Color(80, 30, 170), new Material(0.2, 1, 20, 0.9, 0),//middle sphere
                         250,                        new Point3D(-0, 0, 0)),
 
 
-                new Sphere(new Color(255, 255, 255), new Material(0.2, 1, 110, 0, 0),
+                new Sphere(new Color(255, 255, 255), new Material(0.2, 1, 110, 0, 0),//side sphere
                         50,                        new Point3D(-1300, -1900, 2000)),
-                new Sphere(new Color(255, 255, 255), new Material(0.2, 1, 110, 0, 0),
+                new Sphere(new Color(255, 255, 255), new Material(0.2, 1, 110, 0, 0),//side sphere
                         50,                        new Point3D(1300, -1900, 2000)),
 
 
@@ -307,9 +251,9 @@ class SuperSampellingTest {
 
         scene.addLights(new PointLight(new Color(400, 200, 200), //sun light
                 new Point3D(10, -1000, -13000)  , 1, 4E-5, 2E-7));
-
-        ImageWriter imageWriter = new ImageWriter("finale scene 1", 2500, 2500, 500, 500);
-        Render render = new Render(imageWriter, scene,50,1).setMultithreading(3);;
+            //adaptive super sampling activated: density ==0
+        ImageWriter imageWriter = new ImageWriter("adaptive super sample mini project 2", 2500, 2500, 500, 500);
+        Render render = new Render(imageWriter, scene,50,0).setMultithreading(3);;
 
         render.renderImage();
         render.writeToImage();

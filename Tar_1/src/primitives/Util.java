@@ -7,7 +7,7 @@ package primitives;
  */
 public abstract class Util {
     // It is binary, equivalent to ~1/1,000,000,000,000 in decimal (12 digits)
-    private static final int ACCURACY = -37;
+    private static final int ACCURACY = -35;
 
     // double store format (bit level): seee eeee eeee (1.)mmmm � mmmm
     // 1 bit sign, 11 bits exponent, 53 bits (52 stored) normalized mantissa
